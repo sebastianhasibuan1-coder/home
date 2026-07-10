@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dompet Hasibuan - Sakura Edition</title>
+    <title>Dompet Hasibuan - Sakura Light Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-finance: #0f121d;   /* Latar malam sejuk */
-            --card-bg: #191e33;      /* Ungu plum gelap premium */
-            --card-inner: #111526;   /* Latar input gelap lembut */
-            --emerald-money: #6ee7b7; /* Hijau daun sakura muda (Adem & Rileks) */
-            --rose-expense: #fca5a5;  /* Merah muda kelopak sakura gugur */
-            --sakura-pink: #f472b6;   /* Aksen merah muda sakura dominan */
-            --text-light: #f8fafc;
-            --text-muted: #64748b;
+            --bg-finance: #fff5f6;   /* Putih pink pudar super lembut & adem */
+            --card-bg: #ffffff;      /* Putih bersih bersinar */
+            --card-inner: #fff0f2;   /* Pink pudar tipis untuk input box */
+            --emerald-money: #0d9488; /* Hijau daun sakura tua (Kontras & Teduh) */
+            --rose-expense: #e11d48;  /* Merah kelopak sakura matang */
+            --sakura-pink: #db2777;   /* Aksen pink cerah elegan */
+            --text-dark: #1e293b;    /* Teks utama gelap tajam */
+            --text-muted: #64748b;   /* Teks sekunder kelabu */
         }
 
         * {
@@ -30,7 +30,7 @@
 
         body {
             background-color: var(--bg-finance);
-            color: var(--text-light);
+            color: var(--text-dark);
             padding: 20px 16px;
             display: flex;
             justify-content: center;
@@ -46,7 +46,7 @@
             gap: 18px;
         }
 
-        /* --- HEADER THEME SAKURA --- */
+        /* --- HEADER THEME SAKURA LIGHT --- */
         .header {
             display: flex;
             justify-content: space-between;
@@ -61,7 +61,7 @@
         }
 
         .header-logo {
-            background: linear-gradient(135deg, var(--sakura-pink), #ec4899);
+            background: linear-gradient(135deg, #f472b6, var(--sakura-pink));
             width: 36px;
             height: 36px;
             border-radius: 10px;
@@ -71,14 +71,14 @@
             font-weight: 700;
             color: #ffffff;
             font-size: 18px;
-            box-shadow: 0 4px 12px rgba(244, 114, 182, 0.25);
+            box-shadow: 0 4px 10px rgba(219, 39, 119, 0.15);
         }
 
         .header h1 {
             font-size: 18px;
             font-weight: 700;
             letter-spacing: -0.5px;
-            color: var(--text-light);
+            color: var(--text-dark);
         }
 
         .nav-buttons {
@@ -88,29 +88,28 @@
 
         .btn-nav {
             background-color: var(--card-bg);
-            color: var(--text-light);
+            color: var(--text-dark);
             text-decoration: none;
             padding: 8px 14px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(219, 39, 119, 0.15);
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 4px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
 
         .btn-nav.cicilan {
-            background-color: rgba(244, 114, 182, 0.1);
-            color: #fbcfe8;
-            border-color: rgba(244, 114, 182, 0.2);
+            background-color: rgba(219, 39, 119, 0.08);
+            color: var(--sakura-pink);
         }
 
         .btn-nav:hover {
             transform: translateY(-1px);
-            background-color: #222947;
+            background-color: var(--card-inner);
         }
 
         /* --- DASHBOARD CARD --- */
@@ -118,8 +117,8 @@
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 22px;
-            box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.3), 0 4px 12px -2px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 25px -5px rgba(219, 39, 119, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(219, 39, 119, 0.05);
             position: relative;
             overflow: hidden;
         }
@@ -129,7 +128,7 @@
             position: absolute;
             top: 0; right: 0;
             width: 120px; height: 120px;
-            background: radial-gradient(circle, rgba(244, 114, 182, 0.04) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(219, 39, 119, 0.03) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -145,7 +144,7 @@
             font-size: 34px;
             font-weight: 700;
             margin-top: 4px;
-            color: var(--text-light);
+            color: var(--text-dark);
             letter-spacing: -1px;
         }
 
@@ -155,14 +154,13 @@
             gap: 12px;
             margin-top: 20px;
             padding-top: 18px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(219, 39, 119, 0.1);
         }
 
         .flow-box {
             background-color: var(--card-inner);
             padding: 12px;
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.01);
         }
 
         .flow-title {
@@ -202,9 +200,9 @@
             width: 100%;
             padding: 14px;
             background-color: var(--card-inner);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(219, 39, 119, 0.1);
             border-radius: 12px;
-            color: var(--text-light);
+            color: var(--text-dark);
             font-size: 15px;
             outline: none;
             transition: all 0.2s ease;
@@ -212,8 +210,8 @@
 
         input:focus, select:focus {
             border-color: var(--sakura-pink);
-            background-color: rgba(17, 21, 38, 0.8);
-            box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.08);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.1);
         }
 
         .radio-group {
@@ -230,7 +228,7 @@
             gap: 8px;
             padding: 14px;
             background-color: var(--card-inner);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(219, 39, 119, 0.05);
             border-radius: 12px;
             cursor: pointer;
             font-size: 14px;
@@ -245,20 +243,20 @@
 
         #typeIncome:checked + .radio-label {
             border-color: var(--emerald-money);
-            background-color: rgba(110, 231, 183, 0.08);
+            background-color: rgba(13, 148, 136, 0.1);
             color: var(--emerald-money);
         }
 
         #typeExpense:checked + .radio-label {
             border-color: var(--rose-expense);
-            background-color: rgba(252, 165, 165, 0.08);
+            background-color: rgba(225, 29, 72, 0.1);
             color: var(--rose-expense);
         }
 
         .btn-submit {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, var(--sakura-pink), #db2777);
+            background: linear-gradient(135deg, #f472b6, var(--sakura-pink));
             border: none;
             border-radius: 14px;
             color: #ffffff;
@@ -266,7 +264,7 @@
             font-weight: 700;
             cursor: pointer;
             margin-top: 6px;
-            box-shadow: 0 4px 14px rgba(244, 114, 182, 0.25);
+            box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
             transition: all 0.2s ease;
         }
 
@@ -303,8 +301,8 @@
             padding: 14px 16px;
             background-color: var(--card-bg);
             border-radius: 14px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.02);
+            box-shadow: 0 4px 12px rgba(219, 39, 119, 0.04);
+            border: 1px solid rgba(219, 39, 119, 0.03);
             border-left: 4px solid transparent;
         }
 
@@ -314,7 +312,7 @@
         .item-desc {
             font-size: 14px;
             font-weight: 500;
-            color: var(--text-light);
+            color: var(--text-dark);
         }
 
         .item-amount {
@@ -352,12 +350,12 @@
             <h1>Dompet Hasibuan</h1>
         </div>
         <div class="nav-buttons">
-            <a href="cicilan.html" class="btn-nav cicilan">Cicilan💸</a>
-            <a href="history.html" class="btn-nav">Analisis📊</a>
+            <a href="cicilan.html" class="btn-nav cicilan">Cicilan 💸</a>
+            <a href="history.html" class="btn-nav">Analisis 📊</a>
         </div>
     </div>
 
-    <!-- DASHBOARD CARD INTEGRASI MULTI-SALDO -->
+    <!-- DASHBOARD CARD -->
     <div class="card">
         <div class="balance-label">Saldo Bersih Saat Ini</div>
         <div id="netBalance" class="balance-amount">Rp 0</div>

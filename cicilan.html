@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dompet Hasibuan - Kontrol Cicilan & Hutang</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-finance: #0f172a; 
+            --card-bg: #1e293b;
+            --emerald-money: #10b981; 
+            --rose-expense: #f43f5e; 
+            --gold-accent: #f59e0b; 
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-finance);
+            color: var(--text-light);
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 14px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .btn-back {
+            background-color: var(--card-bg);
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #334155;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .summary-box {
+            flex: 1;
+        }
+
+        .summary-box:first-child {
+            border-right: 1px solid #334155;
+        }
+
+        .summary-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-val {
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .debt-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .debt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .debt-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .status-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .status-badge.unpaid {
+            background-color: rgba(244, 63, 94, 0.15);
+            color: var(--rose-expense);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        .status-badge.paid {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--emerald-money);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .grid-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            background-color: rgba(15, 23, 42, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+        }
+
+        .info-value {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .progress-bar-bg {
+            background-color: #0f172a;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--gold-accent), #f97316);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+        }
+
+        #loadingStatus {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Kontrol Cicilan 📊</h1>
+        <a href="index.html" class="btn-back">← Menu Utama</a>
+    </div>
+
+    <div id="loadingStatus">🔄 Mengambil & mencocokkan log pembayaran cloud...</div>
+
+    <!-- SUMMARY UTAMA -->
+    <div class="summary-card" id="summaryCard" style="display: none;">
+        <div class="summary-box">
+            <div class="summary-label">Total Sudah Terbayar</div>
+            <div class="summary-val" id="totalPaidGlobal" style="color: var(--emerald-money);">Rp 0</div>
+        </div>
+        <div class="summary-box">
+            <div class="summary-label">Sisa Hutang Global</div>
+            <div class="summary-val" id="totalRemGlobal" style="color: var(--gold-accent);">Rp 0</div>
+        </div>
+    </div>
+
+    <!-- WRAPPER DAFTAR HUTANG -->
+    <div class="list-container" id="debtList"></div>
+</div>
+
+<script>
+    // Taruh URL Google Web App kamu di sini
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
+
+    // MASTER DATA STRUKTUR TOTAL CICILAN DARI EXCEL (2026-2030)
+    const DEBT_MASTER = {
+        "HCI":   { name: "HCI",   grandTotal: 4690200,   monthly: 781700 },
+        "SPP 1": { name: "SPP 1", grandTotal: 11215818,  monthly: 1869303 },
+        "SPP 2": { name: "SPP 2", grandTotal: 2487452,   monthly: 226132 },
+        "SPL":   { name: "SPL",   grandTotal: 3012115,   monthly: 0 }, // Berubah-ubah
+        "MKR":   { name: "MKR",   grandTotal: 3000000,   monthly: 500000 },
+        "AGS":   { name: "AGS",   grandTotal: 67500000,  monthly: 1500000 },
+        "BPR":   { name: "BPR",   grandTotal: 107500000, monthly: 2500000 }
+    };
+
+    function formatRupiah(angka) {
+        return 'Rp ' + Math.round(angka).toLocaleString('id-ID');
+    }
+
+    function initDebtTracker() {
+        const cacheBusterUrl = SCRIPT_URL + '?_ts=' + new Date().getTime();
+        const listContainer = document.getElementById('debtList');
+        const loadingEl = document.getElementById('loadingStatus');
+        const summaryCard = document.getElementById('summaryCard');
+
+        fetch(cacheBusterUrl)
+        .then(res => res.json())
+        .then(transactions => {
+            loadingEl.style.display = 'none';
+            summaryCard.style.display = 'flex';
+            listContainer.innerHTML = '';
+
+            // Objek penampung akumulasi dana terbayar riil hasil scan cloud
+            let paidTracker = { "HCI": 0, "SPP 1": 0, "SPP 2": 0, "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0 };
+
+            // Scan database
+            transactions.forEach(t => {
+                if (t.type === 'expense') {
+                    const desc = t.description.toUpperCase();
+                    for (let key in paidTracker) {
+                        if (desc.includes(key)) {
+                            paidTracker[key] += Number(t.amount) || 0;
+                        }
+                    }
+                }
+            });
+
+            let globalPaid = 0;
+            let globalRemaining = 0;
+
+            // Render komponen card per hutang
+            for (let key in DEBT_MASTER) {
+                const item = DEBT_MASTER[key];
+                let totalPaid = Math.min(paidTracker[key], item.grandTotal);
+                
+                // Khusus SPL jika diisi manual melebihi grand total target awal
+                if (key === "SPL") totalPaid = paidTracker[key];
+
+                const sisa = Math.max(0, item.grandTotal - totalPaid);
+                const pct = Math.min(100, Math.round((totalPaid / item.grandTotal) * 100)) || 0;
+                
+                globalPaid += totalPaid;
+                globalRemaining += sisa;
+
+                const isLunas = (totalPaid >= item.grandTotal && item.grandTotal > 0);
+                const badgeText = isLunas ? "🟢 Lunas" : "🔴 Belum Lunas";
+                const badgeClass = isLunas ? "paid" : "unpaid";
+
+                const card = document.createElement('div');
+                card.className = 'debt-card';
+                card.innerHTML = `
+                    <div class="debt-header">
+                        <span class="debt-name">${item.name}</span>
+                        <span class="status-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                    <div class="grid-info">
+                        <span class="info-label">Target Total</span>
+                        <span class="info-value">${formatRupiah(item.grandTotal)}</span>
+                        
+                        <span class="info-label">Sudah Dibayar</span>
+                        <span class="info-value" style="color: var(--emerald-money);">${formatRupiah(totalPaid)}</span>
+                        
+                        <span class="info-label">Sisa Hutang</span>
+                        <span class="info-value" style="color: ${sisa > 0 ? 'var(--rose-expense)' : 'var(--text-light)'};">${formatRupiah(sisa)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: var(--text-muted);">
+                        <span>Progress Pelunasan</span>
+                        <span>${pct}%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${pct}%"></div>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            }
+
+            // Update Total Angka Global Dashboard Atas
+            document.getElementById('totalPaidGlobal').innerText = formatRupiah(globalPaid);
+            document.getElementById('totalRemGlobal').innerText = formatRupiah(globalRemaining);
+        })
+        .catch(err => {
+            console.error(err);
+            loadingEl.innerText = "⚠️ Gagal mengambil data. Periksa koneksi internet Anda.";
+        });
+    }
+
+    initDebtTracker();
+</script>
+
+</body>
+</html>

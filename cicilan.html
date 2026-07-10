@@ -70,6 +70,11 @@
             font-size: 13px;
             font-weight: 600;
             border: 1px solid #334155;
+            transition: background-color 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #334155;
         }
 
         .summary-card {
@@ -199,7 +204,7 @@
             font-style: italic;
         }
 
-        /* --- STYLING MODAL KALENDER POPUP --- */
+        /* STYLING MODAL DRAWER POPUP KALENDER */
         .modal {
             display: none;
             position: fixed;
@@ -220,7 +225,7 @@
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
             padding: 24px;
-            max-height: 85vh;
+            max-height: 80vh;
             overflow-y: auto;
             border-top: 1px solid #334155;
             animation: slideUp 0.3s ease-out;
@@ -282,7 +287,6 @@
             font-size: 12px;
             font-weight: 500;
             color: var(--text-muted);
-            transition: all 0.2s;
         }
 
         .month-box.paid {
@@ -335,9 +339,10 @@
 </div>
 
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
+    // URL Web App Google Apps Script Utama Anda
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfImd3maczBiWntXKsnGvH-2hC9NqX_C0H3PPRVhChCE0Z7gKVVE7R1Qu4YuGob_TD/exec';
 
-    // MASTER DATA STRUKTUR TOTAL CICILAN DARI EXCEL (REVISI SINKRON AKURAT)
+    // MASTER DATA TARGET YANG VALID SESUAI EXCEL DAN KATA-KATA REVISI ANDA
     const DEBT_MASTER = {
         "HCI":   { name: "HCI",   grandTotal: 4690200,   monthly: 781700 },
         "SPP 1": { name: "SPP 1", grandTotal: 5607909,   monthly: 1869303 },
@@ -350,8 +355,6 @@
 
     const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
     
-    let globalTransactions = [];
-
     function formatRupiah(angka) {
         return 'Rp ' + Math.round(angka).toLocaleString('id-ID');
     }
@@ -365,13 +368,13 @@
         fetch(cacheBusterUrl)
         .then(res => res.json())
         .then(transactions => {
-            globalTransactions = transactions;
             loadingEl.style.display = 'none';
             summaryCard.style.display = 'flex';
             listContainer.innerHTML = '';
 
             let paidTracker = { "HCI": 0, "SPP 1": 0, "SPP 2": 0, "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0 };
 
+            // Pindai database pengeluaran riil di Google Sheet
             transactions.forEach(t => {
                 if (t.type === 'expense') {
                     const desc = t.description.toUpperCase();
@@ -389,7 +392,7 @@
             for (let key in DEBT_MASTER) {
                 const item = DEBT_MASTER[key];
                 let totalPaid = Math.min(paidTracker[key], item.grandTotal);
-                if (key === "SPL") totalPaid = paidTracker[key];
+                if (key === "SPL") totalPaid = paidTracker[key]; // Pengecualian SPL
 
                 const sisa = Math.max(0, item.grandTotal - totalPaid);
                 const pct = Math.min(100, Math.round((totalPaid / item.grandTotal) * 100)) || 0;
@@ -440,7 +443,7 @@
         });
     }
 
-    // --- STRATEGI DETEKSI MAP KALENDER BULANAN ---
+    // --- LOGIKA PEMETAAN BULAN RIIL SESUAI INSTRUKSI ANDA ---
     function openCalendarModal(debtKey, totalPaidRiil) {
         const item = DEBT_MASTER[debtKey];
         document.getElementById('modalDebtName').innerText = `Kalender Cicilan ${item.name}`;
@@ -448,63 +451,71 @@
         const body = document.getElementById('modalCalendarBody');
         body.innerHTML = '';
 
-        // Hitung berapa kali cicilan lunas terbayar berdasarkan nominal bulanan
         let monthsPaid = 0;
         if (item.monthly > 0) {
             monthsPaid = Math.floor(totalPaidRiil / item.monthly);
         } else {
-            // Khusus SPL saldo menurun, dihitung lunas jika nominal riil >= target grandTotal
-            monthsPaid = totalPaidRiil >= item.grandTotal ? 12 : 0; 
+            // Khusus SPL jika nominal riil >= target grandTotal dianggap lunas
+            monthsPaid = totalPaidRiil >= item.grandTotal ? 2 : Math.ceil(totalPaidRiil / 8000); 
         }
 
-        // Generate Kalender Proyeksi Excel 2026 s.d 2030
-        const timeline = [
-            { year: 2026, startMonth: 1, endMonth: 12 },
-            { year: 2027, startMonth: 1, endMonth: 12 },
-            { year: 2028, startMonth: 1, endMonth: 12 },
-            { year: 2029, startMonth: 1, endMonth: 12 },
-            { year: 2030, startMonth: 1, endMonth: 3 }  // Tahun akhir sesuai excel maret 2030
-        ];
-
+        const timeline = [2026, 2027, 2028, 2029, 2030];
         let currentPaymentIndex = 0;
 
-        timeline.forEach(t => {
+        timeline.forEach(year => {
             let yearHasActiveDebt = false;
             let gridHtml = `<div class="year-section">
-                                <div class="year-title">Tahun ${t.year}</div>
+                                <div class="year-title">Tahun ${year}</div>
                                 <div class="calendar-grid">`;
 
             for (let m = 1; m <= 12; m++) {
-                // Skema validasi kapan cicilan tersebut ada berdasarkan data Excel asli
                 let isDihitung = false;
 
-                if (debtKey === "HCI" && ((t.year === 2026) || (t.year === 2027 && m === 1))) isDihitung = true;
-                else if (debtKey === "SPP 1" && t.year === 2026 && m <= 10) isDihitung = true;
-                else if (debtKey === "SPP 2" && (t.year === 2026 || t.year === 2027)) isDihitung = true;
-                else if (debtKey === "SPL" && t.year === 2026 && m <= 9) isDihitung = true;
-                else if (debtKey === "MKR" && t.year === 2026 && m <= 10) isDihitung = true;
-                else if (debtKey === "AGS" && ((t.year === 2026 && m >= 5) || t.year === 2027 || t.year === 2028 || t.year === 2029 || (t.year === 2030 && m <= 3))) isDihitung = true;
-                else if (debtKey === "BPR" && ((t.year === 2026 && m >= 3) || t.year === 2027 || t.year === 2028 || t.year === 2029 || (t.year === 2030 && m <= 1))) isDihitung = true;
+                // 1. HCI: Bulan 8 2026 sd Bulan 1 2027
+                if (debtKey === "HCI") {
+                    if ((year === 2026 && m >= 8) || (year === 2027 && m === 1)) isDihitung = true;
+                } 
+                // 2. SPP 1: Bulan 8 2026 sd Bulan 10 2026
+                else if (debtKey === "SPP 1") {
+                    if (year === 2026 && m >= 8 && m <= 10) isDihitung = true;
+                } 
+                // 3. SPP 2: Bulan 8 2026 sd Bulan 12 2026
+                else if (debtKey === "SPP 2") {
+                    if (year === 2026 && m >= 8 && m <= 12) isDihitung = true;
+                } 
+                // 4. SPL: Bulan 8 2026 sd Bulan 9 2026
+                else if (debtKey === "SPL") {
+                    if (year === 2026 && m >= 8 && m <= 9) isDihitung = true;
+                } 
+                // 5. MKR: Bulan 8 2026 sd Bulan 10 2026
+                else if (debtKey === "MKR") {
+                    if (year === 2026 && m >= 8 && m <= 10) isDihitung = true;
+                } 
+                // 6. AGS: Bulan 7 2026 sd Bulan 3 2030
+                else if (debtKey === "AGS") {
+                    if ((year === 2026 && m >= 7) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 3)) isDihitung = true;
+                } 
+                // 7. BPR: Bulan 7 2026 sd Bulan 1 2030
+                else if (debtKey === "BPR") {
+                    if ((year === 2026 && m >= 7) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 1)) isDihitung = true;
+                }
 
                 if (isDihitung) {
                     yearHasActiveDebt = true;
                     currentPaymentIndex++;
                     
-                    // Jika indeks pembayaran ke-x kurang dari/sama dengan jumlah bulan yang sudah dibayar riil
                     const isPaid = currentPaymentIndex <= monthsPaid;
                     const activeClass = isPaid ? 'paid' : '';
                     const labelText = isPaid ? `${MONTH_NAMES[m-1]} ✓` : MONTH_NAMES[m-1];
 
                     gridHtml += `<div class="month-box ${activeClass}">${labelText}</div>`;
                 } else {
-                    // Tampilkan kotak kosong gelap untuk bulan di mana cicilan tidak berjalan
-                    gridHtml += `<div class="month-box" style="opacity: 0.15; border-style: dashed;">${MONTH_NAMES[m-1]}</div>`;
+                    gridHtml += `<div class="month-box" style="opacity: 0.08; border-style: dashed; background: transparent;">${MONTH_NAMES[m-1]}</div>`;
                 }
             }
 
             gridHtml += `</div></div>`;
             
-            // Masukkan ke modal hanya jika tahun tersebut mempunyai jadwal cicilan aktif
             if (yearHasActiveDebt) {
                 body.innerHTML += gridHtml;
             }
@@ -517,7 +528,6 @@
         document.getElementById('calendarModal').style.display = 'none';
     }
 
-    // Tutup modal jika user mengklik area luar modal konten
     window.onclick = function(event) {
         const modal = document.getElementById('calendarModal');
         if (event.target == modal) {

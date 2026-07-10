@@ -205,7 +205,7 @@
             font-style: italic;
         }
 
-        /* STYLING MODAL DRAWER POPUP KALENDER */
+        /* MODAL CALENDAR DRAWER */
         .modal {
             display: none;
             position: fixed;
@@ -343,7 +343,7 @@
 
 <script>
     // MASUKKAN URL GOOGLE WEB APP AKTIF KAMU DI SINI
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfImd3maczBiWntXKsnGvH-2hC9NqX_C0H3PPRVhChCE0Z7gKVVE7R1Qu4YuGob_TD/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
 
     // MASTER DATA TARGET YANG SINKRON DENGAN DATA EXCEL PRIBADI
     const DEBT_MASTER = {
@@ -377,15 +377,22 @@
 
             let paidTracker = { "HCI": 0, "SPP 1": 0, "SPP 2": 0, "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0 };
 
-            // Pindai database pengeluaran riil di Google Sheet dengan sistem deteksi tangguh
+            // PERBAIKAN TOTAL: Proteksi pembacaan data multi-bahasa dari Apps Script
             transactions.forEach(t => {
-                const tipeTrans = String(t.type || t.jenis || "").toLowerCase();
-                if (tipeTrans === 'expense' || tipeTrans === 'pengeluaran') { 
+                // Deteksi tipe transaksi (bisa 'type' atau 'jenis')
+                const tipeRaw = String(t.type || t.jenis || "").toLowerCase();
+                
+                // Scan semua data pengeluaran (baik bertuliskan 'expense' maupun 'pengeluaran')
+                if (tipeRaw === 'expense' || tipeRaw === 'pengeluaran' || tipeRaw === '') { 
                     const desc = String(t.description || t.keterangan || "").toUpperCase().replace(/\s+/g, ' ');
                     const nominal = Number(t.amount || t.jumlah) || 0;
 
                     for (let key in paidTracker) {
-                        if (desc.includes(key.toUpperCase())) {
+                        // Menghilangkan spasi pada key (misal 'SPP 1' menjadi 'SPP1') agar pencarian teks di database super akurat
+                        const cleanKey = key.toUpperCase().replace(/\s+/g, '');
+                        const cleanDesc = desc.replace(/\s+/g, '');
+
+                        if (cleanDesc.includes(cleanKey)) {
                             paidTracker[key] += nominal;
                         }
                     }
@@ -452,7 +459,6 @@
         });
     }
 
-    // LOGIKA PEMETAAN BULAN RIIL BERDASARKAN PARAMETER INSTRUKSI ANDA
     function openCalendarModal(debtKey, totalPaidRiil) {
         const item = DEBT_MASTER[debtKey];
         document.getElementById('modalDebtName').innerText = `Kalender Cicilan ${item.name}`;
@@ -479,31 +485,24 @@
             for (let m = 1; m <= 12; m++) {
                 let isDihitung = false;
 
-                // 1. HCI: Bulan 8 2026 sd Bulan 1 2027
                 if (debtKey === "HCI") {
                     if ((year === 2026 && m >= 8) || (year === 2027 && m === 1)) isDihitung = true;
                 } 
-                // 2. SPP 1: Bulan 8 2026 sd Bulan 10 2026
                 else if (debtKey === "SPP 1") {
                     if (year === 2026 && m >= 8 && m <= 10) isDihitung = true;
                 } 
-                // 3. SPP 2: Bulan 8 2026 sd Bulan 12 2026
                 else if (debtKey === "SPP 2") {
                     if (year === 2026 && m >= 8 && m <= 12) isDihitung = true;
                 } 
-                // 4. SPL: Bulan 8 2026 sd Bulan 9 2026
                 else if (debtKey === "SPL") {
                     if (year === 2026 && m >= 8 && m <= 9) isDihitung = true;
                 } 
-                // 5. MKR: Bulan 8 2026 sd Bulan 10 2026
                 else if (debtKey === "MKR") {
                     if (year === 2026 && m >= 8 && m <= 10) isDihitung = true;
                 } 
-                // 6. AGS: Bulan 7 2026 sd Bulan 3 2030
                 else if (debtKey === "AGS") {
                     if ((year === 2026 && m >= 7) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 3)) isDihitung = true;
                 } 
-                // 7. BPR: Bulan 7 2026 sd Bulan 1 2030
                 else if (debtKey === "BPR") {
                     if ((year === 2026 && m >= 7) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 1)) isDihitung = true;
                 }

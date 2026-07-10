@@ -45,36 +45,74 @@
             gap: 16px;
         }
 
+        /* --- PEMBARUAN HEADER ELEGAN & MENARIK --- */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 4px 0;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 14px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-logo {
+            background: linear-gradient(135deg, var(--gold-accent), #f97316);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #000;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
         }
 
         .header h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             letter-spacing: -0.5px;
+            background: linear-gradient(120deg, #f8fafc, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .btn-history {
-            background-color: var(--card-bg);
-            color: var(--text-light);
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--gold-accent);
             text-decoration: none;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            border: 1px solid #334155;
-            transition: background-color 0.2s;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
+        .btn-history:hover {
+            background-color: rgba(245, 158, 11, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* --- KODE STRUKTUR SEBELUMNYA --- */
         .card {
             background-color: var(--card-bg);
             border-radius: 16px;
             padding: 20px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .balance-label {
@@ -242,7 +280,10 @@
 
 <div class="container">
     <div class="header">
-        <h1>Dompet Hasibuan</h1>
+        <div class="header-brand">
+            <div class="header-logo">H</div>
+            <h1>Dompet Hasibuan</h1>
+        </div>
         <a href="history.html" class="btn-history">Analisis 📊</a>
     </div>
 
@@ -319,7 +360,6 @@
     typeIncome.addEventListener('change', () => { debtGroup.style.display = 'none'; debtSelect.value = ""; });
     typeExpense.addEventListener('change', () => { debtGroup.style.display = 'block'; });
 
-    // LOGIKA AUTO-FILL UNTUK SEMUA JENIS HUTANG EXCEL
     debtSelect.addEventListener('change', (e) => {
         const pilihan = e.target.value;
         if (pilihan === "") {
@@ -337,8 +377,7 @@
         else if (pilihan === "AGS") amountInput.value = "1.500.000";
         else if (pilihan === "BPR") amountInput.value = "2.500.000";
         else if (pilihan === "SPL") {
-            amountInput.value = ""; // Dikosongkan karena SPL di data nominalnya menurun setiap bulan
-            placeholder = "Lihat nominal berjalan di tabel Excel";
+            amountInput.value = "";
         }
     });
 

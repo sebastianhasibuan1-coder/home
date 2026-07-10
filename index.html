@@ -87,14 +87,11 @@
         }
 
         .btn-nav {
-            background-color: var(--card-bg);
-            color: var(--text-dark);
             text-decoration: none;
             padding: 8px 14px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
-            border: 1px solid rgba(219, 39, 119, 0.15);
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
@@ -102,14 +99,23 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
 
+        /* PERBAIKAN: Tombol Cicilan bertema Biru Langit (Sky Blue) */
         .btn-nav.cicilan {
-            background-color: rgba(219, 39, 119, 0.08);
-            color: var(--sakura-pink);
+            background-color: #e0f0fe;
+            color: #0284c7;
+            border: 1px solid rgba(2, 132, 199, 0.2);
+        }
+
+        /* PERBAIKAN: Tombol Analisis bertema Hijau Hutan (Forest Green) */
+        .btn-nav.analisis {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid rgba(46, 125, 50, 0.2);
         }
 
         .btn-nav:hover {
             transform: translateY(-1px);
-            background-color: var(--card-inner);
+            opacity: 0.9;
         }
 
         /* --- DASHBOARD CARD --- */
@@ -343,7 +349,6 @@
 <body>
 
 <div class="container">
-    <!-- PANEL HEADER BRAND -->
     <div class="header">
         <div class="header-brand">
             <div class="header-logo">🌸</div>
@@ -351,11 +356,10 @@
         </div>
         <div class="nav-buttons">
             <a href="cicilan.html" class="btn-nav cicilan">Cicilan 💸</a>
-            <a href="history.html" class="btn-nav">Analisis 📊</a>
+            <a href="history.html" class="btn-nav analisis">Analisis 📊</a>
         </div>
     </div>
 
-    <!-- DASHBOARD CARD -->
     <div class="card">
         <div class="balance-label">Saldo Bersih Saat Ini</div>
         <div id="netBalance" class="balance-amount">Rp 0</div>
@@ -372,7 +376,6 @@
         </div>
     </div>
 
-    <!-- CARD FORM INPUT TRANSAKSI -->
     <div class="card">
         <form id="financeForm">
             <div class="form-group">
@@ -386,7 +389,6 @@
                 </div>
             </div>
 
-            <!-- CHUTANG INTEGRATION LIST -->
             <div class="form-group" id="debtGroup">
                 <label>Pilih Kategori Hutang</label>
                 <select id="debtSelect">
@@ -415,7 +417,6 @@
         </form>
     </div>
 
-    <!-- FEED MONITORING CLOUD REALTIME -->
     <div>
         <div class="recent-title">5 Transaksi Terakhir (Cloud)</div>
         <div id="loadingStatus">🔄 Menyinkronkan dengan Cloud...</div>

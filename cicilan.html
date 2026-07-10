@@ -115,6 +115,13 @@
             padding: 16px;
             border: 1px solid #334155;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .debt-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--gold-accent);
         }
 
         .debt-header {
@@ -184,6 +191,107 @@
             transition: width 0.5s ease-in-out;
         }
 
+        .click-hint {
+            font-size: 11px;
+            color: var(--gold-accent);
+            text-align: right;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        /* --- STYLING MODAL KALENDER POPUP --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 480px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            padding: 24px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-top: 1px solid #334155;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gold-accent);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .year-section {
+            margin-bottom: 20px;
+        }
+
+        .year-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            padding-left: 4px;
+            border-left: 3px solid var(--gold-accent);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .month-box {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px 4px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .month-box.paid {
+            background-color: rgba(16, 185, 129, 0.2);
+            border-color: var(--emerald-money);
+            color: var(--emerald-money);
+            font-weight: 700;
+        }
+
         #loadingStatus {
             text-align: center;
             font-size: 14px;
@@ -202,7 +310,6 @@
 
     <div id="loadingStatus">🔄 Mengambil & mencocokkan log pembayaran cloud...</div>
 
-    <!-- SUMMARY UTAMA -->
     <div class="summary-card" id="summaryCard" style="display: none;">
         <div class="summary-box">
             <div class="summary-label">Total Sudah Terbayar</div>
@@ -214,24 +321,36 @@
         </div>
     </div>
 
-    <!-- WRAPPER DAFTAR HUTANG -->
     <div class="list-container" id="debtList"></div>
 </div>
 
+<div id="calendarModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title" id="modalDebtName">Detail Kalender Cicilan</div>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <div id="modalCalendarBody"></div>
+    </div>
+</div>
+
 <script>
-    // Taruh URL Google Web App kamu di sini
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
 
-    // MASTER DATA STRUKTUR TOTAL CICILAN DARI EXCEL (2026-2030)
+    // MASTER DATA STRUKTUR TOTAL CICILAN DARI EXCEL (REVISI SINKRON AKURAT)
     const DEBT_MASTER = {
         "HCI":   { name: "HCI",   grandTotal: 4690200,   monthly: 781700 },
-        "SPP 1": { name: "SPP 1", grandTotal: 5607909,  monthly: 1869303 },
+        "SPP 1": { name: "SPP 1", grandTotal: 5607909,   monthly: 1869303 },
         "SPP 2": { name: "SPP 2", grandTotal: 1130660,   monthly: 226132 },
-        "SPL":   { name: "SPL",   grandTotal: 15887,   monthly: 0 }, // Berubah-ubah
+        "SPL":   { name: "SPL",   grandTotal: 15887,     monthly: 0 }, 
         "MKR":   { name: "MKR",   grandTotal: 1500000,   monthly: 500000 },
         "AGS":   { name: "AGS",   grandTotal: 67500000,  monthly: 1500000 },
         "BPR":   { name: "BPR",   grandTotal: 107500000, monthly: 2500000 }
     };
+
+    const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+    
+    let globalTransactions = [];
 
     function formatRupiah(angka) {
         return 'Rp ' + Math.round(angka).toLocaleString('id-ID');
@@ -246,14 +365,13 @@
         fetch(cacheBusterUrl)
         .then(res => res.json())
         .then(transactions => {
+            globalTransactions = transactions;
             loadingEl.style.display = 'none';
             summaryCard.style.display = 'flex';
             listContainer.innerHTML = '';
 
-            // Objek penampung akumulasi dana terbayar riil hasil scan cloud
             let paidTracker = { "HCI": 0, "SPP 1": 0, "SPP 2": 0, "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0 };
 
-            // Scan database
             transactions.forEach(t => {
                 if (t.type === 'expense') {
                     const desc = t.description.toUpperCase();
@@ -268,12 +386,9 @@
             let globalPaid = 0;
             let globalRemaining = 0;
 
-            // Render komponen card per hutang
             for (let key in DEBT_MASTER) {
                 const item = DEBT_MASTER[key];
                 let totalPaid = Math.min(paidTracker[key], item.grandTotal);
-                
-                // Khusus SPL jika diisi manual melebihi grand total target awal
                 if (key === "SPL") totalPaid = paidTracker[key];
 
                 const sisa = Math.max(0, item.grandTotal - totalPaid);
@@ -288,6 +403,7 @@
 
                 const card = document.createElement('div');
                 card.className = 'debt-card';
+                card.onclick = () => openCalendarModal(key, totalPaid);
                 card.innerHTML = `
                     <div class="debt-header">
                         <span class="debt-name">${item.name}</span>
@@ -310,18 +426,103 @@
                     <div class="progress-bar-bg">
                         <div class="progress-bar-fill" style="width: ${pct}%"></div>
                     </div>
+                    <div class="click-hint">Lihat Rincian Bulan 📅</div>
                 `;
                 listContainer.appendChild(card);
             }
 
-            // Update Total Angka Global Dashboard Atas
             document.getElementById('totalPaidGlobal').innerText = formatRupiah(globalPaid);
             document.getElementById('totalRemGlobal').innerText = formatRupiah(globalRemaining);
         })
         .catch(err => {
             console.error(err);
-            loadingEl.innerText = "⚠️ Gagal mengambil data. Periksa koneksi internet Anda.";
+            loadingEl.innerText = "⚠️ Gagal mengambil data server.";
         });
+    }
+
+    // --- STRATEGI DETEKSI MAP KALENDER BULANAN ---
+    function openCalendarModal(debtKey, totalPaidRiil) {
+        const item = DEBT_MASTER[debtKey];
+        document.getElementById('modalDebtName').innerText = `Kalender Cicilan ${item.name}`;
+        
+        const body = document.getElementById('modalCalendarBody');
+        body.innerHTML = '';
+
+        // Hitung berapa kali cicilan lunas terbayar berdasarkan nominal bulanan
+        let monthsPaid = 0;
+        if (item.monthly > 0) {
+            monthsPaid = Math.floor(totalPaidRiil / item.monthly);
+        } else {
+            // Khusus SPL saldo menurun, dihitung lunas jika nominal riil >= target grandTotal
+            monthsPaid = totalPaidRiil >= item.grandTotal ? 12 : 0; 
+        }
+
+        // Generate Kalender Proyeksi Excel 2026 s.d 2030
+        const timeline = [
+            { year: 2026, startMonth: 1, endMonth: 12 },
+            { year: 2027, startMonth: 1, endMonth: 12 },
+            { year: 2028, startMonth: 1, endMonth: 12 },
+            { year: 2029, startMonth: 1, endMonth: 12 },
+            { year: 2030, startMonth: 1, endMonth: 3 }  // Tahun akhir sesuai excel maret 2030
+        ];
+
+        let currentPaymentIndex = 0;
+
+        timeline.forEach(t => {
+            let yearHasActiveDebt = false;
+            let gridHtml = `<div class="year-section">
+                                <div class="year-title">Tahun ${t.year}</div>
+                                <div class="calendar-grid">`;
+
+            for (let m = 1; m <= 12; m++) {
+                // Skema validasi kapan cicilan tersebut ada berdasarkan data Excel asli
+                let isDihitung = false;
+
+                if (debtKey === "HCI" && ((t.year === 2026) || (t.year === 2027 && m === 1))) isDihitung = true;
+                else if (debtKey === "SPP 1" && t.year === 2026 && m <= 10) isDihitung = true;
+                else if (debtKey === "SPP 2" && (t.year === 2026 || t.year === 2027)) isDihitung = true;
+                else if (debtKey === "SPL" && t.year === 2026 && m <= 9) isDihitung = true;
+                else if (debtKey === "MKR" && t.year === 2026 && m <= 10) isDihitung = true;
+                else if (debtKey === "AGS" && ((t.year === 2026 && m >= 5) || t.year === 2027 || t.year === 2028 || t.year === 2029 || (t.year === 2030 && m <= 3))) isDihitung = true;
+                else if (debtKey === "BPR" && ((t.year === 2026 && m >= 3) || t.year === 2027 || t.year === 2028 || t.year === 2029 || (t.year === 2030 && m <= 1))) isDihitung = true;
+
+                if (isDihitung) {
+                    yearHasActiveDebt = true;
+                    currentPaymentIndex++;
+                    
+                    // Jika indeks pembayaran ke-x kurang dari/sama dengan jumlah bulan yang sudah dibayar riil
+                    const isPaid = currentPaymentIndex <= monthsPaid;
+                    const activeClass = isPaid ? 'paid' : '';
+                    const labelText = isPaid ? `${MONTH_NAMES[m-1]} ✓` : MONTH_NAMES[m-1];
+
+                    gridHtml += `<div class="month-box ${activeClass}">${labelText}</div>`;
+                } else {
+                    // Tampilkan kotak kosong gelap untuk bulan di mana cicilan tidak berjalan
+                    gridHtml += `<div class="month-box" style="opacity: 0.15; border-style: dashed;">${MONTH_NAMES[m-1]}</div>`;
+                }
+            }
+
+            gridHtml += `</div></div>`;
+            
+            // Masukkan ke modal hanya jika tahun tersebut mempunyai jadwal cicilan aktif
+            if (yearHasActiveDebt) {
+                body.innerHTML += gridHtml;
+            }
+        });
+
+        document.getElementById('calendarModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('calendarModal').style.display = 'none';
+    }
+
+    // Tutup modal jika user mengklik area luar modal konten
+    window.onclick = function(event) {
+        const modal = document.getElementById('calendarModal');
+        if (event.target == modal) {
+            closeModal();
+        }
     }
 
     initDebtTracker();

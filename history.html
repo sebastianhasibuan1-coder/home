@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dompetku Pro - Analisis & Riwayat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2 family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-finance: #0f172a;
+            --card-bg: #1e293b;
+            --emerald-money: #10b981;
+            --rose-expense: #f43f5e;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-finance);
+            color: var(--text-light);
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone-wrapper {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 40px;
+        }
+
+        header {
+            margin: 15px 0 25px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .btn-back {
+            background-color: var(--card-bg);
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid #334155;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .summary-box {
+            background-color: var(--card-bg);
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid #334155;
+        }
+
+        .summary-box .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-box .value {
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .summary-box .value.in { color: var(--emerald-money); }
+        .summary-box .value.out { color: var(--rose-expense); }
+
+        /* Wadah Grafik */
+        .chart-card {
+            background-color: var(--card-bg);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-height: 220px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #loading-status {
+            text-align: center;
+            color: #94a3b8;
+            font-style: italic;
+            margin: 40px 0;
+            font-size: 14px;
+        }
+
+        .transaction-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        .item-info .title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .item-info .date {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .item-amount {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .item-amount.income { color: var(--emerald-money); }
+        .item-amount.expense { color: var(--rose-expense); }
+    </style>
+</head>
+<body>
+
+<div class="phone-wrapper">
+    <header>
+        <h2>Analisis & Riwayat 📊</h2>
+        <a href="index.html" class="btn-back">⬅️ Kembali</a>
+    </header>
+
+    <div class="summary-grid">
+        <div class="summary-box">
+            <div class="label">Total Semua Masuk</div>
+            <div id="month-income" class="value in">Rp 0</div>
+        </div>
+        <div class="summary-box">
+            <div class="label">Total Semua Keluar</div>
+            <div id="month-expense" class="value out">Rp 0</div>
+        </div>
+    </div>
+
+    <div class="chart-card" id="chart-box" style="display: none;">
+        <div class="chart-title">Rasio Keuangan (Masuk vs Keluar)</div>
+        <div class="chart-container">
+            <canvas id="ratioChart"></canvas>
+        </div>
+    </div>
+
+    <div id="loading-status">Sedang mengunduh dan menganalisis data...</div>
+
+    <ul id="transaction-list" class="transaction-list"></ul>
+</div>
+
+<script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfImd3maczBiWntXKsnGvH-2hC9NqX_C0H3PPRVhChCE0Z7gKVVE7R1Qu4YuGob_TD/exec';
+
+    const transactionList = document.getElementById('transaction-list');
+    const loadingStatus = document.getElementById('loading-status');
+    const monthIncomeEl = document.getElementById('month-income');
+    const monthExpenseEl = document.getElementById('month-expense');
+    const chartBox = document.getElementById('chart-box');
+    
+    let ratioChartInstance = null;
+
+    function formatRupiah(angka) {
+        return 'Rp ' + parseInt(angka).toLocaleString('id-ID');
+    }
+
+    // Fungsi membuat grafik rasio donut
+    function renderChart(income, expense) {
+        const ctx = document.getElementById('ratioChart').getContext('2d');
+        
+        // Hancurkan chart lama jika ada aktivitas render ulang agar tidak tumpang tindih
+        if (ratioChartInstance) {
+            ratioChartInstance.destroy();
+        }
+
+        if (income === 0 && expense === 0) {
+            chartBox.style.display = 'none';
+            return;
+        }
+
+        chartBox.style.display = 'block';
+        ratioChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pemasukan', 'Pengeluaran'],
+                datasets: [{
+                    data: [income, expense],
+                    backgroundColor: ['#10b981', '#f43f5e'],
+                    borderWidth: 2,
+                    borderColor: '#1e293b'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#f8fafc',
+                            font: { family: 'Inter', size: 12 }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function initHistory() {
+        const cacheBusterUrl = SCRIPT_URL + '?_ts=' + new Date().getTime();
+
+        fetch(cacheBusterUrl)
+        .then(response => response.json())
+        .then(data => {
+            loadingStatus.style.display = 'none';
+            transactionList.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                transactionList.innerHTML = '<li style="text-align:center; color:#6b7280; font-size:13px;">Belum ada data transaksi.</li>';
+                return;
+            }
+
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            // Kita salin datanya lalu balik urutannya khusus untuk list riwayat di bawah
+            const displayData = [...data].reverse();
+
+            displayData.forEach(transaction => {
+                const sign = transaction.type === 'income' ? '+' : '-';
+                const amountClass = transaction.type === 'income' ? 'income' : 'expense';
+                const badgeType = transaction.type === 'income' ? 'Masuk' : 'Keluar';
+
+                const li = document.createElement('li');
+                li.classList.add('transaction-item');
+                li.innerHTML = `
+                    <div class="item-info">
+                        <div class="title">${transaction.description}</div>
+                        <div class="date">Dana ${badgeType}</div>
+                    </div>
+                    <div class="item-amount ${amountClass}">${sign} ${formatRupiah(transaction.amount)}</div>
+                `;
+                transactionList.appendChild(li);
+            });
+
+            // Kalkulasi total untuk grafik (menggunakan data asli terakumulasi)
+            data.forEach(transaction => {
+                if (transaction.type === 'income') {
+                    totalIncome += transaction.amount;
+                } else {
+                    totalExpense += transaction.amount;
+                }
+            });
+
+            monthIncomeEl.innerText = formatRupiah(totalIncome);
+            monthExpenseEl.innerText = formatRupiah(totalExpense);
+
+            // Tampilkan grafik secara otomatis berbasis data riwayat cloud
+            renderChart(totalIncome, totalExpense);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingStatus.innerText = '⚠️ Gagal memuat analisis riwayat.';
+        });
+    }
+
+    initHistory();
+</script>
+
+</body>
+</html>

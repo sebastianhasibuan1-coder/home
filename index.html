@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dompet Hasibuan - Catatan Keuangan Premium</title>
+    <title>Dompet Hasibuan - Sakura Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-finance: #0b0f19; /* Gelap super lembut yang nyaman di mata */
-            --card-bg: #1e2640;    /* Slate navy premium */
-            --card-inner: #131a30; /* Latar dalam input box */
-            --emerald-money: #10b981; 
-            --rose-expense: #f43f5e; 
-            --gold-accent: #fbbf24; 
+            --bg-finance: #0f121d;   /* Latar malam sejuk */
+            --card-bg: #191e33;      /* Ungu plum gelap premium */
+            --card-inner: #111526;   /* Latar input gelap lembut */
+            --emerald-money: #6ee7b7; /* Hijau daun sakura muda (Adem & Rileks) */
+            --rose-expense: #fca5a5;  /* Merah muda kelopak sakura gugur */
+            --sakura-pink: #f472b6;   /* Aksen merah muda sakura dominan */
             --text-light: #f8fafc;
             --text-muted: #64748b;
-            --border-glow: rgba(251, 191, 36, 0.05);
         }
 
         * {
@@ -47,7 +46,7 @@
             gap: 18px;
         }
 
-        /* --- HEADER PREMIUM --- */
+        /* --- HEADER THEME SAKURA --- */
         .header {
             display: flex;
             justify-content: space-between;
@@ -62,7 +61,7 @@
         }
 
         .header-logo {
-            background: linear-gradient(135deg, var(--gold-accent), #f59e0b);
+            background: linear-gradient(135deg, var(--sakura-pink), #ec4899);
             width: 36px;
             height: 36px;
             border-radius: 10px;
@@ -70,9 +69,9 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            color: #0b0f19;
+            color: #ffffff;
             font-size: 18px;
-            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+            box-shadow: 0 4px 12px rgba(244, 114, 182, 0.25);
         }
 
         .header h1 {
@@ -104,14 +103,14 @@
         }
 
         .btn-nav.cicilan {
-            background-color: rgba(244, 63, 94, 0.1);
-            color: #fda4af;
-            border-color: rgba(244, 63, 94, 0.2);
+            background-color: rgba(244, 114, 182, 0.1);
+            color: #fbcfe8;
+            border-color: rgba(244, 114, 182, 0.2);
         }
 
         .btn-nav:hover {
             transform: translateY(-1px);
-            background-color: #242f50;
+            background-color: #222947;
         }
 
         /* --- DASHBOARD CARD --- */
@@ -129,8 +128,8 @@
             content: '';
             position: absolute;
             top: 0; right: 0;
-            width: 100px; height: 100px;
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.03) 0%, transparent 70%);
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, rgba(244, 114, 182, 0.04) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -179,8 +178,8 @@
             margin-top: 4px;
             letter-spacing: -0.3px;
         }
-        .flow-val.in { color: #34d399; }
-        .flow-val.out { color: #fb7185; }
+        .flow-val.in { color: var(--emerald-money); }
+        .flow-val.out { color: var(--rose-expense); }
 
         /* --- FORM STYLING --- */
         .form-group {
@@ -212,9 +211,9 @@
         }
 
         input:focus, select:focus {
-            border-color: var(--gold-accent);
-            background-color: rgba(19, 26, 48, 0.8);
-            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.08);
+            border-color: var(--sakura-pink);
+            background-color: rgba(17, 21, 38, 0.8);
+            box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.08);
         }
 
         .radio-group {
@@ -246,28 +245,28 @@
 
         #typeIncome:checked + .radio-label {
             border-color: var(--emerald-money);
-            background-color: rgba(16, 185, 129, 0.08);
-            color: #34d399;
+            background-color: rgba(110, 231, 183, 0.08);
+            color: var(--emerald-money);
         }
 
         #typeExpense:checked + .radio-label {
             border-color: var(--rose-expense);
-            background-color: rgba(244, 63, 94, 0.08);
-            color: #fb7185;
+            background-color: rgba(252, 165, 165, 0.08);
+            color: var(--rose-expense);
         }
 
         .btn-submit {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, var(--gold-accent), #f59e0b);
+            background: linear-gradient(135deg, var(--sakura-pink), #db2777);
             border: none;
             border-radius: 14px;
-            color: #0b0f19;
+            color: #ffffff;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             margin-top: 6px;
-            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.25);
+            box-shadow: 0 4px 14px rgba(244, 114, 182, 0.25);
             transition: all 0.2s ease;
         }
 
@@ -322,8 +321,8 @@
             font-size: 14px;
             font-weight: 600;
         }
-        .item-amount.income { color: #34d399; }
-        .item-amount.expense { color: #fb7185; }
+        .item-amount.income { color: var(--emerald-money); }
+        .item-amount.expense { color: var(--rose-expense); }
 
         #loadingStatus {
             text-align: center;
@@ -346,9 +345,10 @@
 <body>
 
 <div class="container">
+    <!-- PANEL HEADER BRAND -->
     <div class="header">
         <div class="header-brand">
-            <div class="header-logo">H</div>
+            <div class="header-logo">🌸</div>
             <h1>Dompet Hasibuan</h1>
         </div>
         <div class="nav-buttons">
@@ -357,35 +357,38 @@
         </div>
     </div>
 
+    <!-- DASHBOARD CARD INTEGRASI MULTI-SALDO -->
     <div class="card">
         <div class="balance-label">Saldo Bersih Saat Ini</div>
         <div id="netBalance" class="balance-amount">Rp 0</div>
         
         <div class="flow-grid">
             <div class="flow-box">
-                <div class="flow-title">📈 Pemasukan</div>
+                <div class="flow-title">🌱 Pemasukan</div>
                 <div id="totalIncomeBox" class="flow-val in">Rp 0</div>
             </div>
             <div class="flow-box">
-                <div class="flow-title">📉 Pengeluaran</div>
+                <div class="flow-title">🌸 Pengeluaran</div>
                 <div id="totalExpenseBox" class="flow-val out">Rp 0</div>
             </div>
         </div>
     </div>
 
+    <!-- CARD FORM INPUT TRANSAKSI -->
     <div class="card">
         <form id="financeForm">
             <div class="form-group">
                 <label>Tipe Kas</label>
                 <div class="radio-group">
                     <input type="radio" id="typeIncome" name="transactionType" value="income" checked>
-                    <label for="typeIncome" class="radio-label">📈 Pemasukan</label>
+                    <label for="typeIncome" class="radio-label">🌱 Pemasukan</label>
 
                     <input type="radio" id="typeExpense" name="transactionType" value="expense">
-                    <label for="typeExpense" class="radio-label">📉 Pengeluaran</label>
+                    <label for="typeExpense" class="radio-label">🌸 Pengeluaran</label>
                 </div>
             </div>
 
+            <!-- CHUTANG INTEGRATION LIST -->
             <div class="form-group" id="debtGroup">
                 <label>Pilih Kategori Hutang</label>
                 <select id="debtSelect">
@@ -414,6 +417,7 @@
         </form>
     </div>
 
+    <!-- FEED MONITORING CLOUD REALTIME -->
     <div>
         <div class="recent-title">5 Transaksi Terakhir (Cloud)</div>
         <div id="loadingStatus">🔄 Menyinkronkan dengan Cloud...</div>

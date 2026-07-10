@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dompetku Pro - Analisis & Riwayat</title>
+    <title>Dompet Hasibuan - Analisis Hutan Teduh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2 family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            --bg-finance: #0f172a;
-            --card-bg: #1e293b;
-            --emerald-money: #10b981;
-            --rose-expense: #f43f5e;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-finance: #f4f9f4;   /* Putih kehijauan pudar super adem ala embun pagi */
+            --card-bg: #ffffff;      /* Putih bersih */
+            --card-inner: #e8f5e9;   /* Hijau daun muda pudar untuk kotak ringkasan */
+            --emerald-money: #1b5e20; /* Hijau hutan pekat untuk angka masuk */
+            --rose-expense: #b71c1c;  /* Merah buah beri hutan untuk angka keluar */
+            --forest-accent: #2e7d32; /* Hijau pohon utama */
+            --text-dark: #1e293b;    /* Teks utama gelap tajam */
+            --text-muted: #64748b;   /* Teks sekunder kelabu */
         }
 
         * {
@@ -25,58 +27,75 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-finance);
-            color: var(--text-light);
-            padding: 16px;
+            color: var(--text-dark);
+            padding: 20px 16px;
             display: flex;
             justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
 
-        .phone-wrapper {
+        .container {
             width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
             padding-bottom: 40px;
         }
 
-        header {
-            margin: 15px 0 25px 0;
+        /* --- HEADER FOREST LIGHT --- */
+        .header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #ffffff, #e8f5e9);
+            border-radius: 14px;
+            border: 1px solid rgba(46, 125, 50, 0.15);
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.04);
         }
 
-        header h2 {
-            font-size: 20px;
+        .header h1 {
+            font-size: 18px;
             font-weight: 700;
+            color: var(--text-dark);
         }
 
         .btn-back {
             background-color: var(--card-bg);
-            color: var(--text-light);
+            color: var(--text-dark);
             text-decoration: none;
             padding: 8px 14px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 13px;
-            font-weight: 500;
-            border: 1px solid #334155;
+            font-weight: 600;
+            border: 1px solid rgba(46, 125, 50, 0.15);
+            transition: background-color 0.2s;
         }
 
+        .btn-back:hover {
+            background-color: var(--card-inner);
+        }
+
+        /* --- SUMMARY FLOW GRID --- */
         .summary-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 20px;
         }
 
         .summary-box {
             background-color: var(--card-bg);
             padding: 16px;
             border-radius: 14px;
-            border: 1px solid #334155;
+            border: 1px solid rgba(46, 125, 50, 0.08);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.02);
         }
 
         .summary-box .label {
@@ -84,6 +103,7 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         .summary-box .value {
@@ -94,39 +114,32 @@
         .summary-box .value.in { color: var(--emerald-money); }
         .summary-box .value.out { color: var(--rose-expense); }
 
-        /* Wadah Grafik */
+        /* --- CHART CARD --- */
         .chart-card {
             background-color: var(--card-bg);
             border-radius: 18px;
             padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #334155;
+            border: 1px solid rgba(46, 125, 50, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(46, 125, 50, 0.05);
         }
 
         .chart-title {
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 15px;
-            color: var(--text-light);
+            color: var(--text-dark);
             text-align: center;
         }
 
         .chart-container {
             position: relative;
             width: 100%;
-            max-height: 220px;
+            height: 200px;
             display: flex;
             justify-content: center;
         }
 
-        #loading-status {
-            text-align: center;
-            color: #94a3b8;
-            font-style: italic;
-            margin: 40px 0;
-            font-size: 14px;
-        }
-
+        /* --- TRANSACTION HISTORY LIST --- */
         .transaction-list {
             list-style: none;
             display: flex;
@@ -140,37 +153,56 @@
             align-items: center;
             padding: 14px 16px;
             background-color: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid #334155;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.03);
+            border: 1px solid rgba(46, 125, 50, 0.05);
+            border-left: 4px solid transparent;
         }
+
+        .transaction-item.income { border-left-color: var(--emerald-money); }
+        .transaction-item.expense { border-left-color: var(--rose-expense); }
 
         .item-info .title {
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
+            color: var(--text-dark);
         }
 
+        /* TANGGAL TRANSAKSI DIBAWAH KETERANGAN */
         .item-info .date {
             font-size: 11px;
             color: var(--text-muted);
-            margin-top: 2px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .item-amount {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
         }
         .item-amount.income { color: var(--emerald-money); }
         .item-amount.expense { color: var(--rose-expense); }
+
+        #loading-status {
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+            margin: 30px 0;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
 
-<div class="phone-wrapper">
-    <header>
-        <h2>Analisis & Riwayat 📊</h2>
+<div class="container">
+    <div class="header">
+        <h1>Analisis Histori 🌲</h1>
         <a href="index.html" class="btn-back">⬅️ Kembali</a>
-    </header>
+    </div>
 
+    <!-- BOX KUMULATIF -->
     <div class="summary-grid">
         <div class="summary-box">
             <div class="label">Total Semua Masuk</div>
@@ -182,19 +214,22 @@
         </div>
     </div>
 
+    <!-- GRAFIK RASIO KAS -->
     <div class="chart-card" id="chart-box" style="display: none;">
-        <div class="chart-title">Rasio Keuangan (Masuk vs Keluar)</div>
+        <div class="chart-title">Rasio Struktur Cash Flow</div>
         <div class="chart-container">
             <canvas id="ratioChart"></canvas>
         </div>
     </div>
 
-    <div id="loading-status">Sedang mengunduh dan menganalisis data...</div>
+    <div id="loading-status">🌲 Mengumpulkan berkas kas dari cloud...</div>
 
+    <!-- CONTAINER DAFTAR TRANSAKSI -->
     <ul id="transaction-list" class="transaction-list"></ul>
 </div>
 
 <script>
+    // URL WEB APP SCRIPT DATABASE UTAMA ANDA
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
 
     const transactionList = document.getElementById('transaction-list');
@@ -209,11 +244,27 @@
         return 'Rp ' + parseInt(angka).toLocaleString('id-ID');
     }
 
-    // Fungsi membuat grafik rasio donut
+    // Fungsi Format Tanggal & Waktu Lokal Indonesia (WIB)
+    function formatTanggalIndo(dateString) {
+        if (!dateString) return "Waktu tidak tercatat";
+        const tanggalObj = new Date(dateString);
+        
+        // Cek jika data tanggal valid
+        if (isNaN(tanggalObj.getTime())) return "Waktu tidak tercatat";
+
+        const opsi = { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        return tanggalObj.toLocaleDateString('id-ID', opsi) + ' WIB';
+    }
+
     function renderChart(income, expense) {
         const ctx = document.getElementById('ratioChart').getContext('2d');
         
-        // Hancurkan chart lama jika ada aktivitas render ulang agar tidak tumpang tindih
         if (ratioChartInstance) {
             ratioChartInstance.destroy();
         }
@@ -230,9 +281,9 @@
                 labels: ['Pemasukan', 'Pengeluaran'],
                 datasets: [{
                     data: [income, expense],
-                    backgroundColor: ['#10b981', '#f43f5e'],
+                    backgroundColor: ['#2e7d32', '#c62828'], // Hijau hutan vs Merah tua
                     borderWidth: 2,
-                    borderColor: '#1e293b'
+                    borderColor: '#ffffff'
                 }]
             },
             options: {
@@ -242,11 +293,12 @@
                     legend: {
                         position: 'bottom',
                         labels: {
-                            color: '#f8fafc',
-                            font: { family: 'Inter', size: 12 }
+                            color: '#1e293b',
+                            font: { family: 'Inter', size: 12, weight: '500' }
                         }
                     }
-                }
+                },
+                cutout: '70%'
             }
         });
     }
@@ -261,51 +313,54 @@
             transactionList.innerHTML = '';
 
             if (!data || data.length === 0) {
-                transactionList.innerHTML = '<li style="text-align:center; color:#6b7280; font-size:13px;">Belum ada data transaksi.</li>';
+                transactionList.innerHTML = '<li style="text-align:center; color:#64748b; font-size:13px; padding: 20px;">Belum ada riwayat transaksi ter-sinkron.</li>';
                 return;
             }
 
             let totalIncome = 0;
             let totalExpense = 0;
 
-            // Kita salin datanya lalu balik urutannya khusus untuk list riwayat di bawah
+            // Salin dan balik urutan data agar transaksi terbaru berada di baris teratas
             const displayData = [...data].reverse();
 
             displayData.forEach(transaction => {
-                const sign = transaction.type === 'income' ? '+' : '-';
-                const amountClass = transaction.type === 'income' ? 'income' : 'expense';
-                const badgeType = transaction.type === 'income' ? 'Masuk' : 'Keluar';
+                // Normalisasi dual-bahasa objek properti dari backend cloud
+                const tipe = String(transaction.type || transaction.jenis || "").toLowerCase();
+                const nominal = Number(transaction.amount || transaction.jumlah) || 0;
+                const keterangan = transaction.description || transaction.keterangan || "Tanpa Keterangan";
+                const waktuRiil = transaction.tanggal || new Date(); // Fallback jika tanggal kosong
+
+                const isIncome = (tipe === 'income' || tipe === 'pemasukan');
+                const sign = isIncome ? '+' : '-';
+                const amountClass = isIncome ? 'income' : 'expense';
 
                 const li = document.createElement('li');
-                li.classList.add('transaction-item');
+                li.classList.add('transaction-item', amountClass);
                 li.innerHTML = `
                     <div class="item-info">
-                        <div class="title">${transaction.description}</div>
-                        <div class="date">Dana ${badgeType}</div>
+                        <div class="title">${keterangan}</div>
+                        <!-- PENAMBAHAN FITUR TANGGAL & WAKTU REAL-TIME -->
+                        <div class="date">📅 ${formatTanggalIndo(waktuRiil)}</div>
                     </div>
-                    <div class="item-amount ${amountClass}">${sign} ${formatRupiah(transaction.amount)}</div>
+                    <div class="item-amount ${amountClass}">${sign} ${formatRupiah(nominal)}</div>
                 `;
                 transactionList.appendChild(li);
-            });
 
-            // Kalkulasi total untuk grafik (menggunakan data asli terakumulasi)
-            data.forEach(transaction => {
-                if (transaction.type === 'income') {
-                    totalIncome += transaction.amount;
+                if (isIncome) {
+                    totalIncome += nominal;
                 } else {
-                    totalExpense += transaction.amount;
+                    totalExpense += nominal;
                 }
             });
 
             monthIncomeEl.innerText = formatRupiah(totalIncome);
             monthExpenseEl.innerText = formatRupiah(totalExpense);
 
-            // Tampilkan grafik secara otomatis berbasis data riwayat cloud
             renderChart(totalIncome, totalExpense);
         })
         .catch(error => {
             console.error('Error:', error);
-            loadingStatus.innerText = '⚠️ Gagal memuat analisis riwayat.';
+            loadingStatus.innerText = '⚠️ Gagal menyinkronkan data riwayat hutan.';
         });
     }
 

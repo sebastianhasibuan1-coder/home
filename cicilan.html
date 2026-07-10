@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dompet Hasibuan - Kontrol Cicilan & Hutang</title>
+    <title>Dompet Hasibuan - Kontrol Cicilan Sky Blue</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-finance: #0f172a; 
-            --card-bg: #1e293b;
-            --emerald-money: #10b981; 
-            --rose-expense: #f43f5e; 
-            --gold-accent: #f59e0b; 
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-finance: #f0f7ff;   /* Biru pudar langit super adem & tenang */
+            --card-bg: #ffffff;      /* Putih bersih awan */
+            --card-inner: #e0f0fe;   /* Biru langit pudar tipis untuk grid info */
+            --emerald-money: #0369a1; /* Biru langit pekat teduh untuk Lunas */
+            --rose-expense: #be123c;  /* Merah lembut kelam untuk Belum Lunas */
+            --sky-accent: #0284c7;    /* Aksen biru langit utama */
+            --text-dark: #0f172a;    /* Teks utama gelap tajam */
+            --text-muted: #64748b;   /* Teks sekunder kelabu */
         }
 
         * {
@@ -29,8 +30,8 @@
 
         body {
             background-color: var(--bg-finance);
-            color: var(--text-light);
-            padding: 16px;
+            color: var(--text-dark);
+            padding: 20px 16px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -39,53 +40,57 @@
 
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 440px;
             display: flex;
             flex-direction: column;
             gap: 16px;
             padding-bottom: 40px;
         }
 
+        /* --- HEADER SKY BLUE LIGHT --- */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
+            background: linear-gradient(135deg, #ffffff, #e0f0fe);
             border-radius: 14px;
-            border: 1px solid #334155;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(2, 132, 199, 0.15);
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.05);
         }
 
         .header h1 {
             font-size: 18px;
             font-weight: 700;
+            color: var(--text-dark);
         }
 
         .btn-back {
             background-color: var(--card-bg);
-            color: var(--text-light);
+            color: var(--text-dark);
             text-decoration: none;
             padding: 8px 14px;
             border-radius: 10px;
             font-size: 13px;
             font-weight: 600;
-            border: 1px solid #334155;
+            border: 1px solid rgba(2, 132, 199, 0.15);
             transition: background-color 0.2s;
         }
 
         .btn-back:hover {
-            background-color: #334155;
+            background-color: var(--card-inner);
         }
 
+        /* --- DASHBOARD SUMMARY CARD --- */
         .summary-card {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #e0f0fe 100%);
             border-radius: 16px;
             padding: 20px;
-            border: 1px solid #334155;
+            border: 1px solid rgba(2, 132, 199, 0.15);
             display: flex;
             justify-content: space-between;
             text-align: center;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.03);
         }
 
         .summary-box {
@@ -93,7 +98,7 @@
         }
 
         .summary-box:first-child {
-            border-right: 1px solid #334155;
+            border-right: 1px solid rgba(2, 132, 199, 0.15);
         }
 
         .summary-label {
@@ -109,6 +114,7 @@
             margin-top: 4px;
         }
 
+        /* --- DEBT CARD --- */
         .list-container {
             display: flex;
             flex-direction: column;
@@ -119,15 +125,15 @@
             background-color: var(--card-bg);
             border-radius: 16px;
             padding: 16px;
-            border: 1px solid #334155;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(2, 132, 199, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.05);
             cursor: pointer;
             transition: transform 0.2s, border-color 0.2s;
         }
 
         .debt-card:hover {
             transform: translateY(-2px);
-            border-color: var(--gold-accent);
+            border-color: var(--sky-accent);
         }
 
         .debt-header {
@@ -140,7 +146,7 @@
         .debt-name {
             font-size: 16px;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--text-dark);
         }
 
         .status-badge {
@@ -152,15 +158,15 @@
         }
 
         .status-badge.unpaid {
-            background-color: rgba(244, 63, 94, 0.15);
+            background-color: rgba(190, 18, 60, 0.08);
             color: var(--rose-expense);
-            border: 1px solid rgba(244, 63, 94, 0.3);
+            border: 1px solid rgba(190, 18, 60, 0.15);
         }
 
         .status-badge.paid {
-            background-color: rgba(16, 185, 129, 0.15);
+            background-color: rgba(3, 105, 161, 0.08);
             color: var(--emerald-money);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(3, 105, 161, 0.15);
         }
 
         .grid-info {
@@ -169,7 +175,7 @@
             gap: 10px;
             font-size: 13px;
             margin-bottom: 12px;
-            background-color: rgba(15, 23, 42, 0.3);
+            background-color: var(--card-inner);
             padding: 10px;
             border-radius: 10px;
         }
@@ -184,14 +190,14 @@
         }
 
         .progress-bar-bg {
-            background-color: #0f172a;
+            background-color: #e2e8f0;
             height: 6px;
             border-radius: 3px;
             overflow: hidden;
         }
 
         .progress-bar-fill {
-            background: linear-gradient(90deg, var(--gold-accent), #f97316);
+            background: linear-gradient(90deg, #38bdf8, var(--sky-accent));
             height: 100%;
             width: 0%;
             transition: width 0.5s ease-in-out;
@@ -199,13 +205,13 @@
 
         .click-hint {
             font-size: 11px;
-            color: var(--gold-accent);
+            color: var(--sky-accent);
             text-align: right;
             margin-top: 6px;
             font-style: italic;
         }
 
-        /* MODAL CALENDAR DRAWER */
+        /* --- MODAL DRAWER POPUP KALENDER --- */
         .modal {
             display: none;
             position: fixed;
@@ -213,7 +219,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(15, 23, 42, 0.8);
+            background-color: rgba(15, 23, 42, 0.4);
             z-index: 1000;
             justify-content: center;
             align-items: flex-end;
@@ -222,13 +228,14 @@
         .modal-content {
             background-color: var(--card-bg);
             width: 100%;
-            max-width: 480px;
+            max-width: 440px;
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
             padding: 24px;
             max-height: 80vh;
             overflow-y: auto;
-            border-top: 1px solid #334155;
+            border-top: 1px solid rgba(2, 132, 199, 0.15);
+            box-shadow: 0 -10px 25px rgba(15, 23, 42, 0.1);
             animation: slideUp 0.3s ease-out;
         }
 
@@ -242,14 +249,14 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #e2e8f0;
             padding-bottom: 12px;
         }
 
         .modal-title {
             font-size: 18px;
             font-weight: 700;
-            color: var(--gold-accent);
+            color: var(--sky-accent);
         }
 
         .close-btn {
@@ -267,10 +274,10 @@
         .year-title {
             font-size: 14px;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--text-dark);
             margin-bottom: 10px;
             padding-left: 4px;
-            border-left: 3px solid var(--gold-accent);
+            border-left: 3px solid var(--sky-accent);
         }
 
         .calendar-grid {
@@ -280,8 +287,8 @@
         }
 
         .month-box {
-            background-color: #0f172a;
-            border: 1px solid #334155;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
             padding: 10px 4px;
             text-align: center;
@@ -291,9 +298,9 @@
         }
 
         .month-box.paid {
-            background-color: rgba(16, 185, 129, 0.2);
-            border-color: var(--emerald-money);
-            color: var(--emerald-money);
+            background-color: rgba(2, 132, 199, 0.12);
+            border-color: var(--sky-accent);
+            color: var(--sky-accent);
             font-weight: 700;
         }
 
@@ -309,7 +316,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>Kontrol Cicilan 📊</h1>
+        <h1>Kontrol Cicilan ☁️</h1>
         <a href="index.html" class="btn-back">← Menu Utama</a>
     </div>
 
@@ -322,7 +329,7 @@
         </div>
         <div class="summary-box">
             <div class="summary-label">Sisa Hutang Global</div>
-            <div class="summary-val" id="totalRemGlobal" style="color: var(--gold-accent);">Rp 0</div>
+            <div class="summary-val" id="totalRemGlobal" style="color: var(--sky-accent);">Rp 0</div>
         </div>
     </div>
 
@@ -342,7 +349,7 @@
 </div>
 
 <script>
-    // MASUKKAN URL GOOGLE WEB APP AKTIF KAMU DI SINI
+    // URL WEB APP APPS SCRIPT SINKRON UTAMA
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
 
     // MASTER DATA TARGET YANG SINKRON DENGAN DATA EXCEL PRIBADI
@@ -377,18 +384,14 @@
 
             let paidTracker = { "HCI": 0, "SPP 1": 0, "SPP 2": 0, "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0 };
 
-            // PERBAIKAN TOTAL: Proteksi pembacaan data multi-bahasa dari Apps Script
             transactions.forEach(t => {
-                // Deteksi tipe transaksi (bisa 'type' atau 'jenis')
                 const tipeRaw = String(t.type || t.jenis || "").toLowerCase();
                 
-                // Scan semua data pengeluaran (baik bertuliskan 'expense' maupun 'pengeluaran')
                 if (tipeRaw === 'expense' || tipeRaw === 'pengeluaran' || tipeRaw === '') { 
                     const desc = String(t.description || t.keterangan || "").toUpperCase().replace(/\s+/g, ' ');
                     const nominal = Number(t.amount || t.jumlah) || 0;
 
                     for (let key in paidTracker) {
-                        // Menghilangkan spasi pada key (misal 'SPP 1' menjadi 'SPP1') agar pencarian teks di database super akurat
                         const cleanKey = key.toUpperCase().replace(/\s+/g, '');
                         const cleanDesc = desc.replace(/\s+/g, '');
 
@@ -436,7 +439,7 @@
                         <span class="info-value" style="color: var(--emerald-money);">${formatRupiah(totalPaid)}</span>
                         
                         <span class="info-label">Sisa Hutang</span>
-                        <span class="info-value" style="color: ${sisa > 0 ? 'var(--rose-expense)' : 'var(--text-light)'};">${formatRupiah(sisa)}</span>
+                        <span class="info-value" style="color: ${sisa > 0 ? 'var(--rose-expense)' : 'var(--text-dark)'};">${formatRupiah(sisa)}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: var(--text-muted);">
                         <span>Progress Pelunasan</span>
@@ -455,10 +458,11 @@
         })
         .catch(err => {
             console.error(err);
-            loadingEl.innerText = "⚠️ Gagal memuat data. Cek koneksi atau setelan Web App Anda.";
+            loadingEl.innerText = "⚠️ Gagal memuat data server.";
         });
     }
 
+    // PEMETAAN JADWAL BULAN AKTIF RIIL EXCEL
     function openCalendarModal(debtKey, totalPaidRiil) {
         const item = DEBT_MASTER[debtKey];
         document.getElementById('modalDebtName').innerText = `Kalender Cicilan ${item.name}`;
@@ -485,24 +489,31 @@
             for (let m = 1; m <= 12; m++) {
                 let isDihitung = false;
 
+                // 1. HCI: Bulan 8 2026 sd Bulan 1 2027
                 if (debtKey === "HCI") {
                     if ((year === 2026 && m >= 8) || (year === 2027 && m === 1)) isDihitung = true;
                 } 
+                // 2. SPP 1: Bulan 8 2026 sd Bulan 10 2026
                 else if (debtKey === "SPP 1") {
                     if (year === 2026 && m >= 8 && m <= 10) isDihitung = true;
                 } 
+                // 3. SPP 2: Bulan 8 2026 sd Bulan 12 2026
                 else if (debtKey === "SPP 2") {
                     if (year === 2026 && m >= 8 && m <= 12) isDihitung = true;
                 } 
+                // 4. SPL: Bulan 8 2026 sd Bulan 9 2026
                 else if (debtKey === "SPL") {
                     if (year === 2026 && m >= 8 && m <= 9) isDihitung = true;
                 } 
+                // 5. MKR: Bulan 8 2026 sd Bulan 10 2026
                 else if (debtKey === "MKR") {
                     if (year === 2026 && m >= 8 && m <= 10) isDihitung = true;
                 } 
+                // 6. AGS: Bulan 7 2026 sd Bulan 3 2030
                 else if (debtKey === "AGS") {
                     if ((year === 2026 && m >= 7) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 3)) isDihitung = true;
                 } 
+                // 7. BPR: Bulan 7 2026 sd Bulan 1 2030
                 else if (debtKey === "BPR") {
                     if ((year === 2026 && m >= 7) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 1)) isDihitung = true;
                 }
@@ -517,7 +528,7 @@
 
                     gridHtml += `<div class="month-box ${activeClass}">${labelText}</div>`;
                 } else {
-                    gridHtml += `<div class="month-box" style="opacity: 0.08; border-style: dashed; background: transparent;">${MONTH_NAMES[m-1]}</div>`;
+                    gridHtml += `<div class="month-box" style="opacity: 0.12; border-style: dashed; background: transparent;">${MONTH_NAMES[m-1]}</div>`;
                 }
             }
 

@@ -322,16 +322,16 @@
 
     <div id="loadingStatus">🔄 Mengambil & mencocokkan log pembayaran cloud...</div>
 
-    <div class="summary-card" id="summaryCard" style="display: none;">
-        <div class="summary-box">
-            <div class="summary-label">Total Sudah Terbayar</div>
-            <div class="summary-val" id="totalPaidGlobal" style="color: var(--emerald-money);">Rp 0</div>
-        </div>
-        <div class="summary-box">
-            <div class="summary-label">Sisa Hutang Global</div>
-            <div class="summary-val" id="totalRemGlobal" style="color: var(--sky-accent);">Rp 0</div>
-        </div>
+<div class="summary-card" id="summaryCard" style="display: none;">
+    <div class="summary-box">
+        <div class="summary-label">Total Sudah Terbayar</div>
+        <div class="summary-val" id="totalPaidGlobal" style="color: var(--emerald-money);">Rp 0</div>
     </div>
+    <div class="summary-box">
+        <div class="summary-label">Sisa Hutang Global</div>
+        <div class="summary-val" id="totalRemGlobal" style="color: var(--rose-expense);">Rp 0</div>
+    </div>
+</div>
 
     <!-- WRAPPER DAFTAR HUTANG -->
     <div class="list-container" id="debtList"></div>
@@ -455,6 +455,7 @@
 
             document.getElementById('totalPaidGlobal').innerText = formatRupiah(globalPaid);
             document.getElementById('totalRemGlobal').innerText = formatRupiah(globalRemaining);
+            document.getElementById('totalRemGlobal').style.color = 'var(--rose-expense)'; // Mengubah warna menjadi merah tua
         })
         .catch(err => {
             console.error(err);

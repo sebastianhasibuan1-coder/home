@@ -24,6 +24,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -325,9 +326,11 @@
         </div>
     </div>
 
+    <!-- WRAPPER DAFTAR HUTANG -->
     <div class="list-container" id="debtList"></div>
 </div>
 
+<!-- CONTAINER MODAL POPUP KALENDER -->
 <div id="calendarModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -339,10 +342,10 @@
 </div>
 
 <script>
-    // URL Web App Google Apps Script Utama Anda
+    // MASUKKAN URL GOOGLE WEB APP AKTIF KAMU DI SINI
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfImd3maczBiWntXKsnGvH-2hC9NqX_C0H3PPRVhChCE0Z7gKVVE7R1Qu4YuGob_TD/exec';
 
-    // MASTER DATA TARGET YANG VALID SESUAI EXCEL DAN KATA-KATA REVISI ANDA
+    // MASTER DATA TARGET YANG SINKRON DENGAN DATA EXCEL PRIBADI
     const DEBT_MASTER = {
         "HCI":   { name: "HCI",   grandTotal: 4690200,   monthly: 781700 },
         "SPP 1": { name: "SPP 1", grandTotal: 5607909,   monthly: 1869303 },
@@ -374,13 +377,16 @@
 
             let paidTracker = { "HCI": 0, "SPP 1": 0, "SPP 2": 0, "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0 };
 
-            // Pindai database pengeluaran riil di Google Sheet
+            // Pindai database pengeluaran riil di Google Sheet dengan sistem deteksi tangguh
             transactions.forEach(t => {
-                if (t.type === 'expense') {
-                    const desc = t.description.toUpperCase();
+                const tipeTrans = String(t.type || t.jenis || "").toLowerCase();
+                if (tipeTrans === 'expense' || tipeTrans === 'pengeluaran') { 
+                    const desc = String(t.description || t.keterangan || "").toUpperCase().replace(/\s+/g, ' ');
+                    const nominal = Number(t.amount || t.jumlah) || 0;
+
                     for (let key in paidTracker) {
-                        if (desc.includes(key)) {
-                            paidTracker[key] += Number(t.amount) || 0;
+                        if (desc.includes(key.toUpperCase())) {
+                            paidTracker[key] += nominal;
                         }
                     }
                 }
@@ -391,8 +397,11 @@
 
             for (let key in DEBT_MASTER) {
                 const item = DEBT_MASTER[key];
-                let totalPaid = Math.min(paidTracker[key], item.grandTotal);
-                if (key === "SPL") totalPaid = paidTracker[key]; // Pengecualian SPL
+                let totalPaid = paidTracker[key];
+                
+                if (key !== "SPL") {
+                    totalPaid = Math.min(totalPaid, item.grandTotal);
+                }
 
                 const sisa = Math.max(0, item.grandTotal - totalPaid);
                 const pct = Math.min(100, Math.round((totalPaid / item.grandTotal) * 100)) || 0;
@@ -439,11 +448,11 @@
         })
         .catch(err => {
             console.error(err);
-            loadingEl.innerText = "⚠️ Gagal mengambil data server.";
+            loadingEl.innerText = "⚠️ Gagal memuat data. Cek koneksi atau setelan Web App Anda.";
         });
     }
 
-    // --- LOGIKA PEMETAAN BULAN RIIL SESUAI INSTRUKSI ANDA ---
+    // LOGIKA PEMETAAN BULAN RIIL BERDASARKAN PARAMETER INSTRUKSI ANDA
     function openCalendarModal(debtKey, totalPaidRiil) {
         const item = DEBT_MASTER[debtKey];
         document.getElementById('modalDebtName').innerText = `Kalender Cicilan ${item.name}`;
@@ -455,7 +464,6 @@
         if (item.monthly > 0) {
             monthsPaid = Math.floor(totalPaidRiil / item.monthly);
         } else {
-            // Khusus SPL jika nominal riil >= target grandTotal dianggap lunas
             monthsPaid = totalPaidRiil >= item.grandTotal ? 2 : Math.ceil(totalPaidRiil / 8000); 
         }
 

@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dompet Hasibuan - Catatan Keuangan Realtime</title>
+    <title>Dompet Hasibuan - Catatan Keuangan Premium</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-finance: #0f172a; 
-            --card-bg: #1e293b;
+            --bg-finance: #0b0f19; /* Gelap super lembut yang nyaman di mata */
+            --card-bg: #1e2640;    /* Slate navy premium */
+            --card-inner: #131a30; /* Latar dalam input box */
             --emerald-money: #10b981; 
             --rose-expense: #f43f5e; 
-            --gold-accent: #f59e0b; 
+            --gold-accent: #fbbf24; 
             --text-light: #f8fafc;
-            --text-muted: #94a3b8;
+            --text-muted: #64748b;
+            --border-glow: rgba(251, 191, 36, 0.05);
         }
 
         * {
@@ -30,7 +32,7 @@
         body {
             background-color: var(--bg-finance);
             color: var(--text-light);
-            padding: 16px;
+            padding: 20px 16px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -39,10 +41,10 @@
 
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 440px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
         /* --- HEADER PREMIUM --- */
@@ -50,154 +52,175 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 14px;
-            border: 1px solid #334155;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            padding: 6px 4px;
         }
 
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .header-logo {
-            background: linear-gradient(135deg, var(--gold-accent), #f97316);
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold-accent), #f59e0b);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            color: #000;
-            font-size: 16px;
-            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+            color: #0b0f19;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
         }
 
         .header h1 {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             letter-spacing: -0.5px;
-            background: linear-gradient(120deg, #f8fafc, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-light);
         }
 
-        .btn-history {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: var(--gold-accent);
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-nav {
+            background-color: var(--card-bg);
+            color: var(--text-light);
             text-decoration: none;
             padding: 8px 14px;
-            border-radius: 10px;
-            font-size: 13px;
+            border-radius: 12px;
+            font-size: 12px;
             font-weight: 600;
-            border: 1px solid rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .btn-history:hover {
-            background-color: rgba(245, 158, 11, 0.2);
+        .btn-nav.cicilan {
+            background-color: rgba(244, 63, 94, 0.1);
+            color: #fda4af;
+            border-color: rgba(244, 63, 94, 0.2);
+        }
+
+        .btn-nav:hover {
             transform: translateY(-1px);
+            background-color: #242f50;
         }
 
+        /* --- DASHBOARD CARD --- */
         .card {
             background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.3), 0 4px 12px -2px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* --- VISUAL BARU: DASHBOARD FLOW SALDO --- */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
         .balance-label {
             font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             font-weight: 600;
         }
 
         .balance-amount {
-            font-size: 30px;
+            font-size: 34px;
             font-weight: 700;
-            margin-top: 2px;
+            margin-top: 4px;
             color: var(--text-light);
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
         }
 
         .flow-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #334155;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .flow-box {
-            background-color: rgba(15, 23, 42, 0.3);
-            padding: 10px 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.02);
+            background-color: var(--card-inner);
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.01);
         }
 
         .flow-title {
             font-size: 11px;
             color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 4px;
             font-weight: 500;
+            letter-spacing: 0.3px;
         }
 
         .flow-val {
             font-size: 14px;
             font-weight: 700;
             margin-top: 4px;
+            letter-spacing: -0.3px;
         }
-        .flow-val.in { color: var(--emerald-money); }
-        .flow-val.out { color: var(--rose-expense); }
+        .flow-val.in { color: #34d399; }
+        .flow-val.out { color: #fb7185; }
 
-        /* --- KOMPONEN FORM --- */
+        /* --- FORM STYLING --- */
         .form-group {
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
 
         .form-group label {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
-            font-weight: 500;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-left: 2px;
         }
 
         input[type="text"], input[type="tel"], select {
             width: 100%;
-            padding: 12px;
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 10px;
+            padding: 14px;
+            background-color: var(--card-inner);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
             color: var(--text-light);
             font-size: 15px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s ease;
         }
 
         input:focus, select:focus {
             border-color: var(--gold-accent);
+            background-color: rgba(19, 26, 48, 0.8);
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.08);
         }
 
         .radio-group {
             display: flex;
             gap: 12px;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .radio-label {
@@ -206,14 +229,15 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 12px;
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 10px;
+            padding: 14px;
+            background-color: var(--card-inner);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
         }
 
         input[type="radio"] {
@@ -222,42 +246,49 @@
 
         #typeIncome:checked + .radio-label {
             border-color: var(--emerald-money);
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--emerald-money);
+            background-color: rgba(16, 185, 129, 0.08);
+            color: #34d399;
         }
 
         #typeExpense:checked + .radio-label {
             border-color: var(--rose-expense);
-            background-color: rgba(244, 63, 94, 0.1);
-            color: var(--rose-expense);
+            background-color: rgba(244, 63, 94, 0.08);
+            color: #fb7185;
         }
 
         .btn-submit {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--gold-accent), #f97316);
+            padding: 16px;
+            background: linear-gradient(135deg, var(--gold-accent), #f59e0b);
             border: none;
-            border-radius: 10px;
-            color: #000;
+            border-radius: 14px;
+            color: #0b0f19;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 8px;
-            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.2);
+            margin-top: 6px;
+            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
         }
 
         .btn-submit:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
         }
 
+        /* --- FEED TRANSAKSI --- */
         .recent-title {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            padding-left: 4px;
         }
 
         .transaction-list {
@@ -270,10 +301,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px;
+            padding: 14px 16px;
             background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-radius: 14px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.02);
             border-left: 4px solid transparent;
         }
 
@@ -283,30 +315,30 @@
         .item-desc {
             font-size: 14px;
             font-weight: 500;
+            color: var(--text-light);
         }
 
         .item-amount {
             font-size: 14px;
             font-weight: 600;
         }
-
-        .item-amount.income { color: var(--emerald-money); }
-        .item-amount.expense { color: var(--rose-expense); }
+        .item-amount.income { color: #34d399; }
+        .item-amount.expense { color: #fb7185; }
 
         #loadingStatus {
             text-align: center;
             font-size: 13px;
             color: var(--text-muted);
-            padding: 10px 0;
+            padding: 8px 0;
         }
 
         #debtGroup {
             display: none;
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.25s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
+            from { opacity: 0; transform: translateY(-4px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -319,9 +351,9 @@
             <div class="header-logo">H</div>
             <h1>Dompet Hasibuan</h1>
         </div>
-        <div style="display: flex; gap: 6px;">
-            <a href="cicilan.html" class="btn-history" style="background-color: rgba(244,63,94,0.1); color: var(--rose-expense); border-color: rgba(244,63,94,0.2);">Cicilan 💸</a>
-            <a href="history.html" class="btn-history">Analisis 📊</a>
+        <div class="nav-buttons">
+            <a href="cicilan.html" class="btn-nav cicilan">Cicilan 💸</a>
+            <a href="history.html" class="btn-nav">Analisis 📊</a>
         </div>
     </div>
 
@@ -355,7 +387,7 @@
             </div>
 
             <div class="form-group" id="debtGroup">
-                <label>Pilih Kategori Hutang (Opsional)</label>
+                <label>Pilih Kategori Hutang</label>
                 <select id="debtSelect">
                     <option value="">-- Bukan Bayar Hutang (Ketik Manual) --</option>
                     <option value="HCI">Bayar Cicilan HCI (Rp 781.700)</option>
@@ -441,7 +473,6 @@
         e.target.value = value ? String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "";
     });
 
-    // UPDATE LOGIKA: Menghitung saldo bersih, total pemasukan, dan total pengeluaran kumulatif
     function updateBudget() {
         let incomeTotal = 0;
         let expenseTotal = 0;

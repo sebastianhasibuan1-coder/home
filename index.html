@@ -45,7 +45,7 @@
             gap: 16px;
         }
 
-        /* --- PEMBARUAN HEADER ELEGAN & MENARIK --- */
+        /* --- HEADER PREMIUM --- */
         .header {
             display: flex;
             justify-content: space-between;
@@ -78,7 +78,7 @@
         }
 
         .header h1 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             letter-spacing: -0.5px;
             background: linear-gradient(120deg, #f8fafc, #94a3b8);
@@ -106,7 +106,6 @@
             transform: translateY(-1px);
         }
 
-        /* --- KODE STRUKTUR SEBELUMNYA --- */
         .card {
             background-color: var(--card-bg);
             border-radius: 16px;
@@ -115,8 +114,9 @@
             border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
+        /* --- VISUAL BARU: DASHBOARD FLOW SALDO --- */
         .balance-label {
-            font-size: 13px;
+            font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -124,12 +124,47 @@
         }
 
         .balance-amount {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 700;
-            margin-top: 4px;
+            margin-top: 2px;
             color: var(--text-light);
+            letter-spacing: -0.5px;
         }
 
+        .flow-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #334155;
+        }
+
+        .flow-box {
+            background-color: rgba(15, 23, 42, 0.3);
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .flow-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .flow-val {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .flow-val.in { color: var(--emerald-money); }
+        .flow-val.out { color: var(--rose-expense); }
+
+        /* --- KOMPONEN FORM --- */
         .form-group {
             margin-bottom: 14px;
             display: flex;
@@ -217,7 +252,7 @@
         }
 
         .recent-title {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--text-muted);
             font-weight: 600;
             margin-bottom: 10px;
@@ -280,19 +315,30 @@
 
 <div class="container">
     <div class="header">
-    <div class="header-brand">
-        <div class="header-logo">H</div>
-        <h1 style="font-size: 16px;">Dompet Hasibuan</h1>
+        <div class="header-brand">
+            <div class="header-logo">H</div>
+            <h1>Dompet Hasibuan</h1>
+        </div>
+        <div style="display: flex; gap: 6px;">
+            <a href="cicilan.html" class="btn-history" style="background-color: rgba(244,63,94,0.1); color: var(--rose-expense); border-color: rgba(244,63,94,0.2);">Cicilan 💸</a>
+            <a href="history.html" class="btn-history">Analisis 📊</a>
+        </div>
     </div>
-    <div style="display: flex; gap: 6px;">
-        <a href="cicilan.html" class="btn-history" style="background-color: rgba(244,63,94,0.1); color: var(--rose-expense); border-color: rgba(244,63,94,0.2);">Cicilan 💸</a>
-        <a href="history.html" class="btn-history">Analisis 📊</a>
-    </div>
-</div>
 
     <div class="card">
         <div class="balance-label">Saldo Bersih Saat Ini</div>
         <div id="netBalance" class="balance-amount">Rp 0</div>
+        
+        <div class="flow-grid">
+            <div class="flow-box">
+                <div class="flow-title">📈 Pemasukan</div>
+                <div id="totalIncomeBox" class="flow-val in">Rp 0</div>
+            </div>
+            <div class="flow-box">
+                <div class="flow-title">📉 Pengeluaran</div>
+                <div id="totalExpenseBox" class="flow-val out">Rp 0</div>
+            </div>
+        </div>
     </div>
 
     <div class="card">
@@ -357,6 +403,8 @@
     const debtSelect = document.getElementById('debtSelect');
     const submitBtn = document.getElementById('submitBtn');
     const netBalance = document.getElementById('netBalance');
+    const totalIncomeBox = document.getElementById('totalIncomeBox');
+    const totalExpenseBox = document.getElementById('totalExpenseBox');
     const transactionList = document.getElementById('transactionList');
     const loadingStatus = document.getElementById('loadingStatus');
 
@@ -393,6 +441,7 @@
         e.target.value = value ? String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "";
     });
 
+    // UPDATE LOGIKA: Menghitung saldo bersih, total pemasukan, dan total pengeluaran kumulatif
     function updateBudget() {
         let incomeTotal = 0;
         let expenseTotal = 0;
@@ -400,7 +449,10 @@
             if (t.type === 'income') incomeTotal += t.amount;
             else expenseTotal += t.amount;
         });
+        
         netBalance.innerText = formatRupiah(incomeTotal - expenseTotal);
+        totalIncomeBox.innerText = formatRupiah(incomeTotal);
+        totalExpenseBox.innerText = formatRupiah(expenseTotal);
     }
 
     function renderTransactions() {

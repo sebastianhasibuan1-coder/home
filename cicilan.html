@@ -322,16 +322,16 @@
 
     <div id="loadingStatus">🔄 Mengambil & mencocokkan log pembayaran cloud...</div>
 
-<div class="summary-card" id="summaryCard" style="display: none;">
-    <div class="summary-box">
-        <div class="summary-label">Total Sudah Terbayar</div>
-        <div class="summary-val" id="totalPaidGlobal" style="color: var(--emerald-money);">Rp 0</div>
+    <div class="summary-card" id="summaryCard" style="display: none;">
+        <div class="summary-box">
+            <div class="summary-label">Total Sudah Terbayar</div>
+            <div class="summary-val" id="totalPaidGlobal" style="color: var(--emerald-money);">Rp 0</div>
+        </div>
+        <div class="summary-box">
+            <div class="summary-label">Sisa Hutang Global</div>
+            <div class="summary-val" id="totalRemGlobal" style="color: var(--rose-expense);">Rp 0</div>
+        </div>
     </div>
-    <div class="summary-box">
-        <div class="summary-label">Sisa Hutang Global</div>
-        <div class="summary-val" id="totalRemGlobal" style="color: var(--rose-expense);">Rp 0</div>
-    </div>
-</div>
 
     <!-- WRAPPER DAFTAR HUTANG -->
     <div class="list-container" id="debtList"></div>
@@ -352,9 +352,10 @@
     // URL WEB APP APPS SCRIPT SINKRON UTAMA
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
 
-    // MASTER DATA TARGET YANG SINKRON DENGAN DATA EXCEL PRIBADI
+    // MASTER DATA TARGET YANG SINKRON DENGAN DATA EXCEL PRIBADI (DITAMBAH HCI 2)
     const DEBT_MASTER = {
-        "HCI":   { name: "HCI",   grandTotal: 4690200,   monthly: 781700 },
+        "HCI 1": { name: "HCI 1", grandTotal: 4690200,   monthly: 781700 },
+        "HCI 2": { name: "HCI 2", grandTotal: 12264000,  monthly: 511000 },
         "SPP 1": { name: "SPP 1", grandTotal: 5607909,   monthly: 1869303 },
         "SPP 2": { name: "SPP 2", grandTotal: 1130660,   monthly: 226132 },
         "SPL":   { name: "SPL",   grandTotal: 15887,     monthly: 0 }, 
@@ -382,7 +383,8 @@
             summaryCard.style.display = 'flex';
             listContainer.innerHTML = '';
 
-            let paidTracker = { "HCI": 0, "SPP 1": 0, "SPP 2": 0, "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0 };
+            // Inisialisasi pelacak pembayaran untuk masing-masing pos cicilan
+            let paidTracker = { "HCI 1": 0, "HCI 2": 0, "SPP 1": 0, "SPP 2": 0, "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0 };
 
             transactions.forEach(t => {
                 const tipeRaw = String(t.type || t.jenis || "").toLowerCase();
@@ -395,6 +397,7 @@
                         const cleanKey = key.toUpperCase().replace(/\s+/g, '');
                         const cleanDesc = desc.replace(/\s+/g, '');
 
+                        // Jika deskripsi dari cloud mengandung penanda kunci cicilan
                         if (cleanDesc.includes(cleanKey)) {
                             paidTracker[key] += nominal;
                         }
@@ -455,7 +458,7 @@
 
             document.getElementById('totalPaidGlobal').innerText = formatRupiah(globalPaid);
             document.getElementById('totalRemGlobal').innerText = formatRupiah(globalRemaining);
-            document.getElementById('totalRemGlobal').style.color = 'var(--rose-expense)'; // Mengubah warna menjadi merah tua
+            document.getElementById('totalRemGlobal').style.color = 'var(--rose-expense)';
         })
         .catch(err => {
             console.error(err);
@@ -463,7 +466,7 @@
         });
     }
 
-    // PEMETAAN JADWAL BULAN AKTIF RIIL EXCEL
+    // PEMETAAN JADWAL BULAN AKTIF RIIL
     function openCalendarModal(debtKey, totalPaidRiil) {
         const item = DEBT_MASTER[debtKey];
         document.getElementById('modalDebtName').innerText = `Kalender Cicilan ${item.name}`;
@@ -490,31 +493,35 @@
             for (let m = 1; m <= 12; m++) {
                 let isDihitung = false;
 
-                // 1. HCI: Bulan 8 2026 sd Bulan 1 2027
-                if (debtKey === "HCI") {
+                // 1. HCI 1: Bulan 8 2026 sd Bulan 1 2027
+                if (debtKey === "HCI 1") {
                     if ((year === 2026 && m >= 8) || (year === 2027 && m === 1)) isDihitung = true;
                 } 
-                // 2. SPP 1: Bulan 8 2026 sd Bulan 10 2026
+                // 2. HCI 2: Bulan 8 2026 sd Bulan 7 2028 (24 Bulan Baru)
+                else if (debtKey === "HCI 2") {
+                    if ((year === 2026 && m >= 8) || year === 2027 || (year === 2028 && m <= 7)) isDihitung = true;
+                }
+                // 3. SPP 1: Bulan 8 2026 sd Bulan 10 2026
                 else if (debtKey === "SPP 1") {
                     if (year === 2026 && m >= 8 && m <= 10) isDihitung = true;
                 } 
-                // 3. SPP 2: Bulan 8 2026 sd Bulan 12 2026
+                // 4. SPP 2: Bulan 8 2026 sd Bulan 12 2026
                 else if (debtKey === "SPP 2") {
                     if (year === 2026 && m >= 8 && m <= 12) isDihitung = true;
                 } 
-                // 4. SPL: Bulan 8 2026 sd Bulan 9 2026
+                // 5. SPL: Bulan 8 2026 sd Bulan 9 2026
                 else if (debtKey === "SPL") {
                     if (year === 2026 && m >= 8 && m <= 9) isDihitung = true;
                 } 
-                // 5. MKR: Bulan 8 2026 sd Bulan 10 2026
+                // 6. MKR: Bulan 8 2026 sd Bulan 10 2026
                 else if (debtKey === "MKR") {
                     if (year === 2026 && m >= 8 && m <= 10) isDihitung = true;
                 } 
-                // 6. AGS: Bulan 7 2026 sd Bulan 3 2030
+                // 7. AGS: Bulan 7 2026 sd Bulan 3 2030
                 else if (debtKey === "AGS") {
                     if ((year === 2026 && m >= 7) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 3)) isDihitung = true;
                 } 
-                // 7. BPR: Bulan 7 2026 sd Bulan 1 2030
+                // 8. BPR: Bulan 7 2026 sd Bulan 1 2030
                 else if (debtKey === "BPR") {
                     if ((year === 2026 && m >= 7) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 1)) isDihitung = true;
                 }

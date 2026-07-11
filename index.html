@@ -456,7 +456,7 @@
     </div>
 
     <div>
-        <div class="recent-title">5 Transaksi Terakhir (Cloud)</div>
+        <div class="recent-title">5 Transaksi Terakhir</div>
         <div id="transactionList" class="transaction-list"></div>
     </div>
 </div>
@@ -554,7 +554,7 @@
         if (rawAmount <= 0) return alert('Masukkan jumlah nominal yang valid.');
 
         // Pemicu Loading Layar Penuh sewaktu kirim data
-        overlayText.innerText = 'Mengunci & Mengirim ke Cloud...';
+        overlayText.innerText = 'Mengunci & Mengirim ke Database...';
         fullScreenOverlay.style.display = 'flex';
         submitBtn.disabled = true;
 
@@ -588,7 +588,7 @@
         const cacheBusterUrl = SCRIPT_URL + '?_ts=' + new Date().getTime();
         
         // Aktifkan loading layar penuh saat sinkronisasi awal / refresh data
-        overlayText.innerText = '🔄 Menyinkronkan dengan Cloud...';
+        overlayText.innerText = 'Menyinkronkan Dengan Database...';
         fullScreenOverlay.style.display = 'flex';
 
         fetch(cacheBusterUrl)

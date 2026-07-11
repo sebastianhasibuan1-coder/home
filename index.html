@@ -349,6 +349,7 @@
 <body>
 
 <div class="container">
+    <!-- PANEL HEADER BRAND -->
     <div class="header">
         <div class="header-brand">
             <div class="header-logo">🌸</div>
@@ -360,6 +361,7 @@
         </div>
     </div>
 
+    <!-- DASHBOARD CARD -->
     <div class="card">
         <div class="balance-label">Saldo Bersih Saat Ini</div>
         <div id="netBalance" class="balance-amount">Rp 0</div>
@@ -376,6 +378,7 @@
         </div>
     </div>
 
+    <!-- CARD FORM INPUT TRANSAKSI -->
     <div class="card">
         <form id="financeForm">
             <div class="form-group">
@@ -389,11 +392,13 @@
                 </div>
             </div>
 
+            <!-- CHUTANG INTEGRATION LIST -->
             <div class="form-group" id="debtGroup">
                 <label>Pilih Kategori Hutang</label>
                 <select id="debtSelect">
                     <option value="">-- Bukan Bayar Hutang (Ketik Manual) --</option>
-                    <option value="HCI">Bayar Cicilan HCI (Rp 781.700)</option>
+                    <option value="HCI 1">Bayar Cicilan HCI 1 (Rp 781.700)</option>
+                    <option value="HCI 2">Bayar Cicilan HCI 2 (Rp 511.000)</option>
                     <option value="SPP 1">Bayar Cicilan SPP 1 (Rp 1.869.303)</option>
                     <option value="SPP 2">Bayar Cicilan SPP 2 (Rp 226.132)</option>
                     <option value="SPL">Bayar Cicilan SPL (Input Manual Sesuai Saldo Menurun)</option>
@@ -417,6 +422,7 @@
         </form>
     </div>
 
+    <!-- FEED MONITORING CLOUD REALTIME -->
     <div>
         <div class="recent-title">5 Transaksi Terakhir (Cloud)</div>
         <div id="loadingStatus">🔄 Menyinkronkan dengan Cloud...</div>
@@ -456,7 +462,8 @@
 
         descriptionInput.value = "Bayar Cicilan " + pilihan;
 
-        if (pilihan === "HCI") amountInput.value = "781.700";
+        if (pilihan === "HCI 1") amountInput.value = "781.700";
+        else if (pilihan === "HCI 2") amountInput.value = "511.000";
         else if (pilihan === "SPP 1") amountInput.value = "1.869.303";
         else if (pilihan === "SPP 2") amountInput.value = "226.132";
         else if (pilihan === "MKR") amountInput.value = "500.000";

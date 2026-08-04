@@ -241,16 +241,26 @@
     let ratioChartInstance = null;
 
     function formatRupiah(angka) {
-        return 'Rp ' + parseInt(angka).toLocaleString('id-ID');
+        return 'Rp ' + Math.round(angka).toLocaleString('id-ID');
     }
 
-    // Fungsi Format Tanggal & Waktu Lokal Indonesia (WIB)
-    function formatTanggalIndo(dateString) {
-        if (!dateString) return "Waktu tidak tercatat";
-        const tanggalObj = new Date(dateString);
+    // Fungsi Format Tanggal & Waktu Presisi Dari Google Sheets
+    function formatTanggalIndo(dateValue) {
+        if (!dateValue) return "Waktu tidak tercatat";
         
-        // Cek jika data tanggal valid
-        if (isNaN(tanggalObj.getTime())) return "Waktu tidak tercatat";
+        let tanggalObj;
+
+        // Mengecek tipe data tanggal yang datang dari JSON Google Sheets
+        if (typeof dateValue === 'string' || typeof dateValue === 'number') {
+            tanggalObj = new Date(dateValue);
+        } else {
+            tanggalObj = dateValue;
+        }
+        
+        // Jika pembacaan tanggal dari database gagal (Invalid Date)
+        if (isNaN(tanggalObj.getTime())) {
+            return "Waktu tidak tercatat";
+        }
 
         const opsi = { 
             year: 'numeric', 
@@ -259,6 +269,7 @@
             hour: '2-digit',
             minute: '2-digit'
         };
+        
         return tanggalObj.toLocaleDateString('id-ID', opsi) + ' WIB';
     }
 
@@ -328,7 +339,9 @@
                 const tipe = String(transaction.type || transaction.jenis || "").toLowerCase();
                 const nominal = Number(transaction.amount || transaction.jumlah) || 0;
                 const keterangan = transaction.description || transaction.keterangan || "Tanpa Keterangan";
-                const waktuRiil = transaction.tanggal || new Date(); // Fallback jika tanggal kosong
+
+                // PERBAIKAN UTAMA: Mengecek opsi variasi nama kunci tanggal dari Google Apps Script
+                const waktuRiil = transaction.tanggal || transaction.date || transaction.timestamp || transaction.waktu || null;
 
                 const isIncome = (tipe === 'income' || tipe === 'pemasukan');
                 const sign = isIncome ? '+' : '-';
@@ -339,7 +352,7 @@
                 li.innerHTML = `
                     <div class="item-info">
                         <div class="title">${keterangan}</div>
-                        <!-- PENAMBAHAN FITUR TANGGAL & WAKTU REAL-TIME -->
+                        <!-- PENAMPILAN TANGGAL ASLI DARI DATABASE SHEET -->
                         <div class="date">📅 ${formatTanggalIndo(waktuRiil)}</div>
                     </div>
                     <div class="item-amount ${amountClass}">${sign} ${formatRupiah(nominal)}</div>

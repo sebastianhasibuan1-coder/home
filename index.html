@@ -333,13 +333,13 @@
 
         /* --- OVERLAY LOADING FULL LAYAR BARU --- */
         .full-screen-overlay {
-            display: none; /* Tersembunyi secara default */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(255, 245, 246, 0.9); /* Sesuai warna tema --bg-finance */
+            background-color: rgba(255, 245, 246, 0.9);
             z-index: 9999;
             flex-direction: column;
             align-items: center;
@@ -438,6 +438,10 @@
                     <option value="MKR">Bayar Cicilan MKR (Rp 520.000)</option>
                     <option value="AGS">Bayar Cicilan AGS (Rp 1.500.000)</option>
                     <option value="BPR">Bayar Cicilan BPR (Rp 2.550.000)</option>
+                    <option value="LHT">Bayar Cicilan LHT (Input Manual Sesuai Setoran)</option>
+                    <option value="FLN">Bayar Cicilan FLN (Input Manual Sesuai Setoran)</option>
+                    <option value="TLS">Bayar Cicilan TLS (Input Manual Sesuai Setoran)</option>
+                    <option value="NKO">Bayar Cicilan NKO (Input Manual Sesuai Setoran)</option>
                 </select>
             </div>
 
@@ -503,7 +507,7 @@
         else if (pilihan === "MKR") amountInput.value = "520.000";
         else if (pilihan === "AGS") amountInput.value = "1.500.000";
         else if (pilihan === "BPR") amountInput.value = "2.550.000";
-        else if (pilihan === "SPL") {
+        else if (["SPL", "LHT", "FLN", "TLS", "NKO"].includes(pilihan)) {
             amountInput.value = "";
         }
     });
@@ -553,7 +557,6 @@
         const rawAmount = parseInt(amountInput.value.replace(/\D/g, "")) || 0;
         if (rawAmount <= 0) return alert('Masukkan jumlah nominal yang valid.');
 
-        // Pemicu Loading Layar Penuh sewaktu kirim data
         overlayText.innerText = 'Mengunci & Mengirim ke Database...';
         fullScreenOverlay.style.display = 'flex';
         submitBtn.disabled = true;
@@ -572,12 +575,12 @@
             descriptionInput.value = '';
             amountInput.value = '';
             debtSelect.value = '';
-            init(); // Panggil init untuk sinkronisasi ulang data terbaru
+            init();
         })
         .catch(error => {
             console.error('Error:', error);
             alert('Gagal mengirim data. Periksa jaringan internet Anda.');
-            fullScreenOverlay.style.display = 'none'; // Buka kunci layar jika gagal
+            fullScreenOverlay.style.display = 'none';
         })
         .finally(() => {
             submitBtn.disabled = false;
@@ -587,7 +590,6 @@
     function init() {
         const cacheBusterUrl = SCRIPT_URL + '?_ts=' + new Date().getTime();
         
-        // Aktifkan loading layar penuh saat sinkronisasi awal / refresh data
         overlayText.innerText = 'Menyinkronkan Dengan Database...';
         fullScreenOverlay.style.display = 'flex';
 
@@ -597,7 +599,7 @@
             transactions = (data && data.length > 0) ? data : [];
             renderTransactions();
             updateBudget();
-            fullScreenOverlay.style.display = 'none'; // Matikan loading jika data sukses ter-update
+            fullScreenOverlay.style.display = 'none';
         })
         .catch(error => {
             console.error('Gagal mengambil data:', error);

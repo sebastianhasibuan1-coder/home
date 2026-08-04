@@ -352,7 +352,7 @@
     // URL WEB APP APPS SCRIPT SINKRON UTAMA
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
 
-    // MASTER DATA TARGET YANG SINKRON DENGAN DATA EXCEL PRIBADI (DITAMBAH HCI 2)
+    // MASTER DATA TARGET TERBARU (DIAPLIKASIKAN TAMBAHAN: LHT, FLN, TLS, NKO)
     const DEBT_MASTER = {
         "HCI 1": { name: "HCI 1", grandTotal: 4690200,   monthly: 781700 },
         "HCI 2": { name: "HCI 2", grandTotal: 12264000,  monthly: 511000 },
@@ -361,7 +361,11 @@
         "SPL":   { name: "SPL",   grandTotal: 15887,     monthly: 0 }, 
         "MKR":   { name: "MKR",   grandTotal: 1560000,   monthly: 520000 },
         "AGS":   { name: "AGS",   grandTotal: 67500000,  monthly: 1500000 },
-        "BPR":   { name: "BPR",   grandTotal: 109650000, monthly: 2550000 }
+        "BPR":   { name: "BPR",   grandTotal: 109650000, monthly: 2550000 },
+        "LHT":   { name: "LHT",   grandTotal: 5000000,   monthly: 0 },
+        "FLN":   { name: "FLN",   grandTotal: 1950000,   monthly: 0 },
+        "TLS":   { name: "TLS",   grandTotal: 3000000,   monthly: 0 },
+        "NKO":   { name: "NKO",   grandTotal: 500000,    monthly: 0 }
     };
 
     const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
@@ -383,8 +387,12 @@
             summaryCard.style.display = 'flex';
             listContainer.innerHTML = '';
 
-            // Inisialisasi pelacak pembayaran untuk masing-masing pos cicilan
-            let paidTracker = { "HCI 1": 0, "HCI 2": 0, "SPP 1": 0, "SPP 2": 0, "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0 };
+            // Inisialisasi pelacak pembayaran untuk seluruh pos cicilan
+            let paidTracker = { 
+                "HCI 1": 0, "HCI 2": 0, "SPP 1": 0, "SPP 2": 0, 
+                "SPL": 0, "MKR": 0, "AGS": 0, "BPR": 0,
+                "LHT": 0, "FLN": 0, "TLS": 0, "NKO": 0
+            };
 
             transactions.forEach(t => {
                 const tipeRaw = String(t.type || t.jenis || "").toLowerCase();
@@ -397,7 +405,6 @@
                         const cleanKey = key.toUpperCase().replace(/\s+/g, '');
                         const cleanDesc = desc.replace(/\s+/g, '');
 
-                        // Jika deskripsi dari cloud mengandung penanda kunci cicilan
                         if (cleanDesc.includes(cleanKey)) {
                             paidTracker[key] += nominal;
                         }
@@ -412,7 +419,8 @@
                 const item = DEBT_MASTER[key];
                 let totalPaid = paidTracker[key];
                 
-                if (key !== "SPL") {
+                // Pembatasan total bayar tidak melebihi grand total (kecuali variabel khusus)
+                if (!["SPL", "LHT", "FLN", "TLS", "NKO"].includes(key)) {
                     totalPaid = Math.min(totalPaid, item.grandTotal);
                 }
 
@@ -478,7 +486,8 @@
         if (item.monthly > 0) {
             monthsPaid = Math.floor(totalPaidRiil / item.monthly);
         } else {
-            monthsPaid = totalPaidRiil >= item.grandTotal ? 2 : Math.ceil(totalPaidRiil / 8000); 
+            // Logika fleksibel nominal opsional
+            monthsPaid = totalPaidRiil >= item.grandTotal ? 2 : Math.ceil(totalPaidRiil / (item.grandTotal / 2)); 
         }
 
         const timeline = [2026, 2027, 2028, 2029, 2030];
@@ -497,7 +506,7 @@
                 if (debtKey === "HCI 1") {
                     if ((year === 2026 && m >= 8) || (year === 2027 && m === 1)) isDihitung = true;
                 } 
-                // 2. HCI 2: Bulan 8 2026 sd Bulan 7 2028 (24 Bulan Baru)
+                // 2. HCI 2: Bulan 8 2026 sd Bulan 7 2028
                 else if (debtKey === "HCI 2") {
                     if ((year === 2026 && m >= 8) || year === 2027 || (year === 2028 && m <= 7)) isDihitung = true;
                 }
@@ -509,8 +518,8 @@
                 else if (debtKey === "SPP 2") {
                     if (year === 2026 && m >= 8 && m <= 12) isDihitung = true;
                 } 
-                // 5. SPL: Bulan 8 2026 sd Bulan 9 2026
-                else if (debtKey === "SPL") {
+                // 5. SPL & Pos Fleksibel Baru (LHT, FLN, TLS, NKO): Bulan 8 2026 sd Bulan 9 2026
+                else if (["SPL", "LHT", "FLN", "TLS", "NKO"].includes(debtKey)) {
                     if (year === 2026 && m >= 8 && m <= 9) isDihitung = true;
                 } 
                 // 6. MKR: Bulan 8 2026 sd Bulan 10 2026

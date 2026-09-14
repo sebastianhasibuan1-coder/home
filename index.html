@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Library Chart.js untuk Grafik Statik Naik Turun -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         :root {
             --bg-finance: #fff5f6;   /* Putih pink pudar super lembut & adem */
@@ -44,6 +47,7 @@
             display: flex;
             flex-direction: column;
             gap: 18px;
+            padding-bottom: 30px;
         }
 
         /* --- HEADER THEME SAKURA LIGHT --- */
@@ -331,6 +335,38 @@
             animation: fadeIn 0.25s ease-in-out;
         }
 
+        /* --- CHART STYLING UNTUK GRAFIK HARIAN --- */
+        .chart-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px -5px rgba(219, 39, 119, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(219, 39, 119, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+        }
+
         /* --- OVERLAY LOADING FULL LAYAR BARU --- */
         .full-screen-overlay {
             display: none;
@@ -425,7 +461,7 @@
                 </div>
             </div>
 
-            <!-- CHUTANG INTEGRATION LIST -->
+            <!-- HUTANG INTEGRATION LIST -->
             <div class="form-group" id="debtGroup">
                 <label>Pilih Kategori Hutang</label>
                 <select id="debtSelect">
@@ -463,12 +499,24 @@
         <div class="recent-title">5 Transaksi Terakhir</div>
         <div id="transactionList" class="transaction-list"></div>
     </div>
+
+    <!-- GRAFIK STATIK NAIK TURUN PENGELUARAN HARIAN (30 TITIK TERAKHIR) -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <span class="chart-title">📈 Tren Pengeluaran Harian</span>
+            <span style="font-size: 11px; color: var(--rose-expense); font-weight: 600;">30 Hari Terakhir</span>
+        </div>
+        <div class="chart-container">
+            <canvas id="dailyExpenseChart"></canvas>
+        </div>
+    </div>
 </div>
 
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
     
     let transactions = [];
+    let dailyExpenseChartInstance = null;
 
     const form = document.getElementById('financeForm');
     const descriptionInput = document.getElementById('descriptionInput');
@@ -513,7 +561,7 @@
     });
 
     function formatRupiah(angka) {
-        return 'Rp ' + String(angka).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return 'Rp ' + String(Math.round(angka)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
     amountInput.addEventListener('input', (e) => {
@@ -525,8 +573,10 @@
         let incomeTotal = 0;
         let expenseTotal = 0;
         transactions.forEach(t => {
-            if (t.type === 'income') incomeTotal += t.amount;
-            else expenseTotal += t.amount;
+            const tipe = String(t.type || t.jenis || "").toLowerCase();
+            const nominal = Number(t.amount || t.jumlah) || 0;
+            if (tipe === 'income' || tipe === 'pemasukan') incomeTotal += nominal;
+            else expenseTotal += nominal;
         });
         
         netBalance.innerText = formatRupiah(incomeTotal - expenseTotal);
@@ -538,17 +588,118 @@
         transactionList.innerHTML = '';
         const recent = transactions.slice(-5).reverse();
         recent.forEach(t => {
-            const isIncome = t.type === 'income';
+            const tipe = String(t.type || t.jenis || "").toLowerCase();
+            const nominal = Number(t.amount || t.jumlah) || 0;
+            const ket = t.description || t.keterangan || "Tanpa Keterangan";
+            
+            const isIncome = (tipe === 'income' || tipe === 'pemasukan');
             const itemClass = isIncome ? 'income' : 'expense';
             const sign = isIncome ? '+' : '-';
             
             const div = document.createElement('div');
             div.className = `transaction-item ${itemClass}`;
             div.innerHTML = `
-                <span class="item-desc">${t.description}</span>
-                <span class="item-amount ${itemClass}">${sign} ${formatRupiah(t.amount)}</span>
+                <span class="item-desc">${ket}</span>
+                <span class="item-amount ${itemClass}">${sign} ${formatRupiah(nominal)}</span>
             `;
             transactionList.appendChild(div);
+        });
+    }
+
+    // FUNGSI UTAMA UNTUK MENGOLAH KANVAS GRAFIK STATIK HARIAN (MAX 30 TITIK TERAKHIR)
+    function renderDailyExpenseChart() {
+        const dailyTotals = {};
+
+        transactions.forEach(t => {
+            const tipe = String(t.type || t.jenis || "").toLowerCase();
+            const isExpense = (tipe === 'expense' || tipe === 'pengeluaran' || tipe === '');
+
+            if (isExpense) {
+                const nominal = Number(t.amount || t.jumlah) || 0;
+                const dateVal = t.tanggal || t.date || t.timestamp || t.waktu;
+                
+                let dateKey = "";
+                if (dateVal) {
+                    const d = new Date(dateVal);
+                    if (!isNaN(d.getTime())) {
+                        const day = String(d.getDate()).padStart(2, '0');
+                        const month = String(d.getMonth() + 1).padStart(2, '0');
+                        dateKey = `${day}/${month}`;
+                    }
+                }
+                
+                if (!dateKey) dateKey = "Lainnya";
+
+                dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + nominal;
+            }
+        });
+
+        // Ambil maksimal 30 titik tanggal ter-update dari database
+        const sortedDates = Object.keys(dailyTotals).slice(-30);
+        const dataValues = sortedDates.map(d => dailyTotals[d]);
+
+        const ctx = document.getElementById('dailyExpenseChart').getContext('2d');
+
+        if (dailyExpenseChartInstance) {
+            dailyExpenseChartInstance.destroy();
+        }
+
+        // Inisialisasi Chart Line Naik-Turun Sesuai Tema Sakura Light
+        dailyExpenseChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: sortedDates.length ? sortedDates : ['Belum Ada Data'],
+                datasets: [{
+                    label: 'Pengeluaran (Rp)',
+                    data: dataValues.length ? dataValues : [0],
+                    borderColor: '#e11d48',
+                    backgroundColor: 'rgba(225, 29, 72, 0.08)',
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.35,
+                    pointBackgroundColor: '#e11d48',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 1.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Pengeluaran: ' + formatRupiah(context.raw);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            color: '#64748b',
+                            font: { family: 'Inter', size: 10 }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(219, 39, 119, 0.06)' },
+                        ticks: {
+                            color: '#64748b',
+                            font: { family: 'Inter', size: 10 },
+                            callback: function(val) {
+                                if (val >= 1000000) return (val / 1000000) + ' Jt';
+                                if (val >= 1000) return (val / 1000) + ' Rb';
+                                return val;
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
 
@@ -599,6 +750,7 @@
             transactions = (data && data.length > 0) ? data : [];
             renderTransactions();
             updateBudget();
+            renderDailyExpenseChart();
             fullScreenOverlay.style.display = 'none';
         })
         .catch(error => {
@@ -606,6 +758,7 @@
             alert('Mode Offline. Gagal tersambung ke server.');
             renderTransactions();
             updateBudget();
+            renderDailyExpenseChart();
             fullScreenOverlay.style.display = 'none';
         });
     }

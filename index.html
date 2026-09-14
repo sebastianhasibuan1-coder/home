@@ -500,10 +500,10 @@
         <div id="transactionList" class="transaction-list"></div>
     </div>
 
-    <!-- GRAFIK STATIK NAIK TURUN PENGELUARAN HARIAN (30 TITIK TERAKHIR) -->
+    <!-- GRAFIK STATIK NAIK TURUN PENGELUARAN HARIAN NON-CICILAN -->
     <div class="chart-card">
         <div class="chart-header">
-            <span class="chart-title">📈 Tren Pengeluaran Harian</span>
+            <span class="chart-title">📈 Pengeluaran Harian (Non-Cicilan)</span>
             <span style="font-size: 11px; color: var(--rose-expense); font-weight: 600;">30 Hari Terakhir</span>
         </div>
         <div class="chart-container">
@@ -515,6 +515,9 @@
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
     
+    // KATALOG POS CICILAN UNTUK FILTER EXPENSE
+    const DEBT_KEYS = ["HCI 1", "HCI 2", "SPP 1", "SPP 2", "SPL", "MKR", "AGS", "BPR", "LHT", "FLN", "TLS", "NKO"];
+
     let transactions = [];
     let dailyExpenseChartInstance = null;
 
@@ -606,7 +609,7 @@
         });
     }
 
-    // FUNGSI UTAMA UNTUK MENGOLAH KANVAS GRAFIK STATIK HARIAN (MAX 30 TITIK TERAKHIR)
+    // FUNGSI UTAMA UNTUK MENGOLAH GRAFIK HARIAN DENGAN FILTER EXCLUDE CICILAN
     function renderDailyExpenseChart() {
         const dailyTotals = {};
 
@@ -615,22 +618,34 @@
             const isExpense = (tipe === 'expense' || tipe === 'pengeluaran' || tipe === '');
 
             if (isExpense) {
-                const nominal = Number(t.amount || t.jumlah) || 0;
-                const dateVal = t.tanggal || t.date || t.timestamp || t.waktu;
-                
-                let dateKey = "";
-                if (dateVal) {
-                    const d = new Date(dateVal);
-                    if (!isNaN(d.getTime())) {
-                        const day = String(d.getDate()).padStart(2, '0');
-                        const month = String(d.getMonth() + 1).padStart(2, '0');
-                        dateKey = `${day}/${month}`;
-                    }
-                }
-                
-                if (!dateKey) dateKey = "Lainnya";
+                const desc = String(t.description || t.keterangan || "").toUpperCase().replace(/\s+/g, ' ');
 
-                dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + nominal;
+                // PELEWAKAN/FILTERING: Cek apakah keterangan mengandung unsur "BAYAR CICILAN" atau pos kode hutang
+                const isDebtPayment = DEBT_KEYS.some(key => {
+                    const cleanKey = key.toUpperCase().replace(/\s+/g, '');
+                    const cleanDesc = desc.replace(/\s+/g, '');
+                    return cleanDesc.includes("CICILAN") || cleanDesc.includes(cleanKey);
+                });
+
+                // HANYA DIPROSES JIKA BUKAN BAYAR CICILAN
+                if (!isDebtPayment) {
+                    const nominal = Number(t.amount || t.jumlah) || 0;
+                    const dateVal = t.tanggal || t.date || t.timestamp || t.waktu;
+                    
+                    let dateKey = "";
+                    if (dateVal) {
+                        const d = new Date(dateVal);
+                        if (!isNaN(d.getTime())) {
+                            const day = String(d.getDate()).padStart(2, '0');
+                            const month = String(d.getMonth() + 1).padStart(2, '0');
+                            dateKey = `${day}/${month}`;
+                        }
+                    }
+                    
+                    if (!dateKey) dateKey = "Lainnya";
+
+                    dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + nominal;
+                }
             }
         });
 
@@ -644,13 +659,12 @@
             dailyExpenseChartInstance.destroy();
         }
 
-        // Inisialisasi Chart Line Naik-Turun Sesuai Tema Sakura Light
         dailyExpenseChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: sortedDates.length ? sortedDates : ['Belum Ada Data'],
                 datasets: [{
-                    label: 'Pengeluaran (Rp)',
+                    label: 'Pengeluaran Murni (Rp)',
                     data: dataValues.length ? dataValues : [0],
                     borderColor: '#e11d48',
                     backgroundColor: 'rgba(225, 29, 72, 0.08)',
@@ -672,7 +686,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return 'Pengeluaran: ' + formatRupiah(context.raw);
+                                return 'Pengeluaran Murni: ' + formatRupiah(context.raw);
                             }
                         }
                     }

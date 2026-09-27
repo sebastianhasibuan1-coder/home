@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Level Diri - Gamifikasi Karakter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-game: #f2f7f5;       /* Match Calm Sage Theme */
+            --card-bg: #ffffff;
+            --card-inner: #e6f0ec;
+            --primary-accent: #0d9488;
+            --gold-accent: #d97706;
+            --purple-rpg: #7c3aed;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-game);
+            color: var(--text-dark);
+            padding: 20px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            padding-bottom: 30px;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 4px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            background: linear-gradient(135deg, #a855f7, var(--purple-rpg));
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.25);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-dark);
+        }
+
+        .btn-back {
+            background-color: var(--card-bg);
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(13, 148, 136, 0.15);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+        }
+
+        /* --- CHARACTER STATUS CARD --- */
+        .status-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .level-badge {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--purple-rpg);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .rank-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background-color: rgba(217, 119, 6, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(217, 119, 6, 0.2);
+        }
+
+        .exp-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .progress-bar-bg {
+            background-color: rgba(124, 58, 237, 0.12);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #a855f7, var(--purple-rpg));
+            height: 100%;
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- CARD FORM INPUT --- */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.08);
+            border: 1px solid rgba(13, 148, 136, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--card-inner);
+            border: 1px solid rgba(13, 148, 136, 0.12);
+            border-radius: 12px;
+            color: var(--text-dark);
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--purple-rpg);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+        }
+
+        /* QUICK EXP PRESET BUTTONS */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .btn-preset {
+            background-color: var(--card-inner);
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            padding: 10px 4px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--purple-rpg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-preset:active {
+            transform: scale(0.95);
+            background-color: rgba(124, 58, 237, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #a855f7, var(--purple-rpg));
+            border: none;
+            border-radius: 14px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 6px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* --- FEED LOG KEGIATAN --- */
+        .recent-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-left: 4px;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.04);
+            border: 1px solid rgba(124, 58, 237, 0.08);
+            border-left: 4px solid var(--purple-rpg);
+        }
+
+        .item-info .title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .item-info .date {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .item-exp {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--purple-rpg);
+            background-color: rgba(124, 58, 237, 0.1);
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+
+        /* --- LOADING OVERLAY --- */
+        .full-screen-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: rgba(242, 247, 245, 0.92);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .spinner {
+            width: 44px; height: 44px;
+            border: 4px solid rgba(124, 58, 237, 0.15);
+            border-top-color: var(--purple-rpg);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div id="fullScreenOverlay" class="full-screen-overlay">
+    <div class="spinner"></div>
+    <div id="overlayText" style="font-size:15px; font-weight:600; color:var(--text-dark);">Menyinkronkan EXP Karakter...</div>
+</div>
+
+<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-brand">
+            <div class="header-logo">⚔️</div>
+            <h1>Level Diri Hasibuan</h1>
+        </div>
+        <a href="index.html" class="btn-back">⬅️ Keuangan</a>
+    </div>
+
+    <!-- CHARACTER STATUS CARD -->
+    <div class="status-card">
+        <div class="level-header">
+            <div>
+                <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Status Karakter</div>
+                <div id="levelDisplay" class="level-badge">Lvl 1</div>
+            </div>
+            <div id="rankTitleDisplay" class="rank-title">Pemula Bersemangat 🌿</div>
+        </div>
+
+        <div class="progress-bar-bg">
+            <div id="progressBarFill" class="progress-bar-fill"></div>
+        </div>
+
+        <div class="exp-info">
+            <span>EXP Karakter: <strong id="totalExpDisplay" style="color: var(--purple-rpg);">0 EXP</strong></span>
+            <span id="levelProgressText">0 / 100 EXP</span>
+        </div>
+    </div>
+
+    <!-- FORM INPUT KEGIATAN -->
+    <div class="card">
+        <form id="expForm">
+            <div class="form-group">
+                <label>Nama Kegiatan Positif</label>
+                <input type="text" id="kegiatanInput" placeholder="Contoh: Olahraga 30 Menit / Baca Buku" required>
+            </div>
+
+            <div class="form-group">
+                <label>Perolehan EXP</label>
+                <input type="number" id="expInput" placeholder="Contoh: 50" min="1" required>
+                
+                <!-- PRESET CEPAT -->
+                <div class="preset-grid">
+                    <button type="button" class="btn-preset" onclick="setExp(25)">+25 (Ringan)</button>
+                    <button type="button" class="btn-preset" onclick="setExp(50)">+50 (Sedang)</button>
+                    <button type="button" class="btn-preset" onclick="setExp(100)">+100 (Berat)</button>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-submit">⚡ Klaim EXP & Simpan</button>
+        </form>
+    </div>
+
+    <!-- LOG RIWAYAT KEGIATAN -->
+    <div>
+        <div class="recent-title">Riwayat Pencapaian EXP</div>
+        <div id="activityList" class="activity-list"></div>
+    </div>
+</div>
+
+<script>
+    // URL WEB APP APPS SCRIPT ANDA
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
+
+    let activityLogs = [];
+
+    const levelDisplay = document.getElementById('levelDisplay');
+    const rankTitleDisplay = document.getElementById('rankTitleDisplay');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const totalExpDisplay = document.getElementById('totalExpDisplay');
+    const levelProgressText = document.getElementById('levelProgressText');
+    const activityList = document.getElementById('activityList');
+    
+    const expForm = document.getElementById('expForm');
+    const kegiatanInput = document.getElementById('kegiatanInput');
+    const expInput = document.getElementById('expInput');
+    const fullScreenOverlay = document.getElementById('fullScreenOverlay');
+
+    function setExp(val) {
+        expInput.value = val;
+    }
+
+    // FORMULA RPG LEVELING
+    function calculateLevel(totalExp) {
+        let level = 1;
+        let expNeededForNext = 100; // Level 1 butuh 100 EXP
+        let currentExp = totalExp;
+
+        while (currentExp >= expNeededForNext) {
+            currentExp -= expNeededForNext;
+            level++;
+            expNeededForNext = level * 100; // Level N butuh N*100 EXP
+        }
+
+        let rank = "Pemula Bersemangat 🌿";
+        if (level >= 50) rank = "Legenda Diri 🐉";
+        else if (level >= 35) rank = "Sifu Kehidupan 👑";
+        else if (level >= 20) rank = "Master Produktivitas 🌟";
+        else if (level >= 10) rank = "Ksatria Disiplin 🛡️";
+        else if (level >= 5) rank = "Pejuang Kebiasaan ⚔️";
+
+        const pct = Math.min(100, Math.floor((currentExp / expNeededForNext) * 100));
+
+        return {
+            level: level,
+            rank: rank,
+            currentExpInLevel: currentExp,
+            expNeededForNext: expNeededForNext,
+            progressPct: pct
+        };
+    }
+
+    function renderStatus() {
+        let grandTotalExp = 0;
+        activityLogs.forEach(item => {
+            grandTotalExp += Number(item.exp) || 0;
+        });
+
+        const stats = calculateLevel(grandTotalExp);
+
+        levelDisplay.innerText = `Lvl ${stats.level}`;
+        rankTitleDisplay.innerText = stats.rank;
+        totalExpDisplay.innerText = `${grandTotalExp.toLocaleString('id-ID')} EXP`;
+        levelProgressText.innerText = `${stats.currentExpInLevel} / ${stats.expNeededForNext} EXP`;
+        progressBarFill.style.width = `${stats.progressPct}%`;
+    }
+
+    function renderHistory() {
+        activityList.innerHTML = '';
+        if (activityLogs.length === 0) {
+            activityList.innerHTML = '<div style="text-align:center; color:#64748b; font-size:13px; padding:20px;">Belum ada kegiatan tercatat. Kumpulkan EXP pertamamu!</div>';
+            return;
+        }
+
+        const recent = [...activityLogs].reverse().slice(0, 10); // 10 kegiatan terbaru
+        recent.forEach(act => {
+            const dateObj = new Date(act.tanggal);
+            const dateStr = isNaN(dateObj.getTime()) ? 'Baru saja' : dateObj.toLocaleDateString('id-ID', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB';
+
+            const div = document.createElement('div');
+            div.className = 'activity-item';
+            div.innerHTML = `
+                <div class="item-info">
+                    <div class="title">${act.kegiatan}</div>
+                    <div class="date">📅 ${dateStr}</div>
+                </div>
+                <div class="item-exp">+${act.exp} EXP</div>
+            `;
+            activityList.appendChild(div);
+        });
+    }
+
+    expForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const kegiatan = kegiatanInput.value.trim();
+        const expGained = parseInt(expInput.value) || 0;
+
+        if (!kegiatan || expGained <= 0) return alert('Isi kegiatan dan nominal EXP yang valid.');
+
+        fullScreenOverlay.style.display = 'flex';
+
+        const payload = {
+            action: 'add_exp',
+            sheet: 'LEVEL_DIRI',
+            kegiatan: kegiatan,
+            exp: expGained
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            kegiatanInput.value = '';
+            expInput.value = '';
+            init();
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Gagal menyimpan EXP. Periksa koneksi internet Anda.');
+            fullScreenOverlay.style.display = 'none';
+        });
+    });
+
+    function init() {
+        fullScreenOverlay.style.display = 'flex';
+        const cacheBusterUrl = SCRIPT_URL + '?action=get_level&_ts=' + new Date().getTime();
+
+        fetch(cacheBusterUrl)
+        .then(res => res.json())
+        .then(data => {
+            activityLogs = Array.isArray(data) ? data : [];
+            renderStatus();
+            renderHistory();
+            fullScreenOverlay.style.display = 'none';
+        })
+        .catch(err => {
+            console.error(err);
+            renderStatus();
+            renderHistory();
+            fullScreenOverlay.style.display = 'none';
+        });
+    }
+
+    init();
+</script>
+
+</body>
+</html>

@@ -112,7 +112,7 @@
             gap: 16px;
         }
 
-        /* BINGKAI BADGE DENGAN GAMBAR GAMBAR DARI WEB */
+        /* BINGKAI BADGE DENGAN GAMBAR IKON DARI WEB */
         .rank-avatar-frame {
             width: 72px;
             height: 72px;
@@ -127,7 +127,8 @@
             position: relative;
             flex-shrink: 0;
             overflow: hidden;
-            padding: 6px;
+            padding: 8px;
+            font-size: 36px;
         }
 
         .rank-avatar-frame img {
@@ -364,12 +365,12 @@
         <a href="index.html" class="btn-back">⬅️ Keuangan</a>
     </div>
 
-    <!-- CHARACTER STATUS CARD WITH WEB BADGE IMAGES -->
+    <!-- CHARACTER STATUS CARD -->
     <div class="status-card">
         <div class="character-profile">
-            <!-- WADAH GAMBAR IKON DARI WEB -->
+            <!-- WADAH GAMBAR IKON DARI WEB METODE SVG ICONIFY -->
             <div id="rankAvatarFrame" class="rank-avatar-frame">
-                <img id="rankAvatarImg" src="https://img.icons8.com/3d-fluency/96/sprout.png" alt="Badge Level">
+                <img id="rankAvatarImg" src="https://api.iconify.design/fluent-emoji:seedling.svg" alt="Badge Level" onerror="handleImageError(this)">
             </div>
             
             <div class="profile-details">
@@ -443,75 +444,82 @@
         expInput.value = val;
     }
 
-    // BASE URL IKON 3D FLUENCY CDN
-    const BASE_ICON_API = "https://img.icons8.com/3d-fluency/96/";
-    
+    // BASE URL IKON 3D FLUENCY CDN (ICONIFY FREE API - ANTI BLOKIR)
+    const BASE_ICON_API = "https://api.iconify.design/fluent-emoji:";
+
     // KATALOG PEMETAAN IKON UNIK TIAP LEVEL (1 - 100)
     const LEVEL_ICONS = {
         // --- TIER 1: NOVICE & BENIH (Lvl 1 - 9) ---
-        1:  BASE_ICON_API + "sprout.png",           // Tunas Pertama
-        2:  BASE_ICON_API + "seedling.png",         // Benih Tumbuh
-        3:  BASE_ICON_API + "leaf.png",             // Daun Muda
-        4:  BASE_ICON_API + "potted-plant.png",     // Tanaman Pot
-        5:  BASE_ICON_API + "oak-tree.png",         // Pohon Kokoh
-        6:  BASE_ICON_API + "wooden-sword.png",     // Pedang Kayu
-        7:  BASE_ICON_API + "stone.png",            // Batu Ketahanan
-        8:  BASE_ICON_API + "dagger.png",           // Belati Pemula
-        9:  BASE_ICON_API + "leather.png",          // Baju Kulit Pemula
+        1:  BASE_ICON_API + "seedling.svg",           // Tunas Pertama
+        2:  BASE_ICON_API + "herb.svg",               // Benih Tumbuh
+        3:  BASE_ICON_API + "leaves.svg",             // Daun Muda
+        4:  BASE_ICON_API + "potted-plant.svg",       // Tanaman Pot
+        5:  BASE_ICON_API + "deciduous-tree.svg",     // Pohon Rindang
+        6:  BASE_ICON_API + "wood.svg",               // Kayu Pemula
+        7:  BASE_ICON_API + "rock.svg",               // Batu Ketahanan
+        8:  BASE_ICON_API + "dagger.svg",             // Belati Pemula
+        9:  BASE_ICON_API + "running-shoe.svg",       // Sepatu Perjuangan
 
         // --- TIER 2: ADVENTURER & BESI (Lvl 10 - 19) ---
-        10: BASE_ICON_API + "shield.png",           // Perisai Besi
-        11: BASE_ICON_API + "iron.png",             // Batangan Besi
-        12: BASE_ICON_API + "sword.png",            // Pedang Ksatria
-        13: BASE_ICON_API + "battle-axe.png",       // Kapak Perang
-        14: BASE_ICON_API + "archery.png",          // Panah Presisi
-        15: BASE_ICON_API + "target.png",           // Target Sasaran
-        16: BASE_ICON_API + "knight.png",           // Helm Ksatria
-        17: BASE_ICON_API + "silver-medal.png",     // Medali Perak
-        18: BASE_ICON_API + "fire.png",             // Api Semangat
-        19: BASE_ICON_API + "lightning-bolt.png",   // Petir Kecepatan
+        10: BASE_ICON_API + "shield.svg",             // Perisai Besi
+        11: BASE_ICON_API + "hammer-and-wrench.svg",  // Alat Tempa
+        12: BASE_ICON_API + "crossed-swords.svg",     // Pedang Ksatria
+        13: BASE_ICON_API + "axe.svg",                // Kapak Perang
+        14: BASE_ICON_API + "bow-and-arrow.svg",      // Panah Presisi
+        15: BASE_ICON_API + "bullseye.svg",           // Target Sasaran
+        16: BASE_ICON_API + "military-helmet.svg",    // Helm Ksatria
+        17: BASE_ICON_API + "silver-medal.svg",       // Medali Perak
+        18: BASE_ICON_API + "fire.svg",               // Api Semangat
+        19: BASE_ICON_API + "high-voltage.svg",       // Petir Kecepatan
 
         // --- TIER 3: KNIGHT & EMAS (Lvl 20 - 29) ---
-        20: BASE_ICON_API + "bronze-medal.png",     // Lencana Perunggu
-        21: BASE_ICON_API + "gold-medal.png",       // Medali Emas
-        22: BASE_ICON_API + "sports-trophy.png",    // Piala Turnamen
-        23: BASE_ICON_API + "crown.png",            // Mahkota Ksatria
-        24: BASE_ICON_API + "ruby.png",             // Batu Permata Merah
-        25: BASE_ICON_API + "emerald.png",          // Permata Zamrud
-        26: BASE_ICON_API + "starburst.png",        // Bintang Kejayaan
-        27: BASE_ICON_API + "crystal-ball.png",     // Bola Kristal
-        28: BASE_ICON_API + "wizard.png",           // Topi Penyihir
-        29: BASE_ICON_API + "magic.png",            // Tongkat Sihir
+        20: BASE_ICON_API + "bronze-medal.svg",       // Lencana Perunggu
+        21: BASE_ICON_API + "gold-medal.svg",         // Medali Emas
+        22: BASE_ICON_API + "trophy.svg",             // Piala Turnamen
+        23: BASE_ICON_API + "crown.svg",              // Mahkota Ksatria
+        24: BASE_ICON_API + "gem-stone.svg",          // Permata Zamrud
+        25: BASE_ICON_API + "sparkles.svg",           // Bintang Kejayaan
+        26: BASE_ICON_API + "crystal-ball.svg",       // Bola Kristal
+        27: BASE_ICON_API + "magic-wand.svg",         // Tongkat Sihir
+        28: BASE_ICON_API + "mantelpiece-clock.svg",   // Jam Disiplin
+        29: BASE_ICON_API + "hourglass-done.svg",     // Waktu Produktif
 
         // --- TIER 4: MASTER & BERLIAN (Lvl 30 - 49) ---
-        30: BASE_ICON_API + "diamond.png",          // Berlian Ungu
-        35: BASE_ICON_API + "gem.png",              // Kristal Langka
-        40: BASE_ICON_API + "king.png",             // Mahkota Raja
-        45: BASE_ICON_API + "imperial-crown.png",   // Mahkota Kekaisaran
+        30: BASE_ICON_API + "diamond-with-a-dot.svg", // Berlian Ungu
+        35: BASE_ICON_API + "ring.svg",               // Cincin Kejayaan
+        40: BASE_ICON_API + "king-crown.svg",         // Mahkota Raja
+        45: BASE_ICON_API + "coin.svg",               // Koin Emas Kemakmuran
 
         // --- TIER 5: MYTHIC & LEGENDA (Lvl 50 - 99) ---
-        50: BASE_ICON_API + "dragon.png",           // Naga Merah
-        60: BASE_ICON_API + "phoenix.png",          // Burung Phoenix
-        70: BASE_ICON_API + "volcano.png",          // Gunung Berapi
-        80: BASE_ICON_API + "comet.png",            // Komet Antariksa
-        90: BASE_ICON_API + "galaxy.png",           // Galaksi Jagat Raya
+        50: BASE_ICON_API + "dragon-face.svg",        // Naga Merah
+        60: BASE_ICON_API + "bird.svg",               // Burung Phoenix
+        70: BASE_ICON_API + "volcano.svg",            // Gunung Berapi
+        80: BASE_ICON_API + "comet.svg",              // Komet Antariksa
+        90: BASE_ICON_API + "milky-way.svg",          // Galaksi Jagat Raya
 
         // --- TIER ULTIMATE: LEVEL 100 ---
-        100: BASE_ICON_API + "champion.png"         // Trofi Dewa Legenda
+        100: BASE_ICON_API + "military-medal.svg"     // Trofi Dewa Legenda
     };
+
+    // FALLBACK JIKA GAMBAR GAGAL LOAD (AUTO SWITCH KE EMOJI TEKS)
+    function handleImageError(imgEl) {
+        imgEl.style.display = 'none';
+        rankAvatarFrame.innerHTML = "⚔️";
+    }
 
     // FUNGSI MENGAMBIL GAMBAR WEB SESUAI LEVEL
     function getWebIconForLevel(lvl) {
         if (LEVEL_ICONS[lvl]) return LEVEL_ICONS[lvl];
         
-        // DYNAMIC FALLBACK JIKA BELUM DITULIS SPESIFIK PADA DICTIONARY
-        const iconsList = [
-            "sprout", "seedling", "leaf", "potted-plant", "oak-tree", "sword", 
-            "shield", "knight", "sports-trophy", "crown", "diamond", "starburst", "fire", 
-            "lightning-bolt", "dragon", "king", "galaxy", "champion"
+        // FALLBACK IKON JIKA LEVEL BELUM TERDAFTAR DI OBJEK
+        const fallbackList = [
+            "seedling.svg", "herb.svg", "leaves.svg", "deciduous-tree.svg", 
+            "crossed-swords.svg", "shield.svg", "trophy.svg", "crown.svg", 
+            "gem-stone.svg", "sparkles.svg", "fire.svg", "high-voltage.svg", 
+            "dragon-face.svg", "military-medal.svg"
         ];
-        const iconIndex = (lvl - 1) % iconsList.length;
-        return `${BASE_ICON_API}${iconsList[iconIndex]}.png`;
+        const index = (lvl - 1) % fallbackList.length;
+        return `${BASE_ICON_API}${fallbackList[index]}`;
     }
 
     // FORMULA RPG LEVELING & SISTEM PANGKAT VISUAL
@@ -613,7 +621,7 @@
         progressBarFill.style.width = `${stats.progressPct}%`;
 
         // UPDATE GAMBAR DARI WEB DAN FRAME
-        rankAvatarImg.src = getWebIconForLevel(stats.level);
+        rankAvatarFrame.innerHTML = `<img id="rankAvatarImg" src="${getWebIconForLevel(stats.level)}" alt="Badge Level" onerror="handleImageError(this)">`;
         rankAvatarFrame.style.borderColor = cfg.borderColor;
         rankAvatarFrame.style.boxShadow = `0 6px 18px ${cfg.glowColor}`;
         

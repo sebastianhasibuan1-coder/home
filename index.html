@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dompet Hasibuan - Sakura Light Edition</title>
+    <title>Dompet Hasibuan - Calm Sage Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
@@ -13,12 +13,12 @@
 
     <style>
         :root {
-            --bg-finance: #fff5f6;   /* Putih pink pudar super lembut & adem */
+            --bg-finance: #f2f7f5;   /* Hijau sage pudar super adem & menenangkan */
             --card-bg: #ffffff;      /* Putih bersih bersinar */
-            --card-inner: #fff0f2;   /* Pink pudar tipis untuk input box */
-            --emerald-money: #0d9488; /* Hijau daun sakura tua (Kontras & Teduh) */
-            --rose-expense: #e11d48;  /* Merah kelopak sakura matang */
-            --sakura-pink: #db2777;   /* Aksen pink cerah elegan */
+            --card-inner: #e6f0ec;   /* Soft mint/sage tipis untuk input box */
+            --emerald-money: #0f766e; /* Teal-green teduh & kontras untuk Pemasukan */
+            --rose-expense: #c2410c;  /* Terracotta / Burnt Amber lembut (Pengganti merah bahaya) */
+            --calm-accent: #0d9488;   /* Aksen hijau teal utama */
             --text-dark: #1e293b;    /* Teks utama gelap tajam */
             --text-muted: #64748b;   /* Teks sekunder kelabu */
         }
@@ -50,7 +50,7 @@
             padding-bottom: 30px;
         }
 
-        /* --- HEADER THEME SAKURA LIGHT --- */
+        /* --- HEADER THEME CALM SAGE --- */
         .header {
             display: flex;
             justify-content: space-between;
@@ -65,7 +65,7 @@
         }
 
         .header-logo {
-            background: linear-gradient(135deg, #f472b6, var(--sakura-pink));
+            background: linear-gradient(135deg, #2dd4bf, var(--calm-accent));
             width: 36px;
             height: 36px;
             border-radius: 10px;
@@ -75,7 +75,7 @@
             font-weight: 700;
             color: #ffffff;
             font-size: 18px;
-            box-shadow: 0 4px 10px rgba(219, 39, 119, 0.15);
+            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2);
         }
 
         .header h1 {
@@ -125,8 +125,8 @@
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 22px;
-            box-shadow: 0 10px 25px -5px rgba(219, 39, 119, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(219, 39, 119, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(13, 148, 136, 0.08);
             position: relative;
             overflow: hidden;
         }
@@ -136,7 +136,7 @@
             position: absolute;
             top: 0; right: 0;
             width: 120px; height: 120px;
-            background: radial-gradient(circle, rgba(219, 39, 119, 0.03) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.05) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -162,7 +162,7 @@
             gap: 12px;
             margin-top: 20px;
             padding-top: 18px;
-            border-top: 1px solid rgba(219, 39, 119, 0.1);
+            border-top: 1px solid rgba(13, 148, 136, 0.12);
         }
 
         .flow-box {
@@ -208,7 +208,7 @@
             width: 100%;
             padding: 14px;
             background-color: var(--card-inner);
-            border: 1px solid rgba(219, 39, 119, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.12);
             border-radius: 12px;
             color: var(--text-dark);
             font-size: 15px;
@@ -217,9 +217,9 @@
         }
 
         input:focus, select:focus {
-            border-color: var(--sakura-pink);
+            border-color: var(--calm-accent);
             background-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.1);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
         }
 
         .radio-group {
@@ -236,7 +236,7 @@
             gap: 8px;
             padding: 14px;
             background-color: var(--card-inner);
-            border: 1px solid rgba(219, 39, 119, 0.05);
+            border: 1px solid rgba(13, 148, 136, 0.08);
             border-radius: 12px;
             cursor: pointer;
             font-size: 14px;
@@ -251,20 +251,20 @@
 
         #typeIncome:checked + .radio-label {
             border-color: var(--emerald-money);
-            background-color: rgba(13, 148, 136, 0.1);
+            background-color: rgba(15, 118, 110, 0.12);
             color: var(--emerald-money);
         }
 
         #typeExpense:checked + .radio-label {
             border-color: var(--rose-expense);
-            background-color: rgba(225, 29, 72, 0.1);
+            background-color: rgba(194, 65, 12, 0.1);
             color: var(--rose-expense);
         }
 
         .btn-submit {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #f472b6, var(--sakura-pink));
+            background: linear-gradient(135deg, #14b8a6, var(--calm-accent));
             border: none;
             border-radius: 14px;
             color: #ffffff;
@@ -272,7 +272,7 @@
             font-weight: 700;
             cursor: pointer;
             margin-top: 6px;
-            box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
             transition: all 0.2s ease;
         }
 
@@ -309,8 +309,8 @@
             padding: 14px 16px;
             background-color: var(--card-bg);
             border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(219, 39, 119, 0.04);
-            border: 1px solid rgba(219, 39, 119, 0.03);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.04);
+            border: 1px solid rgba(13, 148, 136, 0.05);
             border-left: 4px solid transparent;
         }
 
@@ -340,8 +340,8 @@
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(219, 39, 119, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(219, 39, 119, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(13, 148, 136, 0.05);
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -367,7 +367,7 @@
             height: 220px;
         }
 
-        /* --- OVERLAY LOADING FULL LAYAR BARU --- */
+        /* --- OVERLAY LOADING FULL LAYAR --- */
         .full-screen-overlay {
             display: none;
             position: fixed;
@@ -375,7 +375,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(255, 245, 246, 0.9);
+            background-color: rgba(242, 247, 245, 0.92);
             z-index: 9999;
             flex-direction: column;
             align-items: center;
@@ -386,8 +386,8 @@
         .spinner {
             width: 44px;
             height: 44px;
-            border: 4px solid rgba(219, 39, 119, 0.15);
-            border-top-color: var(--sakura-pink);
+            border: 4px solid rgba(13, 148, 136, 0.15);
+            border-top-color: var(--calm-accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -421,7 +421,7 @@
     <!-- PANEL HEADER BRAND -->
     <div class="header">
         <div class="header-brand">
-            <div class="header-logo">🌸</div>
+            <div class="header-logo">🌿</div>
             <h1>Dompet Hasibuan</h1>
         </div>
         <div class="nav-buttons">
@@ -441,7 +441,7 @@
                 <div id="totalIncomeBox" class="flow-val in">Rp 0</div>
             </div>
             <div class="flow-box">
-                <div class="flow-title">🌸 Pengeluaran</div>
+                <div class="flow-title">🍂 Pengeluaran</div>
                 <div id="totalExpenseBox" class="flow-val out">Rp 0</div>
             </div>
         </div>
@@ -457,11 +457,11 @@
                     <label for="typeIncome" class="radio-label">🌱 Pemasukan</label>
 
                     <input type="radio" id="typeExpense" name="transactionType" value="expense">
-                    <label for="typeExpense" class="radio-label">🌸 Pengeluaran</label>
+                    <label for="typeExpense" class="radio-label">🍂 Pengeluaran</label>
                 </div>
             </div>
 
-            <!-- HUTANG INTEGRATION LIST (DI-UPDATE: Dihapus NKO & SPL) -->
+            <!-- HUTANG INTEGRATION LIST -->
             <div class="form-group" id="debtGroup">
                 <label>Pilih Kategori Hutang</label>
                 <select id="debtSelect">
@@ -514,7 +514,7 @@
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
     
-    // KATALOG POS CICILAN UNTUK FILTER EXPENSE (DI-UPDATE: Dihapus SPL & NKO)
+    // KATALOG POS CICILAN UNTUK FILTER EXPENSE
     const DEBT_KEYS = ["HCI 1", "HCI 2", "SPP 1", "SPP 2", "MKR", "AGS", "BPR", "LHT", "FLN", "TLS", "GRJA"];
 
     let transactions = [];
@@ -665,12 +665,12 @@
                 datasets: [{
                     label: 'Pengeluaran Murni (Rp)',
                     data: dataValues.length ? dataValues : [0],
-                    borderColor: '#e11d48',
-                    backgroundColor: 'rgba(225, 29, 72, 0.08)',
+                    borderColor: '#c2410c',
+                    backgroundColor: 'rgba(194, 65, 12, 0.08)',
                     borderWidth: 2.5,
                     fill: true,
                     tension: 0.35,
-                    pointBackgroundColor: '#e11d48',
+                    pointBackgroundColor: '#c2410c',
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 1.5,
                     pointRadius: 4,
@@ -700,7 +700,7 @@
                     },
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(219, 39, 119, 0.06)' },
+                        grid: { color: 'rgba(13, 148, 136, 0.08)' },
                         ticks: {
                             color: '#64748b',
                             font: { family: 'Inter', size: 10 },

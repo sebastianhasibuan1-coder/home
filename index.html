@@ -418,19 +418,12 @@
     <!-- PANEL HEADER BRAND -->
     <div class="header">
         <div class="header-brand">
-            <!-- LOGO MANEKI-NEKO -->
+            <!-- IKON UANG / LEMBARAN KAS BERSIH -->
             <div class="header-logo">
-                <svg width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 5C8.68629 5 6 7.68629 6 11C6 12.5 6.5 13.8 7.3 14.8C6.5 16.2 6 18 6 19.5C6 20.3284 6.67157 21 7.5 21H16.5C17.3284 21 18 20.3284 18 19.5C18 18 17.5 16.2 16.7 14.8C17.5 13.8 18 12.5 18 11C18 7.68629 15.3137 5 12 5Z" fill="#FFFFFF"/>
-                    <path d="M7 5.5L9.5 9.5H6L7 5.5Z" fill="#F43F5E"/>
-                    <path d="M17 5.5L18 9.5H14.5L17 5.5Z" fill="#F43F5E"/>
-                    <path d="M18.5 7.5C19.3284 7.5 20 8.17157 20 9C20 9.82843 19.3284 10.5 18.5 10.5C17.6716 10.5 17 9.82843 17 9C17 8.17157 17.6716 7.5 18.5 7.5Z" fill="#FFFFFF"/>
-                    <path d="M18.5 6C17.5 6 16.5 6.8 16.5 8V11H19.5V8C19.5 6.8 18.5 6 18.5 6Z" fill="#FFFFFF"/>
-                    <path d="M8 14.2H16" stroke="#E11D48" stroke-width="1.8" stroke-linecap="round"/>
-                    <circle cx="12" cy="15" r="1.5" fill="#FBBF24"/>
-                    <circle cx="9.5" cy="10.5" r="1" fill="#1E293B"/>
-                    <circle cx="14.5" cy="10.5" r="1" fill="#1E293B"/>
-                    <path d="M11 12C11.4 12.4 12.6 12.4 13 12" stroke="#1E293B" stroke-width="1" stroke-linecap="round"/>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="6" width="20" height="12" rx="2"/>
+                    <circle cx="12" cy="12" r="2.5"/>
+                    <path d="M6 12h.01M18 12h.01"/>
                 </svg>
             </div>
             <h1>Dompet Hasibuan</h1>
@@ -472,7 +465,7 @@
                 </div>
             </div>
 
-            <!-- HUTANG INTEGRATION LIST (DI-UPDATE: Ditambah IBAO & PTRA) -->
+            <!-- HUTANG INTEGRATION LIST -->
             <div class="form-group" id="debtGroup">
                 <label>Pilih Kategori Hutang</label>
                 <select id="debtSelect">
@@ -527,7 +520,7 @@
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
     
-    // KATALOG POS CICILAN UNTUK FILTER EXPENSE (DI-UPDATE)
+    // KATALOG POS CICILAN UNTUK FILTER EXPENSE
     const DEBT_KEYS = ["HCI 1", "HCI 2", "SPP 1", "SPP 2", "MKR", "AGS", "BPR", "LHT", "FLN", "TLS", "GRJA", "IBAO", "PTRA"];
 
     let transactions = [];

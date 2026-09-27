@@ -145,6 +145,7 @@
             gap: 4px;
         }
 
+        /* FONT RUSSO ONE UNTUK LEVEL KEREN */
         .level-badge {
             font-family: 'Russo One', sans-serif;
             font-size: 26px;
@@ -157,15 +158,17 @@
         }
 
         .rank-title {
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 3px 10px;
+            letter-spacing: 0.6px;
+            padding: 4px 12px;
             border-radius: 20px;
             display: inline-block;
             width: fit-content;
             margin-top: 4px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .exp-info {
@@ -431,7 +434,7 @@
             <div class="profile-details">
                 <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Pangkat Saat Ini</div>
                 <div id="levelDisplay" class="level-badge">Level 1</div>
-                <div id="rankTitleDisplay" class="rank-title">Bronze Novice</div>
+                <div id="rankTitleDisplay" class="rank-title">PEMULA AMATIR 🌿</div>
             </div>
         </div>
 
@@ -468,7 +471,7 @@
         </form>
     </div>
 
-    <!-- GRAFIK STATIK EXP HARIAN (DIPINDAHKAN KE ATAS RIWAYAT) -->
+    <!-- GRAFIK STATIK EXP HARIAN (DI ATAS RIWAYAT) -->
     <div class="chart-card">
         <div class="chart-header">
             <span class="chart-title">⚡ Perolehan EXP Harian</span>
@@ -517,6 +520,54 @@
         renderHistory();
     });
 
+    // KATALOG DEDIKASI SPESIFIK NAMA GELAR & WARNA VISUAL DENGAN KATA-KATA PEMBAKAR SEMANGAT
+    const SPECIFIC_RANKS = {
+        1:  { title: "PEMULA AMATIR 🌿", bg: "#ecfdf5", border: "#10b981", text: "#047857", glow: "rgba(16, 185, 129, 0.25)" },
+        2:  { title: "PEMULA BERSEMANGAT ⚡", bg: "#f0fdf4", border: "#22c55e", text: "#15803d", glow: "rgba(34, 197, 94, 0.25)" },
+        3:  { title: "PEJUANG KONSISTEN 🛡️", bg: "#e0f2fe", border: "#0284c7", text: "#0369a1", glow: "rgba(2, 132, 199, 0.25)" },
+        4:  { title: "PENAKLUK RASA MALAS 🔥", bg: "#ffedd5", border: "#f97316", text: "#c2410c", glow: "rgba(249, 115, 22, 0.3)" },
+        5:  { title: "PEMBANGUN KEBIASAAN 🧱", bg: "#fef3c7", border: "#d97706", text: "#b45309", glow: "rgba(217, 119, 6, 0.3)" },
+        6:  { title: "PEMBURU TARGET 🎯", bg: "#fae8ff", border: "#c084fc", text: "#7e22ce", glow: "rgba(192, 132, 252, 0.3)" },
+        7:  { title: "DISIPLIN BAJA 🦾", bg: "#f1f5f9", border: "#64748b", text: "#334155", glow: "rgba(100, 116, 139, 0.3)" },
+        8:  { title: "PENGUASA WAKTU ⏳", bg: "#e0e7ff", border: "#6366f1", text: "#4338ca", glow: "rgba(99, 102, 241, 0.3)" },
+        9:  { title: "MOTIVASI TANPA HENTI 💥", bg: "#ffe4e6", border: "#f43f5e", text: "#be123c", glow: "rgba(244, 63, 94, 0.3)" },
+        10: { title: "SATRIA PRODUKTIF ⚔️", bg: "#fef08a", border: "#eab308", text: "#a16207", glow: "rgba(234, 179, 8, 0.35)" },
+        12: { title: "KONSISTENSI EMAS 🥇", bg: "#fef3c7", border: "#f59e0b", text: "#b45309", glow: "rgba(245, 158, 11, 0.35)" },
+        15: { title: "PENGENDALI DIRI 🧠", bg: "#f3e8ff", border: "#9333ea", text: "#6b21a8", glow: "rgba(147, 51, 234, 0.35)" },
+        20: { title: "MAGNET KEBERHASILAN 💎", bg: "#e0f2fe", border: "#06b6d4", text: "#0e7490", glow: "rgba(6, 182, 212, 0.4)" },
+        25: { title: "PENAKLUK BATAS DIRI 🚀", bg: "#fce7f3", border: "#ec4899", text: "#be185d", glow: "rgba(236, 72, 153, 0.4)" },
+        30: { title: "MASTER PRODUKTIVITAS 🌟", bg: "#fae8ff", border: "#a855f7", text: "#7e22ce", glow: "rgba(168, 85, 247, 0.4)" },
+        40: { title: "RAJA FOKUS & KARYA 👑", bg: "#fef3c7", border: "#d97706", text: "#92400e", glow: "rgba(217, 119, 6, 0.45)" },
+        50: { title: "LEGENDARIS PENTING 🐉", bg: "#fee2e2", border: "#ef4444", text: "#b91c1c", glow: "rgba(239, 68, 68, 0.45)" },
+        75: { title: "MANUSIA SUPER DISIPLIN 🔮", bg: "#ede9fe", border: "#8b5cf6", text: "#5b21b6", glow: "rgba(139, 92, 246, 0.5)" },
+        100:{ title: "DEWA PRODUKTIVITAS ABADI 🏆", bg: "#fff7ed", border: "#ea580c", text: "#9a3412", glow: "rgba(234, 88, 12, 0.5)" }
+    };
+
+    // FORMULA GENERATOR SPESIFIK UNTUK LEVEL YANG BELUM TERDAFTAR KUSTUM
+    function getRankConfigForLevel(lvl) {
+        if (SPECIFIC_RANKS[lvl]) return SPECIFIC_RANKS[lvl];
+
+        // RANGKAIAN NAMA TIER BERDASARKAN SKALA TINGKATAN
+        let titlePrefix = "PEMUDA BERBAKTI";
+        if (lvl >= 90) titlePrefix = "MAHA BINTANG";
+        else if (lvl >= 70) titlePrefix = "PEMIMPIN SEJATI";
+        else if (lvl >= 50) titlePrefix = "PAHLAWAN KONSISTENSI";
+        else if (lvl >= 35) titlePrefix = "PAKAR PRODUKTIF";
+        else if (lvl >= 25) titlePrefix = "PEMBAWA PERUBAHAN";
+        else if (lvl >= 15) titlePrefix = "PEJUANG HEBAT";
+        else if (lvl >= 10) titlePrefix = "DISIPLIN TINGGI";
+
+        // FORMULA WARNA VISUAL DINAMIS (DENGAN SPETRUM PELANGI RPG)
+        const hue = (lvl * 137.5) % 360; 
+        return {
+            title: `${titlePrefix} TIER ${lvl} ⚡`,
+            bg: `hsla(${hue}, 85%, 96%, 1)`,
+            border: `hsla(${hue}, 80%, 45%, 1)`,
+            text: `hsla(${hue}, 90%, 25%, 1)`,
+            glow: `hsla(${hue}, 80%, 45%, 0.35)`
+        };
+    }
+
     function calculateLevel(totalExp) {
         let level = 1;
         let expNeededForNext = 100; 
@@ -528,64 +579,7 @@
             expNeededForNext = level * 100;
         }
 
-        let rankConfig = {
-            title: "Bronze Novice",
-            borderColor: "#b45309",
-            bgColor: "#fef3c7",
-            glowColor: "rgba(180, 83, 9, 0.25)",
-            textColor: "#92400e"
-        };
-
-        if (level >= 50) {
-            rankConfig = {
-                title: "Mythic Legend",
-                borderColor: "#dc2626",
-                bgColor: "#fee2e2",
-                glowColor: "rgba(220, 38, 38, 0.4)",
-                textColor: "#991b1b"
-            };
-        } else if (level >= 30) {
-            rankConfig = {
-                title: "Crown Champion",
-                borderColor: "#d97706",
-                bgColor: "#fef3c7",
-                glowColor: "rgba(217, 119, 6, 0.4)",
-                textColor: "#a16207"
-            };
-        } else if (level >= 20) {
-            rankConfig = {
-                title: "Diamond Master",
-                borderColor: "#7c3aed",
-                bgColor: "#f3e8ff",
-                glowColor: "rgba(124, 58, 237, 0.35)",
-                textColor: "#6b21a8"
-            };
-        } else if (level >= 15) {
-            rankConfig = {
-                title: "Platinum Vanguard",
-                borderColor: "#0284c7",
-                bgColor: "#e0f2fe",
-                glowColor: "rgba(2, 132, 199, 0.3)",
-                textColor: "#0369a1"
-            };
-        } else if (level >= 10) {
-            rankConfig = {
-                title: "Gold Knight",
-                borderColor: "#eab308",
-                bgColor: "#fef9c3",
-                glowColor: "rgba(234, 179, 8, 0.3)",
-                textColor: "#854d0e"
-            };
-        } else if (level >= 5) {
-            rankConfig = {
-                title: "Silver Adventurer",
-                borderColor: "#64748b",
-                bgColor: "#f1f5f9",
-                glowColor: "rgba(100, 116, 139, 0.25)",
-                textColor: "#334155"
-            };
-        }
-
+        const rankConfig = getRankConfigForLevel(level);
         const pct = Math.min(100, Math.floor((currentExp / expNeededForNext) * 100));
 
         return {
@@ -612,12 +606,13 @@
         levelProgressText.innerText = `${stats.currentExpInLevel} / ${stats.expNeededForNext} EXP`;
         progressBarFill.style.width = `${stats.progressPct}%`;
 
-        rankAvatarFrame.style.borderColor = cfg.borderColor;
-        rankAvatarFrame.style.boxShadow = `0 6px 18px ${cfg.glowColor}`;
+        // Terapkan warna unik dinamis sesuai level pada kartu & frame
+        rankAvatarFrame.style.borderColor = cfg.border;
+        rankAvatarFrame.style.boxShadow = `0 6px 18px ${cfg.glow}`;
         
-        rankTitleDisplay.style.backgroundColor = cfg.bgColor;
-        rankTitleDisplay.style.color = cfg.textColor;
-        rankTitleDisplay.style.border = `1px solid ${cfg.borderColor}`;
+        rankTitleDisplay.style.backgroundColor = cfg.bg;
+        rankTitleDisplay.style.color = cfg.text;
+        rankTitleDisplay.style.border = `1px solid ${cfg.border}`;
     }
 
     function renderHistory() {
@@ -647,7 +642,6 @@
             activityList.appendChild(div);
         });
 
-        // KONTROL TOMBOL TAMPILKAN / SEMBUNYIKAN BILA > 5 DATA
         if (activityLogs.length > 5) {
             toggleHistoryBtn.style.display = 'block';
             toggleHistoryBtn.innerText = showAllHistory ? 'Sembunyikan Riwayat 🔼' : 'Tampilkan Seluruh Riwayat 🔽';

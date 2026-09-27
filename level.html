@@ -10,7 +10,7 @@
 
     <style>
         :root {
-            --bg-game: #f2f7f5;       /* Match Calm Sage Theme */
+            --bg-game: #f2f7f5;       /* Tema Calm Sage */
             --card-bg: #ffffff;
             --card-inner: #e6f0ec;
             --primary-accent: #0d9488;
@@ -94,7 +94,7 @@
             transition: all 0.2s ease;
         }
 
-        /* --- CHARACTER STATUS CARD (PANGKAT GAME) --- */
+        /* --- CHARACTER STATUS CARD (PANGKAT GAME & IKON WEB) --- */
         .status-card {
             background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
             border-radius: 22px;
@@ -112,21 +112,29 @@
             gap: 16px;
         }
 
-        /* BINGKAI BADGE PANGKAT DENGAN EFEK GLOW DYNAMIS */
+        /* BINGKAI BADGE DENGAN GAMBAR GAMBAR DARI WEB */
         .rank-avatar-frame {
-            width: 68px;
-            height: 68px;
+            width: 72px;
+            height: 72px;
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 34px;
             background: #ffffff;
             border: 3px solid #7c3aed;
-            box-shadow: 0 6px 16px rgba(124, 58, 237, 0.25);
+            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.25);
             transition: all 0.4s ease;
             position: relative;
             flex-shrink: 0;
+            overflow: hidden;
+            padding: 6px;
+        }
+
+        .rank-avatar-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
         }
 
         .profile-details {
@@ -356,11 +364,13 @@
         <a href="index.html" class="btn-back">⬅️ Keuangan</a>
     </div>
 
-    <!-- CHARACTER STATUS CARD WITH GAME BADGES -->
+    <!-- CHARACTER STATUS CARD WITH WEB BADGE IMAGES -->
     <div class="status-card">
         <div class="character-profile">
-            <!-- IKON BADGE PANGKAT KARAKTER -->
-            <div id="rankAvatarFrame" class="rank-avatar-frame">🌿</div>
+            <!-- WADAH GAMBAR IKON DARI WEB -->
+            <div id="rankAvatarFrame" class="rank-avatar-frame">
+                <img id="rankAvatarImg" src="https://img.icons8.com/3d-fluency/96/sprout.png" alt="Badge Level">
+            </div>
             
             <div class="profile-details">
                 <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Pangkat Saat Ini</div>
@@ -411,13 +421,14 @@
 </div>
 
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2ZZSIzVhc06PltwCjtZVk9TjNl7bXJ_DAkafiOiR7OWS1cmBF0laaEMJY_oR4OLdw/exec';
 
     let activityLogs = [];
 
     const levelDisplay = document.getElementById('levelDisplay');
     const rankTitleDisplay = document.getElementById('rankTitleDisplay');
     const rankAvatarFrame = document.getElementById('rankAvatarFrame');
+    const rankAvatarImg = document.getElementById('rankAvatarImg');
     const progressBarFill = document.getElementById('progressBarFill');
     const totalExpDisplay = document.getElementById('totalExpDisplay');
     const levelProgressText = document.getElementById('levelProgressText');
@@ -432,6 +443,77 @@
         expInput.value = val;
     }
 
+    // BASE URL IKON 3D FLUENCY CDN
+    const BASE_ICON_API = "https://img.icons8.com/3d-fluency/96/";
+    
+    // KATALOG PEMETAAN IKON UNIK TIAP LEVEL (1 - 100)
+    const LEVEL_ICONS = {
+        // --- TIER 1: NOVICE & BENIH (Lvl 1 - 9) ---
+        1:  BASE_ICON_API + "sprout.png",           // Tunas Pertama
+        2:  BASE_ICON_API + "seedling.png",         // Benih Tumbuh
+        3:  BASE_ICON_API + "leaf.png",             // Daun Muda
+        4:  BASE_ICON_API + "potted-plant.png",     // Tanaman Pot
+        5:  BASE_ICON_API + "oak-tree.png",         // Pohon Kokoh
+        6:  BASE_ICON_API + "wooden-sword.png",     // Pedang Kayu
+        7:  BASE_ICON_API + "stone.png",            // Batu Ketahanan
+        8:  BASE_ICON_API + "dagger.png",           // Belati Pemula
+        9:  BASE_ICON_API + "leather.png",          // Baju Kulit Pemula
+
+        // --- TIER 2: ADVENTURER & BESI (Lvl 10 - 19) ---
+        10: BASE_ICON_API + "shield.png",           // Perisai Besi
+        11: BASE_ICON_API + "iron.png",             // Batangan Besi
+        12: BASE_ICON_API + "sword.png",            // Pedang Ksatria
+        13: BASE_ICON_API + "battle-axe.png",       // Kapak Perang
+        14: BASE_ICON_API + "archery.png",          // Panah Presisi
+        15: BASE_ICON_API + "target.png",           // Target Sasaran
+        16: BASE_ICON_API + "knight.png",           // Helm Ksatria
+        17: BASE_ICON_API + "silver-medal.png",     // Medali Perak
+        18: BASE_ICON_API + "fire.png",             // Api Semangat
+        19: BASE_ICON_API + "lightning-bolt.png",   // Petir Kecepatan
+
+        // --- TIER 3: KNIGHT & EMAS (Lvl 20 - 29) ---
+        20: BASE_ICON_API + "bronze-medal.png",     // Lencana Perunggu
+        21: BASE_ICON_API + "gold-medal.png",       // Medali Emas
+        22: BASE_ICON_API + "sports-trophy.png",    // Piala Turnamen
+        23: BASE_ICON_API + "crown.png",            // Mahkota Ksatria
+        24: BASE_ICON_API + "ruby.png",             // Batu Permata Merah
+        25: BASE_ICON_API + "emerald.png",          // Permata Zamrud
+        26: BASE_ICON_API + "starburst.png",        // Bintang Kejayaan
+        27: BASE_ICON_API + "crystal-ball.png",     // Bola Kristal
+        28: BASE_ICON_API + "wizard.png",           // Topi Penyihir
+        29: BASE_ICON_API + "magic.png",            // Tongkat Sihir
+
+        // --- TIER 4: MASTER & BERLIAN (Lvl 30 - 49) ---
+        30: BASE_ICON_API + "diamond.png",          // Berlian Ungu
+        35: BASE_ICON_API + "gem.png",              // Kristal Langka
+        40: BASE_ICON_API + "king.png",             // Mahkota Raja
+        45: BASE_ICON_API + "imperial-crown.png",   // Mahkota Kekaisaran
+
+        // --- TIER 5: MYTHIC & LEGENDA (Lvl 50 - 99) ---
+        50: BASE_ICON_API + "dragon.png",           // Naga Merah
+        60: BASE_ICON_API + "phoenix.png",          // Burung Phoenix
+        70: BASE_ICON_API + "volcano.png",          // Gunung Berapi
+        80: BASE_ICON_API + "comet.png",            // Komet Antariksa
+        90: BASE_ICON_API + "galaxy.png",           // Galaksi Jagat Raya
+
+        // --- TIER ULTIMATE: LEVEL 100 ---
+        100: BASE_ICON_API + "champion.png"         // Trofi Dewa Legenda
+    };
+
+    // FUNGSI MENGAMBIL GAMBAR WEB SESUAI LEVEL
+    function getWebIconForLevel(lvl) {
+        if (LEVEL_ICONS[lvl]) return LEVEL_ICONS[lvl];
+        
+        // DYNAMIC FALLBACK JIKA BELUM DITULIS SPESIFIK PADA DICTIONARY
+        const iconsList = [
+            "sprout", "seedling", "leaf", "potted-plant", "oak-tree", "sword", 
+            "shield", "knight", "sports-trophy", "crown", "diamond", "starburst", "fire", 
+            "lightning-bolt", "dragon", "king", "galaxy", "champion"
+        ];
+        const iconIndex = (lvl - 1) % iconsList.length;
+        return `${BASE_ICON_API}${iconsList[iconIndex]}.png`;
+    }
+
     // FORMULA RPG LEVELING & SISTEM PANGKAT VISUAL
     function calculateLevel(totalExp) {
         let level = 1;
@@ -444,10 +526,9 @@
             expNeededForNext = level * 100;
         }
 
-        // PENENTUAN BADGE, IKON, DANS COLOR THEME PANGKAT
+        // PENENTUAN WARNA BINGKAI & TEKS PANGKAT
         let rankConfig = {
             title: "Bronze Novice",
-            icon: "🌿",
             borderColor: "#b45309",
             bgColor: "#fef3c7",
             glowColor: "rgba(180, 83, 9, 0.25)",
@@ -457,7 +538,6 @@
         if (level >= 50) {
             rankConfig = {
                 title: "Mythic Legend",
-                icon: "🐉",
                 borderColor: "#dc2626",
                 bgColor: "#fee2e2",
                 glowColor: "rgba(220, 38, 38, 0.4)",
@@ -466,7 +546,6 @@
         } else if (level >= 30) {
             rankConfig = {
                 title: "Crown Champion",
-                icon: "👑",
                 borderColor: "#d97706",
                 bgColor: "#fef3c7",
                 glowColor: "rgba(217, 119, 6, 0.4)",
@@ -475,7 +554,6 @@
         } else if (level >= 20) {
             rankConfig = {
                 title: "Diamond Master",
-                icon: "🌟",
                 borderColor: "#7c3aed",
                 bgColor: "#f3e8ff",
                 glowColor: "rgba(124, 58, 237, 0.35)",
@@ -484,7 +562,6 @@
         } else if (level >= 15) {
             rankConfig = {
                 title: "Platinum Vanguard",
-                icon: "💎",
                 borderColor: "#0284c7",
                 bgColor: "#e0f2fe",
                 glowColor: "rgba(2, 132, 199, 0.3)",
@@ -493,7 +570,6 @@
         } else if (level >= 10) {
             rankConfig = {
                 title: "Gold Knight",
-                icon: "🛡️",
                 borderColor: "#eab308",
                 bgColor: "#fef9c3",
                 glowColor: "rgba(234, 179, 8, 0.3)",
@@ -502,7 +578,6 @@
         } else if (level >= 5) {
             rankConfig = {
                 title: "Silver Adventurer",
-                icon: "⚔️",
                 borderColor: "#64748b",
                 bgColor: "#f1f5f9",
                 glowColor: "rgba(100, 116, 139, 0.25)",
@@ -537,8 +612,8 @@
         levelProgressText.innerText = `${stats.currentExpInLevel} / ${stats.expNeededForNext} EXP`;
         progressBarFill.style.width = `${stats.progressPct}%`;
 
-        // UPDATE BADGE IKON & VISUAL FRAME
-        rankAvatarFrame.innerText = cfg.icon;
+        // UPDATE GAMBAR DARI WEB DAN FRAME
+        rankAvatarImg.src = getWebIconForLevel(stats.level);
         rankAvatarFrame.style.borderColor = cfg.borderColor;
         rankAvatarFrame.style.boxShadow = `0 6px 18px ${cfg.glowColor}`;
         

@@ -352,7 +352,7 @@
     // URL WEB APP APPS SCRIPT SINKRON UTAMA
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
 
-    // MASTER DATA TARGET TERBARU (DI-RESET PERIODE & TARGET SISA HUTANG BARU)
+    // MASTER DATA TARGET TERBARU (DI-UPDATE: Ditambah IBAO & PTRA)
     const DEBT_MASTER = {
         "HCI 1": { name: "HCI 1", grandTotal: 3126800,   monthly: 781700 },
         "HCI 2": { name: "HCI 2", grandTotal: 11242000,  monthly: 511000 },
@@ -364,7 +364,9 @@
         "LHT":   { name: "LHT",   grandTotal: 6000000,   monthly: 0 },
         "FLN":   { name: "FLN",   grandTotal: 2000000,   monthly: 0 },
         "TLS":   { name: "TLS",   grandTotal: 5000000,   monthly: 0 },
-        "GRJA":  { name: "GRJA",  grandTotal: 2533000,   monthly: 0 }
+        "GRJA":  { name: "GRJA",  grandTotal: 2533000,   monthly: 0 },
+        "IBAO":  { name: "IBAO",  grandTotal: 1500000,   monthly: 0 },
+        "PTRA":  { name: "PTRA",  grandTotal: 500000,    monthly: 0 }
     };
 
     const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
@@ -390,7 +392,8 @@
             let paidTracker = { 
                 "HCI 1": 0, "HCI 2": 0, "SPP 1": 0, "SPP 2": 0, 
                 "MKR": 0, "AGS": 0, "BPR": 0,
-                "LHT": 0, "FLN": 0, "TLS": 0, "GRJA": 0
+                "LHT": 0, "FLN": 0, "TLS": 0, "GRJA": 0,
+                "IBAO": 0, "PTRA": 0
             };
 
             transactions.forEach(t => {
@@ -419,7 +422,7 @@
                 let totalPaid = paidTracker[key];
                 
                 // Pembatasan total bayar tidak melebihi grand total (kecuali variabel khusus)
-                if (!["LHT", "FLN", "TLS", "GRJA"].includes(key)) {
+                if (!["LHT", "FLN", "TLS", "GRJA", "IBAO", "PTRA"].includes(key)) {
                     totalPaid = Math.min(totalPaid, item.grandTotal);
                 }
 
@@ -486,7 +489,7 @@
             monthsPaid = Math.floor(totalPaidRiil / item.monthly);
         } else {
             // Logika fleksibel nominal opsional
-            monthsPaid = totalPaidRiil >= item.grandTotal ? 3 : Math.ceil(totalPaidRiil / (item.grandTotal / 3)); 
+            monthsPaid = totalPaidRiil >= item.grandTotal ? 4 : Math.ceil(totalPaidRiil / (item.grandTotal / 4)); 
         }
 
         const timeline = [2026, 2027, 2028, 2029, 2030];
@@ -529,7 +532,11 @@
                 else if (debtKey === "BPR") {
                     if ((year === 2026 && m >= 9) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 1)) isDihitung = true;
                 }
-                // 8. Pos Fleksibel (LHT, FLN, TLS, GRJA): Bulan 10 2026 sd Bulan 12 2026
+                // 8. IBAO & PTRA: Bulan 9 2026 sd Bulan 12 2026
+                else if (["IBAO", "PTRA"].includes(debtKey)) {
+                    if (year === 2026 && m >= 9 && m <= 12) isDihitung = true;
+                }
+                // 9. Pos Fleksibel Lainnya (LHT, FLN, TLS, GRJA): Bulan 10 2026 sd Bulan 12 2026
                 else if (["LHT", "FLN", "TLS", "GRJA"].includes(debtKey)) {
                     if (year === 2026 && m >= 10 && m <= 12) isDihitung = true;
                 }

@@ -6,7 +6,8 @@
     <title>Level Diri - Gamifikasi Karakter</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- MENGIMPOR FONT INTER DAN RUSSO ONE UNTUK TAMPILAN LEVEL KEREN -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -94,7 +95,7 @@
             transition: all 0.2s ease;
         }
 
-        /* --- CHARACTER STATUS CARD (PANGKAT GAME & IKON WEB) --- */
+        /* --- CHARACTER STATUS CARD --- */
         .status-card {
             background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
             border-radius: 22px;
@@ -112,10 +113,10 @@
             gap: 16px;
         }
 
-        /* BINGKAI BADGE DENGAN GAMBAR IKON DARI WEB */
+        /* BINGKAI FOTO PROFIL */
         .rank-avatar-frame {
-            width: 72px;
-            height: 72px;
+            width: 76px;
+            height: 76px;
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -127,15 +128,14 @@
             position: relative;
             flex-shrink: 0;
             overflow: hidden;
-            padding: 8px;
-            font-size: 36px;
+            padding: 3px;
         }
 
         .rank-avatar-frame img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            transition: transform 0.3s ease;
+            object-fit: cover;
+            border-radius: 14px;
         }
 
         .profile-details {
@@ -144,12 +144,16 @@
             gap: 4px;
         }
 
+        /* DESAIN FONT KEREN UNTUK TULISAN LEVEL */
         .level-badge {
-            font-size: 28px;
-            font-weight: 800;
+            font-family: 'Russo One', sans-serif;
+            font-size: 26px;
+            font-weight: 400;
             color: var(--purple-rpg);
-            letter-spacing: -0.8px;
-            line-height: 1;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px rgba(124, 58, 237, 0.15);
         }
 
         .rank-title {
@@ -161,7 +165,7 @@
             border-radius: 20px;
             display: inline-block;
             width: fit-content;
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
         .exp-info {
@@ -368,14 +372,14 @@
     <!-- CHARACTER STATUS CARD -->
     <div class="status-card">
         <div class="character-profile">
-            <!-- WADAH GAMBAR IKON DARI WEB METODE SVG ICONIFY -->
+            <!-- FOTO PROFIL GITHUB LANSUNG -->
             <div id="rankAvatarFrame" class="rank-avatar-frame">
-                <img id="rankAvatarImg" src="https://api.iconify.design/fluent-emoji:seedling.svg" alt="Badge Level" onerror="handleImageError(this)">
+                <img src="https://raw.githubusercontent.com/sebastianhasibuan1-coder/home/main/Fotoku.jpg" alt="Foto Karakter">
             </div>
             
             <div class="profile-details">
                 <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Pangkat Saat Ini</div>
-                <div id="levelDisplay" class="level-badge">Lvl 1</div>
+                <div id="levelDisplay" class="level-badge">Level 1</div>
                 <div id="rankTitleDisplay" class="rank-title">Bronze Novice</div>
             </div>
         </div>
@@ -422,6 +426,7 @@
 </div>
 
 <script>
+    // LINK SCRIPT WEB APP UTAMA BARU
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2ZZSIzVhc06PltwCjtZVk9TjNl7bXJ_DAkafiOiR7OWS1cmBF0laaEMJY_oR4OLdw/exec';
 
     let activityLogs = [];
@@ -429,7 +434,6 @@
     const levelDisplay = document.getElementById('levelDisplay');
     const rankTitleDisplay = document.getElementById('rankTitleDisplay');
     const rankAvatarFrame = document.getElementById('rankAvatarFrame');
-    const rankAvatarImg = document.getElementById('rankAvatarImg');
     const progressBarFill = document.getElementById('progressBarFill');
     const totalExpDisplay = document.getElementById('totalExpDisplay');
     const levelProgressText = document.getElementById('levelProgressText');
@@ -442,84 +446,6 @@
 
     function setExp(val) {
         expInput.value = val;
-    }
-
-    // BASE URL IKON 3D FLUENCY CDN (ICONIFY FREE API - ANTI BLOKIR)
-    const BASE_ICON_API = "https://api.iconify.design/fluent-emoji:";
-
-    // KATALOG PEMETAAN IKON UNIK TIAP LEVEL (1 - 100)
-    const LEVEL_ICONS = {
-        // --- TIER 1: NOVICE & BENIH (Lvl 1 - 9) ---
-        1:  BASE_ICON_API + "seedling.svg",           // Tunas Pertama
-        2:  BASE_ICON_API + "herb.svg",               // Benih Tumbuh
-        3:  BASE_ICON_API + "leaves.svg",             // Daun Muda
-        4:  BASE_ICON_API + "potted-plant.svg",       // Tanaman Pot
-        5:  BASE_ICON_API + "deciduous-tree.svg",     // Pohon Rindang
-        6:  BASE_ICON_API + "wood.svg",               // Kayu Pemula
-        7:  BASE_ICON_API + "rock.svg",               // Batu Ketahanan
-        8:  BASE_ICON_API + "dagger.svg",             // Belati Pemula
-        9:  BASE_ICON_API + "running-shoe.svg",       // Sepatu Perjuangan
-
-        // --- TIER 2: ADVENTURER & BESI (Lvl 10 - 19) ---
-        10: BASE_ICON_API + "shield.svg",             // Perisai Besi
-        11: BASE_ICON_API + "hammer-and-wrench.svg",  // Alat Tempa
-        12: BASE_ICON_API + "crossed-swords.svg",     // Pedang Ksatria
-        13: BASE_ICON_API + "axe.svg",                // Kapak Perang
-        14: BASE_ICON_API + "bow-and-arrow.svg",      // Panah Presisi
-        15: BASE_ICON_API + "bullseye.svg",           // Target Sasaran
-        16: BASE_ICON_API + "military-helmet.svg",    // Helm Ksatria
-        17: BASE_ICON_API + "silver-medal.svg",       // Medali Perak
-        18: BASE_ICON_API + "fire.svg",               // Api Semangat
-        19: BASE_ICON_API + "high-voltage.svg",       // Petir Kecepatan
-
-        // --- TIER 3: KNIGHT & EMAS (Lvl 20 - 29) ---
-        20: BASE_ICON_API + "bronze-medal.svg",       // Lencana Perunggu
-        21: BASE_ICON_API + "gold-medal.svg",         // Medali Emas
-        22: BASE_ICON_API + "trophy.svg",             // Piala Turnamen
-        23: BASE_ICON_API + "crown.svg",              // Mahkota Ksatria
-        24: BASE_ICON_API + "gem-stone.svg",          // Permata Zamrud
-        25: BASE_ICON_API + "sparkles.svg",           // Bintang Kejayaan
-        26: BASE_ICON_API + "crystal-ball.svg",       // Bola Kristal
-        27: BASE_ICON_API + "magic-wand.svg",         // Tongkat Sihir
-        28: BASE_ICON_API + "mantelpiece-clock.svg",   // Jam Disiplin
-        29: BASE_ICON_API + "hourglass-done.svg",     // Waktu Produktif
-
-        // --- TIER 4: MASTER & BERLIAN (Lvl 30 - 49) ---
-        30: BASE_ICON_API + "diamond-with-a-dot.svg", // Berlian Ungu
-        35: BASE_ICON_API + "ring.svg",               // Cincin Kejayaan
-        40: BASE_ICON_API + "king-crown.svg",         // Mahkota Raja
-        45: BASE_ICON_API + "coin.svg",               // Koin Emas Kemakmuran
-
-        // --- TIER 5: MYTHIC & LEGENDA (Lvl 50 - 99) ---
-        50: BASE_ICON_API + "dragon-face.svg",        // Naga Merah
-        60: BASE_ICON_API + "bird.svg",               // Burung Phoenix
-        70: BASE_ICON_API + "volcano.svg",            // Gunung Berapi
-        80: BASE_ICON_API + "comet.svg",              // Komet Antariksa
-        90: BASE_ICON_API + "milky-way.svg",          // Galaksi Jagat Raya
-
-        // --- TIER ULTIMATE: LEVEL 100 ---
-        100: BASE_ICON_API + "military-medal.svg"     // Trofi Dewa Legenda
-    };
-
-    // FALLBACK JIKA GAMBAR GAGAL LOAD (AUTO SWITCH KE EMOJI TEKS)
-    function handleImageError(imgEl) {
-        imgEl.style.display = 'none';
-        rankAvatarFrame.innerHTML = "⚔️";
-    }
-
-    // FUNGSI MENGAMBIL GAMBAR WEB SESUAI LEVEL
-    function getWebIconForLevel(lvl) {
-        if (LEVEL_ICONS[lvl]) return LEVEL_ICONS[lvl];
-        
-        // FALLBACK IKON JIKA LEVEL BELUM TERDAFTAR DI OBJEK
-        const fallbackList = [
-            "seedling.svg", "herb.svg", "leaves.svg", "deciduous-tree.svg", 
-            "crossed-swords.svg", "shield.svg", "trophy.svg", "crown.svg", 
-            "gem-stone.svg", "sparkles.svg", "fire.svg", "high-voltage.svg", 
-            "dragon-face.svg", "military-medal.svg"
-        ];
-        const index = (lvl - 1) % fallbackList.length;
-        return `${BASE_ICON_API}${fallbackList[index]}`;
     }
 
     // FORMULA RPG LEVELING & SISTEM PANGKAT VISUAL
@@ -613,15 +539,14 @@
         const stats = calculateLevel(grandTotalExp);
         const cfg = stats.rankConfig;
 
-        // UPDATE TEKS STATUS
-        levelDisplay.innerText = `Lvl ${stats.level}`;
+        // UPDATE TEKS LEVEL DENGAN TULISAN "Level"
+        levelDisplay.innerText = `Level ${stats.level}`;
         rankTitleDisplay.innerText = cfg.title;
         totalExpDisplay.innerText = `${grandTotalExp.toLocaleString('id-ID')} EXP`;
         levelProgressText.innerText = `${stats.currentExpInLevel} / ${stats.expNeededForNext} EXP`;
         progressBarFill.style.width = `${stats.progressPct}%`;
 
-        // UPDATE GAMBAR DARI WEB DAN FRAME
-        rankAvatarFrame.innerHTML = `<img id="rankAvatarImg" src="${getWebIconForLevel(stats.level)}" alt="Badge Level" onerror="handleImageError(this)">`;
+        // UPDATE BINGKAI FOTO PROFIL KUSTOM SASUAI TIER PANGKAT
         rankAvatarFrame.style.borderColor = cfg.borderColor;
         rankAvatarFrame.style.boxShadow = `0 6px 18px ${cfg.glowColor}`;
         

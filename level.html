@@ -276,7 +276,39 @@
             transform: scale(0.98);
         }
 
-        /* --- FEED LOG KEGIATAN --- */
+        /* --- CHART STYLING UNTUK GRAFIK EXP HARIAN --- */
+        .chart-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.08);
+            border: 1px solid rgba(124, 58, 237, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+        }
+
+        /* --- FEED LOG KEGIATAN & EXPAND BUTTON --- */
         .recent-title {
             font-size: 11px;
             color: var(--text-muted);
@@ -326,36 +358,25 @@
             border-radius: 10px;
         }
 
-        /* --- CHART STYLING UNTUK GRAFIK EXP HARIAN --- */
-        .chart-card {
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.08);
-            border: 1px solid rgba(124, 58, 237, 0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chart-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        .chart-container {
-            position: relative;
+        .btn-toggle-history {
             width: 100%;
-            height: 220px;
+            padding: 12px;
+            background-color: var(--card-bg);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 12px;
+            color: var(--purple-rpg);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 12px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .btn-toggle-history:active {
+            transform: scale(0.98);
+            background-color: rgba(124, 58, 237, 0.06);
         }
 
         /* --- LOADING OVERLAY --- */
@@ -447,13 +468,7 @@
         </form>
     </div>
 
-    <!-- LOG RIWAYAT KEGIATAN -->
-    <div>
-        <div class="recent-title">Riwayat Pencapaian EXP</div>
-        <div id="activityList" class="activity-list"></div>
-    </div>
-
-    <!-- GRAFIK STATIK EXP HARIAN (30 HARI TERAKHIR) -->
+    <!-- GRAFIK STATIK EXP HARIAN (DIPINDAHKAN KE ATAS RIWAYAT) -->
     <div class="chart-card">
         <div class="chart-header">
             <span class="chart-title">⚡ Perolehan EXP Harian</span>
@@ -463,6 +478,13 @@
             <canvas id="dailyExpChart"></canvas>
         </div>
     </div>
+
+    <!-- LOG RIWAYAT KEGIATAN & TOMBOL TOGGLE EXPAND -->
+    <div>
+        <div class="recent-title">Riwayat Pencapaian EXP</div>
+        <div id="activityList" class="activity-list"></div>
+        <button id="toggleHistoryBtn" class="btn-toggle-history" style="display: none;">Tampilkan Seluruh Riwayat 🔽</button>
+    </div>
 </div>
 
 <script>
@@ -470,6 +492,7 @@
 
     let activityLogs = [];
     let dailyExpChartInstance = null;
+    let showAllHistory = false;
 
     const levelDisplay = document.getElementById('levelDisplay');
     const rankTitleDisplay = document.getElementById('rankTitleDisplay');
@@ -478,6 +501,7 @@
     const totalExpDisplay = document.getElementById('totalExpDisplay');
     const levelProgressText = document.getElementById('levelProgressText');
     const activityList = document.getElementById('activityList');
+    const toggleHistoryBtn = document.getElementById('toggleHistoryBtn');
     
     const expForm = document.getElementById('expForm');
     const kegiatanInput = document.getElementById('kegiatanInput');
@@ -487,6 +511,11 @@
     function setExp(val) {
         expInput.value = val;
     }
+
+    toggleHistoryBtn.addEventListener('click', () => {
+        showAllHistory = !showAllHistory;
+        renderHistory();
+    });
 
     function calculateLevel(totalExp) {
         let level = 1;
@@ -595,11 +624,14 @@
         activityList.innerHTML = '';
         if (activityLogs.length === 0) {
             activityList.innerHTML = '<div style="text-align:center; color:#64748b; font-size:13px; padding:20px;">Belum ada kegiatan tercatat. Kumpulkan EXP pertamamu!</div>';
+            toggleHistoryBtn.style.display = 'none';
             return;
         }
 
-        const recent = [...activityLogs].reverse().slice(0, 10); 
-        recent.forEach(act => {
+        const reversedLogs = [...activityLogs].reverse();
+        const displayLogs = showAllHistory ? reversedLogs : reversedLogs.slice(0, 5);
+
+        displayLogs.forEach(act => {
             const dateObj = new Date(act.tanggal);
             const dateStr = isNaN(dateObj.getTime()) ? 'Baru saja' : dateObj.toLocaleDateString('id-ID', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB';
 
@@ -614,9 +646,16 @@
             `;
             activityList.appendChild(div);
         });
+
+        // KONTROL TOMBOL TAMPILKAN / SEMBUNYIKAN BILA > 5 DATA
+        if (activityLogs.length > 5) {
+            toggleHistoryBtn.style.display = 'block';
+            toggleHistoryBtn.innerText = showAllHistory ? 'Sembunyikan Riwayat 🔼' : 'Tampilkan Seluruh Riwayat 🔽';
+        } else {
+            toggleHistoryBtn.style.display = 'none';
+        }
     }
 
-    // FUNGSI OLAH & TAMPILKAN GRAFIK EXP HARIAN
     function renderDailyExpChart() {
         const dailyTotals = {};
 
@@ -638,7 +677,6 @@
             dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + expVal;
         });
 
-        // Ambil maksimal 30 titik tanggal ter-update
         const sortedDates = Object.keys(dailyTotals).slice(-30);
         const dataValues = sortedDates.map(d => dailyTotals[d]);
 
@@ -745,15 +783,15 @@
         .then(data => {
             activityLogs = Array.isArray(data) ? data : [];
             renderStatus();
-            renderHistory();
             renderDailyExpChart();
+            renderHistory();
             fullScreenOverlay.style.display = 'none';
         })
         .catch(err => {
             console.error(err);
             renderStatus();
-            renderHistory();
             renderDailyExpChart();
+            renderHistory();
             fullScreenOverlay.style.display = 'none';
         });
     }

@@ -461,7 +461,7 @@
                 </div>
             </div>
 
-            <!-- HUTANG INTEGRATION LIST -->
+            <!-- HUTANG INTEGRATION LIST (DI-UPDATE: Dihapus NKO & SPL) -->
             <div class="form-group" id="debtGroup">
                 <label>Pilih Kategori Hutang</label>
                 <select id="debtSelect">
@@ -470,14 +470,12 @@
                     <option value="HCI 2">Bayar Cicilan HCI 2 (Rp 511.000)</option>
                     <option value="SPP 1">Bayar Cicilan SPP 1 (Rp 1.869.303)</option>
                     <option value="SPP 2">Bayar Cicilan SPP 2 (Rp 226.132)</option>
-                    <option value="SPL">Bayar Cicilan SPL (Input Manual Sesuai Saldo Menurun)</option>
                     <option value="MKR">Bayar Cicilan MKR (Rp 520.000)</option>
                     <option value="AGS">Bayar Cicilan AGS (Rp 1.500.000)</option>
                     <option value="BPR">Bayar Cicilan BPR (Rp 2.550.000)</option>
                     <option value="LHT">Bayar Cicilan LHT (Input Manual Sesuai Setoran)</option>
                     <option value="FLN">Bayar Cicilan FLN (Input Manual Sesuai Setoran)</option>
                     <option value="TLS">Bayar Cicilan TLS (Input Manual Sesuai Setoran)</option>
-                    <option value="NKO">Bayar Cicilan NKO (Input Manual Sesuai Setoran)</option>
                     <option value="GRJA">Bayar Cicilan GRJA (Input Manual Sesuai Setoran)</option>
                 </select>
             </div>
@@ -516,8 +514,8 @@
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
     
-    // KATALOG POS CICILAN UNTUK FILTER EXPENSE
-    const DEBT_KEYS = ["HCI 1", "HCI 2", "SPP 1", "SPP 2", "SPL", "MKR", "AGS", "BPR", "LHT", "FLN", "TLS", "NKO", "GRJA"];
+    // KATALOG POS CICILAN UNTUK FILTER EXPENSE (DI-UPDATE: Dihapus SPL & NKO)
+    const DEBT_KEYS = ["HCI 1", "HCI 2", "SPP 1", "SPP 2", "MKR", "AGS", "BPR", "LHT", "FLN", "TLS", "GRJA"];
 
     let transactions = [];
     let dailyExpenseChartInstance = null;
@@ -559,7 +557,7 @@
         else if (pilihan === "MKR") amountInput.value = "520.000";
         else if (pilihan === "AGS") amountInput.value = "1.500.000";
         else if (pilihan === "BPR") amountInput.value = "2.550.000";
-        else if (["SPL", "LHT", "FLN", "TLS", "NKO", "GRJA"].includes(pilihan)) {
+        else if (["LHT", "FLN", "TLS", "GRJA"].includes(pilihan)) {
             amountInput.value = "";
         }
     });

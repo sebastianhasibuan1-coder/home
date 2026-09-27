@@ -6,8 +6,10 @@
     <title>Level Diri - Gamifikasi Karakter</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- MENGIMPOR FONT INTER DAN RUSSO ONE UNTUK TAMPILAN LEVEL KEREN -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
+
+    <!-- Library Chart.js untuk Grafik Statik EXP -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
@@ -113,7 +115,6 @@
             gap: 16px;
         }
 
-        /* BINGKAI FOTO PROFIL */
         .rank-avatar-frame {
             width: 76px;
             height: 76px;
@@ -144,7 +145,6 @@
             gap: 4px;
         }
 
-        /* DESAIN FONT KEREN UNTUK TULISAN LEVEL */
         .level-badge {
             font-family: 'Russo One', sans-serif;
             font-size: 26px;
@@ -233,7 +233,6 @@
             box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
         }
 
-        /* QUICK EXP PRESET BUTTONS */
         .preset-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -327,6 +326,38 @@
             border-radius: 10px;
         }
 
+        /* --- CHART STYLING UNTUK GRAFIK EXP HARIAN --- */
+        .chart-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.08);
+            border: 1px solid rgba(124, 58, 237, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+        }
+
         /* --- LOADING OVERLAY --- */
         .full-screen-overlay {
             display: none;
@@ -372,7 +403,6 @@
     <!-- CHARACTER STATUS CARD -->
     <div class="status-card">
         <div class="character-profile">
-            <!-- FOTO PROFIL GITHUB LANSUNG -->
             <div id="rankAvatarFrame" class="rank-avatar-frame">
                 <img src="https://raw.githubusercontent.com/sebastianhasibuan1-coder/home/main/Fotoku.jpg" alt="Foto Karakter">
             </div>
@@ -406,7 +436,6 @@
                 <label>Perolehan EXP</label>
                 <input type="number" id="expInput" placeholder="Contoh: 50" min="1" required>
                 
-                <!-- PRESET CEPAT -->
                 <div class="preset-grid">
                     <button type="button" class="btn-preset" onclick="setExp(25)">+25 (Ringan)</button>
                     <button type="button" class="btn-preset" onclick="setExp(50)">+50 (Sedang)</button>
@@ -423,13 +452,24 @@
         <div class="recent-title">Riwayat Pencapaian EXP</div>
         <div id="activityList" class="activity-list"></div>
     </div>
+
+    <!-- GRAFIK STATIK EXP HARIAN (30 HARI TERAKHIR) -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <span class="chart-title">⚡ Perolehan EXP Harian</span>
+            <span style="font-size: 11px; color: var(--purple-rpg); font-weight: 600;">30 Hari Terakhir</span>
+        </div>
+        <div class="chart-container">
+            <canvas id="dailyExpChart"></canvas>
+        </div>
+    </div>
 </div>
 
 <script>
-    // LINK SCRIPT WEB APP UTAMA BARU
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2ZZSIzVhc06PltwCjtZVk9TjNl7bXJ_DAkafiOiR7OWS1cmBF0laaEMJY_oR4OLdw/exec';
 
     let activityLogs = [];
+    let dailyExpChartInstance = null;
 
     const levelDisplay = document.getElementById('levelDisplay');
     const rankTitleDisplay = document.getElementById('rankTitleDisplay');
@@ -448,7 +488,6 @@
         expInput.value = val;
     }
 
-    // FORMULA RPG LEVELING & SISTEM PANGKAT VISUAL
     function calculateLevel(totalExp) {
         let level = 1;
         let expNeededForNext = 100; 
@@ -460,7 +499,6 @@
             expNeededForNext = level * 100;
         }
 
-        // PENENTUAN WARNA BINGKAI & TEKS PANGKAT
         let rankConfig = {
             title: "Bronze Novice",
             borderColor: "#b45309",
@@ -539,14 +577,12 @@
         const stats = calculateLevel(grandTotalExp);
         const cfg = stats.rankConfig;
 
-        // UPDATE TEKS LEVEL DENGAN TULISAN "Level"
         levelDisplay.innerText = `Level ${stats.level}`;
         rankTitleDisplay.innerText = cfg.title;
         totalExpDisplay.innerText = `${grandTotalExp.toLocaleString('id-ID')} EXP`;
         levelProgressText.innerText = `${stats.currentExpInLevel} / ${stats.expNeededForNext} EXP`;
         progressBarFill.style.width = `${stats.progressPct}%`;
 
-        // UPDATE BINGKAI FOTO PROFIL KUSTOM SASUAI TIER PANGKAT
         rankAvatarFrame.style.borderColor = cfg.borderColor;
         rankAvatarFrame.style.boxShadow = `0 6px 18px ${cfg.glowColor}`;
         
@@ -577,6 +613,94 @@
                 <div class="item-exp">+${act.exp} EXP</div>
             `;
             activityList.appendChild(div);
+        });
+    }
+
+    // FUNGSI OLAH & TAMPILKAN GRAFIK EXP HARIAN
+    function renderDailyExpChart() {
+        const dailyTotals = {};
+
+        activityLogs.forEach(act => {
+            const expVal = Number(act.exp) || 0;
+            const dateVal = act.tanggal || act.date || act.timestamp;
+
+            let dateKey = "";
+            if (dateVal) {
+                const d = new Date(dateVal);
+                if (!isNaN(d.getTime())) {
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                    dateKey = `${day}/${month}`;
+                }
+            }
+
+            if (!dateKey) dateKey = "Lainnya";
+            dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + expVal;
+        });
+
+        // Ambil maksimal 30 titik tanggal ter-update
+        const sortedDates = Object.keys(dailyTotals).slice(-30);
+        const dataValues = sortedDates.map(d => dailyTotals[d]);
+
+        const ctx = document.getElementById('dailyExpChart').getContext('2d');
+
+        if (dailyExpChartInstance) {
+            dailyExpChartInstance.destroy();
+        }
+
+        dailyExpChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: sortedDates.length ? sortedDates : ['Belum Ada Data'],
+                datasets: [{
+                    label: 'Perolehan EXP',
+                    data: dataValues.length ? dataValues : [0],
+                    borderColor: '#7c3aed',
+                    backgroundColor: 'rgba(124, 58, 237, 0.08)',
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.35,
+                    pointBackgroundColor: '#7c3aed',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 1.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'EXP: +' + context.raw + ' EXP';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            color: '#64748b',
+                            font: { family: 'Inter', size: 10 }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(124, 58, 237, 0.08)' },
+                        ticks: {
+                            color: '#64748b',
+                            font: { family: 'Inter', size: 10 },
+                            callback: function(val) {
+                                return '+' + val + ' EXP';
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
 
@@ -622,12 +746,14 @@
             activityLogs = Array.isArray(data) ? data : [];
             renderStatus();
             renderHistory();
+            renderDailyExpChart();
             fullScreenOverlay.style.display = 'none';
         })
         .catch(err => {
             console.error(err);
             renderStatus();
             renderHistory();
+            renderDailyExpChart();
             fullScreenOverlay.style.display = 'none';
         });
     }

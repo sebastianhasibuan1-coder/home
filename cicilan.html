@@ -352,12 +352,13 @@
     // URL WEB APP APPS SCRIPT SINKRON UTAMA
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
 
-    // MASTER DATA TARGET TERBARU (DI-UPDATE: Ditambah IBAO & PTRA)
+    // MASTER DATA TARGET TERBARU (DI-UPDATE: Ditambah SPP 3)
     const DEBT_MASTER = {
         "HCI 1": { name: "HCI 1", grandTotal: 3126800,   monthly: 781700 },
         "HCI 2": { name: "HCI 2", grandTotal: 11242000,  monthly: 511000 },
         "SPP 1": { name: "SPP 1", grandTotal: 1869303,   monthly: 1869303 },
         "SPP 2": { name: "SPP 2", grandTotal: 678396,    monthly: 226132 },
+        "SPP 3": { name: "SPP 3", grandTotal: 30079922,  monthly: 2506666 },
         "MKR":   { name: "MKR",   grandTotal: 1040000,   monthly: 520000 },
         "AGS":   { name: "AGS",   grandTotal: 64500000,  monthly: 1500000 },
         "BPR":   { name: "BPR",   grandTotal: 104550000, monthly: 2550000 },
@@ -390,7 +391,7 @@
 
             // Inisialisasi pelacak pembayaran untuk pos cicilan aktif
             let paidTracker = { 
-                "HCI 1": 0, "HCI 2": 0, "SPP 1": 0, "SPP 2": 0, 
+                "HCI 1": 0, "HCI 2": 0, "SPP 1": 0, "SPP 2": 0, "SPP 3": 0,
                 "MKR": 0, "AGS": 0, "BPR": 0,
                 "LHT": 0, "FLN": 0, "TLS": 0, "GRJA": 0,
                 "IBAO": 0, "PTRA": 0
@@ -520,23 +521,27 @@
                 else if (debtKey === "SPP 2") {
                     if (year === 2026 && m >= 10 && m <= 12) isDihitung = true;
                 } 
-                // 5. MKR: Bulan 10 2026 sd Bulan 11 2026
+                // 5. SPP 3: Bulan 11 2026 sd Bulan 10 2027
+                else if (debtKey === "SPP 3") {
+                    if ((year === 2026 && m >= 11) || (year === 2027 && m <= 10)) isDihitung = true;
+                }
+                // 6. MKR: Bulan 10 2026 sd Bulan 11 2026
                 else if (debtKey === "MKR") {
                     if (year === 2026 && m >= 10 && m <= 11) isDihitung = true;
                 } 
-                // 6. AGS: Bulan 9 2026 sd Bulan 3 2030
+                // 7. AGS: Bulan 9 2026 sd Bulan 3 2030
                 else if (debtKey === "AGS") {
                     if ((year === 2026 && m >= 9) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 3)) isDihitung = true;
                 } 
-                // 7. BPR: Bulan 9 2026 sd Bulan 1 2030
+                // 8. BPR: Bulan 9 2026 sd Bulan 1 2030
                 else if (debtKey === "BPR") {
                     if ((year === 2026 && m >= 9) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 1)) isDihitung = true;
                 }
-                // 8. IBAO & PTRA: Bulan 9 2026 sd Bulan 12 2026
+                // 9. IBAO & PTRA: Bulan 9 2026 sd Bulan 12 2026
                 else if (["IBAO", "PTRA"].includes(debtKey)) {
                     if (year === 2026 && m >= 9 && m <= 12) isDihitung = true;
                 }
-                // 9. Pos Fleksibel Lainnya (LHT, FLN, TLS, GRJA): Bulan 10 2026 sd Bulan 12 2026
+                // 10. Pos Fleksibel Lainnya (LHT, FLN, TLS, GRJA): Bulan 10 2026 sd Bulan 12 2026
                 else if (["LHT", "FLN", "TLS", "GRJA"].includes(debtKey)) {
                     if (year === 2026 && m >= 10 && m <= 12) isDihitung = true;
                 }

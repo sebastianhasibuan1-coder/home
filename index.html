@@ -53,9 +53,15 @@
         /* --- HEADER THEME CALM SAGE --- */
         .header {
             display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 6px 4px;
+        }
+
+        .header-top {
+            display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 4px;
         }
 
         .header-brand {
@@ -83,27 +89,44 @@
         }
 
         .nav-buttons {
-            display: flex;
-            gap: 8px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            width: 100%;
         }
 
         .btn-nav {
             text-decoration: none;
-            padding: 8px 14px;
+            padding: 8px 4px;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            gap: 3px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            white-space: nowrap;
+        }
+
+        .btn-nav.level {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+            border: 1px solid rgba(124, 58, 237, 0.2);
         }
 
         .btn-nav.cicilan {
             background-color: #e0f0fe;
             color: #0284c7;
             border: 1px solid rgba(2, 132, 199, 0.2);
+        }
+
+        .btn-nav.investasi {
+            background-color: #dcfce7;
+            color: #059669;
+            border: 1px solid rgba(5, 150, 105, 0.25);
+            font-weight: 700;
         }
 
         .btn-nav.analisis {
@@ -415,22 +438,26 @@
 </div>
 
 <div class="container">
-    <!-- PANEL HEADER BRAND -->
+    <!-- PANEL HEADER BRAND & NAVIGASI -->
     <div class="header">
-        <div class="header-brand">
-            <!-- IKON UANG / LEMBARAN KAS BERSIH -->
-            <div class="header-logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="6" width="20" height="12" rx="2"/>
-                    <circle cx="12" cy="12" r="2.5"/>
-                    <path d="M6 12h.01M18 12h.01"/>
-                </svg>
+        <div class="header-top">
+            <div class="header-brand">
+                <div class="header-logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="6" width="20" height="12" rx="2"/>
+                        <circle cx="12" cy="12" r="2.5"/>
+                        <path d="M6 12h.01M18 12h.01"/>
+                    </svg>
+                </div>
+                <h1>Dompet Hasibuan</h1>
             </div>
-            <h1>Dompet Hasibuan</h1>
         </div>
+        
+        <!-- ROW TOMBOL NAVIGASI DENGAN INVESTASI -->
         <div class="nav-buttons">
-            <a href="level.html" class="btn-nav" style="background-color: #f3e8ff; color: #7c3aed; border: 1px solid rgba(124, 58, 237, 0.2);">Level ⚔️</a>
+            <a href="level.html" class="btn-nav level">Level ⚔️</a>
             <a href="cicilan.html" class="btn-nav cicilan">Cicilan ❄️</a>
+            <a href="investasi.html" class="btn-nav investasi">Aset 💎</a>
             <a href="history.html" class="btn-nav analisis">Histori 🌲</a>
         </div>
     </div>

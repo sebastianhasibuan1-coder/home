@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dompet Hasibuan - Portofolio Investasi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-finance: #f0fdf4;   /* Mint pudar adem khas investasi bernilai positif */
+            --card-bg: #ffffff;      /* Putih bersih bersinar */
+            --card-inner: #dc2626;   
+            --emerald-accent: #059669; /* Emerald green elegan */
+            --gold-accent: #d97706;    /* Sentuhan gold emas aset */
+            --text-dark: #0f172a;    /* Teks utama gelap tajam */
+            --text-muted: #64748b;   /* Teks sekunder kelabu */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-finance);
+            color: var(--text-dark);
+            padding: 20px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 40px;
+        }
+
+        /* --- HEADER INVESTASI --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #ffffff, #dcfce7);
+            border-radius: 14px;
+            border: 1px solid rgba(5, 150, 105, 0.15);
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.05);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .btn-back {
+            background-color: var(--card-bg);
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(5, 150, 105, 0.15);
+            transition: background-color 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #dcfce7;
+        }
+
+        /* --- DASHBOARD TOTAL SALDO --- */
+        .summary-card {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-radius: 20px;
+            padding: 24px;
+            color: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: -20px; right: -20px;
+            width: 130px; height: 130px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .summary-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .summary-val {
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 6px;
+            letter-spacing: -1px;
+        }
+
+        .sub-info {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* --- DAFTAR ITEM INVESTASI --- */
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .asset-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px 18px;
+            border: 1px solid rgba(5, 150, 105, 0.08);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .asset-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .asset-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .asset-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background-color: #ecfdf5;
+            color: var(--emerald-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .asset-details .name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .asset-details .category {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .asset-amount {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--emerald-accent);
+            text-align: right;
+        }
+
+        .asset-share {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            text-align: right;
+        }
+
+        .hint-card {
+            background-color: #f0fdf4;
+            border: 1px dashed rgba(5, 150, 105, 0.3);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Portofolio Aset 💎</h1>
+        <a href="index.html" class="btn-back">⬅️ Menu Utama</a>
+    </div>
+
+    <!-- TOTAL SALDO INVESTASI -->
+    <div class="summary-card">
+        <div class="summary-label">Total Saldo Investasi & Aset</div>
+        <div id="totalInvestment" class="summary-val">Rp 0</div>
+        <div class="sub-info">
+            <span>Jumlah Pos Aset</span>
+            <span id="assetCount">0 Pos</span>
+        </div>
+    </div>
+
+    <!-- LIST ITEM INVESTASI -->
+    <div class="list-container" id="assetList"></div>
+
+    <div class="hint-card">
+        💡 <b>Catatan:</b> Untuk memperbarui saldo investasi tiap bulan, kamu bisa mengedit nilai nominalnya langsung di dalam skrip file HTML ini.
+    </div>
+</div>
+
+<script>
+    /* =========================================================
+       DATA INVESTASI MANUAL (UBAH ANGKA DI SINI SETIAP BULAN)
+       ========================================================= */
+    const INVESTASI_DATA = [
+        { name: "TABUNGAN RUMAH",         category: "Dana Impian & Properti", amount: 9030000,  icon: "🏠" },
+        { name: "BPJS JHT SUAMI",         category: "Jaminan Hari Tua",       amount: 28710413, icon: "🛡️" },
+        { name: "BPJS JHT ISTRI",         category: "Jaminan Hari Tua",       amount: 29160220, icon: "🛡️" },
+        { name: "DPLK INDOLIFE SUAMI",    category: "Dana Pensiun Lembaga",   amount: 18632800, icon: "📈" },
+        { name: "DPLK INDOLIFE ISTRI",    category: "Dana Pensiun Lembaga",   amount: 19267200, icon: "📈" }
+    ];
+
+    function formatRupiah(angka) {
+        return 'Rp ' + Math.round(angka).toLocaleString('id-ID');
+    }
+
+    function renderInvestasi() {
+        const listContainer = document.getElementById('assetList');
+        const totalEl = document.getElementById('totalInvestment');
+        const countEl = document.getElementById('assetCount');
+
+        let grandTotal = 0;
+        listContainer.innerHTML = '';
+
+        // Hitung total akumulasi
+        INVESTASI_DATA.forEach(item => {
+            grandTotal += item.amount;
+        });
+
+        // Render setiap kartu aset
+        INVESTASI_DATA.forEach(item => {
+            const share = grandTotal > 0 ? Math.round((item.amount / grandTotal) * 100) : 0;
+
+            const card = document.createElement('div');
+            card.className = 'asset-card';
+            card.innerHTML = `
+                <div class="asset-info">
+                    <div class="asset-icon">${item.icon}</div>
+                    <div class="asset-details">
+                        <div class="name">${item.name}</div>
+                        <div class="category">${item.category}</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="asset-amount">${formatRupiah(item.amount)}</div>
+                    <div class="asset-share">${share}% dari total</div>
+                </div>
+            `;
+            listContainer.appendChild(card);
+        });
+
+        totalEl.innerText = formatRupiah(grandTotal);
+        countEl.innerText = `${INVESTASI_DATA.length} Pos Aset`;
+    }
+
+    renderInvestasi();
+</script>
+
+</body>
+</html>

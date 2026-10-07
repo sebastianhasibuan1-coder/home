@@ -352,7 +352,7 @@
     // URL WEB APP APPS SCRIPT SINKRON UTAMA
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
 
-    // MASTER DATA TARGET TERBARU (DI-UPDATE: Ditambah SPP 3)
+    // MASTER DATA TARGET TERBARU
     const DEBT_MASTER = {
         "HCI 1": { name: "HCI 1", grandTotal: 3126800,   monthly: 781700 },
         "HCI 2": { name: "HCI 2", grandTotal: 11242000,  monthly: 511000 },
@@ -417,55 +417,84 @@
 
             let globalPaid = 0;
             let globalRemaining = 0;
+            let debtListArray = [];
 
+            // 1. Hitung seluruh data dan kumpulkan ke dalam array
             for (let key in DEBT_MASTER) {
                 const item = DEBT_MASTER[key];
                 let totalPaid = paidTracker[key];
                 
-                // Pembatasan total bayar tidak melebihi grand total (kecuali variabel khusus)
                 if (!["LHT", "FLN", "TLS", "GRJA", "IBAO", "PTRA"].includes(key)) {
                     totalPaid = Math.min(totalPaid, item.grandTotal);
                 }
 
                 const sisa = Math.max(0, item.grandTotal - totalPaid);
                 const pct = Math.min(100, Math.round((totalPaid / item.grandTotal) * 100)) || 0;
-                
+                const isLunas = (totalPaid >= item.grandTotal && item.grandTotal > 0);
+
                 globalPaid += totalPaid;
                 globalRemaining += sisa;
 
-                const isLunas = (totalPaid >= item.grandTotal && item.grandTotal > 0);
-                const badgeText = isLunas ? "🟢 Lunas" : "🔴 Belum Lunas";
-                const badgeClass = isLunas ? "paid" : "unpaid";
+                debtListArray.push({
+                    key: key,
+                    item: item,
+                    totalPaid: totalPaid,
+                    sisa: sisa,
+                    pct: pct,
+                    isLunas: isLunas
+                });
+            }
+
+            // 2. LOGIKA PENGURUTAN (SORTING)
+            debtListArray.sort((a, b) => {
+                // Aturan 1: Yang sudah lunas diposisikan paling bawah
+                if (a.isLunas !== b.isLunas) {
+                    return a.isLunas ? 1 : -1;
+                }
+                
+                // Aturan 2: Urutkan berdasarkan Sisa Hutang Terbesar ke terkecil
+                if (b.sisa !== a.sisa) {
+                    return b.sisa - a.sisa;
+                }
+                
+                // Aturan 3: Jika sisa sama, urutkan dari Persentase Terkecil ke terbesar
+                return a.pct - b.pct;
+            });
+
+            // 3. Render elemen kartu yang sudah terurut
+            debtListArray.forEach(data => {
+                const badgeText = data.isLunas ? "🟢 Lunas" : "🔴 Belum Lunas";
+                const badgeClass = data.isLunas ? "paid" : "unpaid";
 
                 const card = document.createElement('div');
                 card.className = 'debt-card';
-                card.onclick = () => openCalendarModal(key, totalPaid);
+                card.onclick = () => openCalendarModal(data.key, data.totalPaid);
                 card.innerHTML = `
                     <div class="debt-header">
-                        <span class="debt-name">${item.name}</span>
+                        <span class="debt-name">${data.item.name}</span>
                         <span class="status-badge ${badgeClass}">${badgeText}</span>
                     </div>
                     <div class="grid-info">
                         <span class="info-label">Target Total</span>
-                        <span class="info-value">${formatRupiah(item.grandTotal)}</span>
+                        <span class="info-value">${formatRupiah(data.item.grandTotal)}</span>
                         
                         <span class="info-label">Sudah Dibayar</span>
-                        <span class="info-value" style="color: var(--emerald-money);">${formatRupiah(totalPaid)}</span>
+                        <span class="info-value" style="color: var(--emerald-money);">${formatRupiah(data.totalPaid)}</span>
                         
                         <span class="info-label">Sisa Hutang</span>
-                        <span class="info-value" style="color: ${sisa > 0 ? 'var(--rose-expense)' : 'var(--text-dark)'};">${formatRupiah(sisa)}</span>
+                        <span class="info-value" style="color: ${data.sisa > 0 ? 'var(--rose-expense)' : 'var(--text-dark)'};">${formatRupiah(data.sisa)}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: var(--text-muted);">
                         <span>Progress Pelunasan</span>
-                        <span>${pct}%</span>
+                        <span>${data.pct}%</span>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: ${pct}%"></div>
+                        <div class="progress-bar-fill" style="width: ${data.pct}%"></div>
                     </div>
                     <div class="click-hint">Lihat Rincian Bulan 📅</div>
                 `;
                 listContainer.appendChild(card);
-            }
+            });
 
             document.getElementById('totalPaidGlobal').innerText = formatRupiah(globalPaid);
             document.getElementById('totalRemGlobal').innerText = formatRupiah(globalRemaining);
@@ -489,7 +518,6 @@
         if (item.monthly > 0) {
             monthsPaid = Math.floor(totalPaidRiil / item.monthly);
         } else {
-            // Logika fleksibel nominal opsional
             monthsPaid = totalPaidRiil >= item.grandTotal ? 4 : Math.ceil(totalPaidRiil / (item.grandTotal / 4)); 
         }
 
@@ -505,43 +533,33 @@
             for (let m = 1; m <= 12; m++) {
                 let isDihitung = false;
 
-                // 1. HCI 1: Bulan 10 2026 sd Bulan 1 2027
                 if (debtKey === "HCI 1") {
                     if ((year === 2026 && m >= 10) || (year === 2027 && m === 1)) isDihitung = true;
                 } 
-                // 2. HCI 2: Bulan 10 2026 sd Bulan 7 2028
                 else if (debtKey === "HCI 2") {
                     if ((year === 2026 && m >= 10) || year === 2027 || (year === 2028 && m <= 7)) isDihitung = true;
                 }
-                // 3. SPP 1: Bulan 10 2026 Saja
                 else if (debtKey === "SPP 1") {
                     if (year === 2026 && m === 10) isDihitung = true;
                 } 
-                // 4. SPP 2: Bulan 10 2026 sd Bulan 12 2026
                 else if (debtKey === "SPP 2") {
                     if (year === 2026 && m >= 10 && m <= 12) isDihitung = true;
                 } 
-                // 5. SPP 3: Bulan 11 2026 sd Bulan 10 2027
                 else if (debtKey === "SPP 3") {
                     if ((year === 2026 && m >= 11) || (year === 2027 && m <= 10)) isDihitung = true;
                 }
-                // 6. MKR: Bulan 10 2026 sd Bulan 11 2026
                 else if (debtKey === "MKR") {
                     if (year === 2026 && m >= 10 && m <= 11) isDihitung = true;
                 } 
-                // 7. AGS: Bulan 9 2026 sd Bulan 3 2030
                 else if (debtKey === "AGS") {
                     if ((year === 2026 && m >= 9) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 3)) isDihitung = true;
                 } 
-                // 8. BPR: Bulan 9 2026 sd Bulan 1 2030
                 else if (debtKey === "BPR") {
                     if ((year === 2026 && m >= 9) || year === 2027 || year === 2028 || year === 2029 || (year === 2030 && m <= 1)) isDihitung = true;
                 }
-                // 9. IBAO & PTRA: Bulan 9 2026 sd Bulan 12 2026
                 else if (["IBAO", "PTRA"].includes(debtKey)) {
                     if (year === 2026 && m >= 9 && m <= 12) isDihitung = true;
                 }
-                // 10. Pos Fleksibel Lainnya (LHT, FLN, TLS, GRJA): Bulan 10 2026 sd Bulan 12 2026
                 else if (["LHT", "FLN", "TLS", "GRJA"].includes(debtKey)) {
                     if (year === 2026 && m >= 10 && m <= 12) isDihitung = true;
                 }

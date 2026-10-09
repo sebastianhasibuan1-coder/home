@@ -37,12 +37,13 @@
     /* Service Progress Indicators */
     .service-section { margin-top: 20px; }
     .service-title { font-weight: 700; color: #f1f5f9; font-size: 0.95rem; margin-bottom: 12px; border-bottom: 1px solid #334155; padding-bottom: 6px; }
+    .service-category { font-weight: 700; color: #38bdf8; font-size: 0.85rem; margin: 12px 0 8px 0; text-transform: uppercase; letter-spacing: 0.5px; }
     
-    .service-item { margin-bottom: 14px; background: #0f172a; padding: 10px; border-radius: 10px; border: 1px solid #334155; }
-    .service-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600; }
+    .service-item { margin-bottom: 10px; background: #0f172a; padding: 10px; border-radius: 10px; border: 1px solid #334155; }
+    .service-header { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 6px; font-weight: 600; }
     .service-percent { font-weight: 700; color: #38bdf8; }
     
-    .progress-bar-bg { width: 100%; height: 10px; background: #334155; border-radius: 10px; overflow: hidden; }
+    .progress-bar-bg { width: 100%; height: 8px; background: #334155; border-radius: 10px; overflow: hidden; }
     .progress-bar-fill { height: 100%; width: 0%; transition: width 0.4s ease; border-radius: 10px; }
     
     .bg-green { background: #22c55e; }
@@ -119,7 +120,7 @@
     </div>
   </div>
 
-  <!-- FORM INPUT (Tipe Text untuk Formatting Ribuan) -->
+  <!-- FORM INPUT -->
   <div class="form-group">
     <label for="kmAwal">KM Awal (Awal Narik):</label>
     <input type="text" id="kmAwal" placeholder="Contoh: 32.100" inputmode="numeric" oninput="formatNumberInput(this)">
@@ -163,49 +164,128 @@
   <div class="service-section">
     <div class="service-title">🔧 Status & Indikator Servis Motor</div>
 
+    <div class="service-category">A. Perawatan Rutin</div>
+
     <!-- 1. Oli Mesin -->
     <div class="service-item">
       <div class="service-header">
-        <span>Oli Mesin (Kelipatan 2.000 KM)</span>
+        <span>Oli Mesin (10W-30) • 2.000 KM</span>
         <span class="service-percent" id="pctOli">0%</span>
       </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill bg-green" id="barOli"></div>
-      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barOli"></div></div>
     </div>
 
-    <!-- 2. Servis CVT & Gardan -->
+    <!-- 2. Oli Gardan -->
     <div class="service-item">
       <div class="service-header">
-        <span>Servis CVT & Oli Gardan (4.000 KM)</span>
+        <span>Oli Gardan / Transmisi • 4.000 KM</span>
+        <span class="service-percent" id="pctGardan">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barGardan"></div></div>
+    </div>
+
+    <!-- 3. Servis CVT -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Servis CVT & Pembersihan • 4.000 KM</span>
         <span class="service-percent" id="pctCvt">0%</span>
       </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill bg-green" id="barCvt"></div>
-      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barCvt"></div></div>
     </div>
 
-    <!-- 3. Filter Udara & Busi -->
+    <!-- 4. Filter Udara & Busi -->
     <div class="service-item">
       <div class="service-header">
-        <span>Filter Udara & Busi (8.000 KM)</span>
+        <span>Filter Udara & Busi • 8.000 KM</span>
         <span class="service-percent" id="pctFilter">0%</span>
       </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill bg-green" id="barFilter"></div>
-      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barFilter"></div></div>
     </div>
 
-    <!-- 4. V-Belt & Part Berat -->
+    <!-- 5. Kampas Rem -->
     <div class="service-item">
       <div class="service-header">
-        <span>V-Belt, Komster & Radiator (20.000 KM)</span>
+        <span>Kampas Rem (Depan + Belakang) • 12.000 KM</span>
+        <span class="service-percent" id="pctRem">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barRem"></div></div>
+    </div>
+
+    <!-- 6. Ban Luar Tubeless -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Ban Luar Tubeless • 18.000 KM</span>
+        <span class="service-percent" id="pctBan">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barBan"></div></div>
+    </div>
+
+    <!-- 7. V-Belt & Roller Set -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>V-Belt & Roller Set • 20.000 KM</span>
         <span class="service-percent" id="pctVbelt">0%</span>
       </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill bg-green" id="barVbelt"></div>
-      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barVbelt"></div></div>
     </div>
+
+    <!-- 8. Aki (GTZ6V) -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Aki / Battery (GTZ6V) • 25.000 KM</span>
+        <span class="service-percent" id="pctAki">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barAki"></div></div>
+    </div>
+
+
+    <div class="service-category">B. Cadangan Motor Tua / Aging Parts</div>
+
+    <!-- 9. Komster Stang -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Komster Stang • 20.000 KM</span>
+        <span class="service-percent" id="pctKomster">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barKomster"></div></div>
+    </div>
+
+    <!-- 10. Radiator & Coolant -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Radiator & Coolant • 20.000 KM</span>
+        <span class="service-percent" id="pctRadiator">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barRadiator"></div></div>
+    </div>
+
+    <!-- 11. Shockbreaker -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Shockbreaker (Rebuild) • 25.000 KM</span>
+        <span class="service-percent" id="pctShock">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barShock"></div></div>
+    </div>
+
+    <!-- 12. Laher Roda & Dinamo -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Laher Roda & Dinamo Starter • 25.000 KM</span>
+        <span class="service-percent" id="pctLaher">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barLaher"></div></div>
+    </div>
+
+    <!-- 13. Piringan Cakram -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Piringan Cakram Depan • 30.000 KM</span>
+        <span class="service-percent" id="pctCakram">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" id="barCakram"></div></div>
+    </div>
+
   </div>
 
 </div>
@@ -213,9 +293,8 @@
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfQ1tmFLFCnZlEVPqDcg78lVtJ-fiB4Gw1yfnCH31V6cnK2eNvc75VU-5ZdR0FPGkK/exec";
 
-  // Fungsi mengubah input angka murni ke format titik ribuan (contoh: 100000 -> 100.000)
   function formatNumberInput(element) {
-    let rawValue = element.value.replace(/\D/g, ""); // Hapus semua karakter selain angka
+    let rawValue = element.value.replace(/\D/g, "");
     if (rawValue === "") {
       element.value = "";
       return;
@@ -223,7 +302,6 @@
     element.value = parseInt(rawValue, 10).toLocaleString('id-ID');
   }
 
-  // Fungsi mengambil nilai numerik murni dari string berkoma/titik
   function getRawValue(elementId) {
     const val = document.getElementById(elementId).value;
     return parseFloat(val.replace(/\./g, "").replace(/,/g, "")) || 0;
@@ -279,10 +357,22 @@
     const kmSekarang = getRawValue('kmAkhir') || getRawValue('kmAwal') || 0;
     if(kmSekarang <= 0) return;
 
+    // A. Perawatan Rutin
     setBar('barOli', 'pctOli', kmSekarang % 2000, 2000);
+    setBar('barGardan', 'pctGardan', kmSekarang % 4000, 4000);
     setBar('barCvt', 'pctCvt', kmSekarang % 4000, 4000);
     setBar('barFilter', 'pctFilter', kmSekarang % 8000, 8000);
+    setBar('barRem', 'pctRem', kmSekarang % 12000, 12000);
+    setBar('barBan', 'pctBan', kmSekarang % 18000, 18000);
     setBar('barVbelt', 'pctVbelt', kmSekarang % 20000, 20000);
+    setBar('barAki', 'pctAki', kmSekarang % 25000, 25000);
+
+    // B. Cadangan Motor Tua / Aging Parts
+    setBar('barKomster', 'pctKomster', kmSekarang % 20000, 20000);
+    setBar('barRadiator', 'pctRadiator', kmSekarang % 20000, 20000);
+    setBar('barShock', 'pctShock', kmSekarang % 25000, 25000);
+    setBar('barLaher', 'pctLaher', kmSekarang % 25000, 25000);
+    setBar('barCakram', 'pctCakram', kmSekarang % 30000, 30000);
   }
 
   function setBar(barId, pctId, currentUsage, maxInterval) {
@@ -357,12 +447,10 @@
     })
     .then(res => res.json())
     .then(data => {
-      // RESET FORM INPUT & FORMAT KEMBALI
       document.getElementById('kmAkhir').value = "";
       document.getElementById('pendapatan').value = "";
       document.getElementById('hasil').style.display = "none";
       
-      // Set KM Awal otomatis dengan KM Akhir terformat titik
       document.getElementById('kmAwal').value = kmAkhir.toLocaleString('id-ID');
 
       muatDataSync();

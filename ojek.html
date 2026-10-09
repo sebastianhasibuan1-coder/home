@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracker Vario 150 - inDrive</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 15px; }
+    .card { background: white; padding: 20px; border-radius: 10px; max-width: 450px; margin: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+    .form-group { margin-bottom: 12px; }
+    label { font-weight: bold; font-size: 0.9em; display: block; margin-bottom: 4px; }
+    input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+    button { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    button:hover { background: #219150; }
+    .result { background: #eef9f1; padding: 15px; border-radius: 6px; margin-top: 15px; }
+    .result p { margin: 6px 0; font-size: 0.95em; }
+    .alert { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px; margin-top: 15px; font-size: 0.85em; }
+    .danger { background: #f8d7da; border-left: 4px solid #dc3545; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Vario 150 Tracker</h2>
+  
+  <div class="form-group">
+    <label>KM Awal (Awal Shift):</label>
+    <input type="number" id="kmAwal" placeholder="Contoh: 32100">
+  </div>
+  
+  <div class="form-group">
+    <label>KM Akhir (Selesai Shift):</label>
+    <input type="number" id="kmAkhir" placeholder="Contoh: 32145">
+  </div>
+  
+  <div class="form-group">
+    <label>Pendapatan Kotor App (Rp):</label>
+    <input type="number" id="pendapatan" placeholder="Contoh: 80000">
+  </div>
+  
+  <button onclick="kalkulasi()">Hitung Pembagian</button>
+
+  <div class="result" id="hasil" style="display:none;">
+    <h3>Rincian Pembagian:</h3>
+    <p><strong>Total Jarak:</strong> <span id="resTotalKm">0</span> KM</p>
+    <p><strong>Bensin (Rp263/KM):</strong> Rp<span id="resBensin">0</span></p>
+    <p><strong>Tabungan Motor (Rp162/KM):</strong> Rp<span id="resTabungan">0</span></p>
+    <hr>
+    <p style="color: #27ae60; font-size: 1.1em;"><strong>Uang Bersih Rumah:</strong> Rp<span id="resBersih">0</span></p>
+    
+    <button onclick="simpanKeSheet()" style="background:#2980b9;">Simpan ke Google Sheet</button>
+  </div>
+
+  <div id="maintenanceAlert"></div>
+</div>
+
+<script>
+  // PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfQ1tmFLFCnZlEVPqDcg78lVtJ-fiB4Gw1yfnCH31V6cnK2eNvc75VU-5ZdR0FPGkK/exec"; 
+
+  function kalkulasi() {
+    const kmAwal = parseFloat(document.getElementById('kmAwal').value) || 0;
+    const kmAkhir = parseFloat(document.getElementById('kmAkhir').value) || 0;
+    const pendapatan = parseFloat(document.getElementById('pendapatan').value) || 0;
+
+    if (kmAkhir <= kmAwal) {
+      alert("KM Akhir harus lebih besar dari KM Awal!");
+      return;
+    }
+
+    const totalKm = kmAkhir - kmAwal;
+    const bensin = Math.round(totalKm * 263);
+    const tabungan = Math.round(totalKm * 162);
+    const bersih = pendapatan - bensin - tabungan;
+
+    document.getElementById('resTotalKm').innerText = totalKm;
+    document.getElementById('resBensin').innerText = bensin.toLocaleString('id-ID');
+    document.getElementById('resTabungan').innerText = tabungan.toLocaleString('id-ID');
+    document.getElementById('resBersih').innerText = bersih.toLocaleString('id-ID');
+
+    document.getElementById('hasil').style.display = 'block';
+
+    cekServis(kmAkhir);
+  }
+
+  function cekServis(kmSekarang) {
+    let alertHtml = "";
+    
+    // Asumsi interval servis berdasarkan KM
+    const sisOli = 2000 - (kmSekarang % 2000);
+    const sisaCvt = 4000 - (kmSekarang % 4000);
+    const sisaVbelt = 20000 - (kmSekarang % 20000);
+
+    if (sisOli <= 100) {
+      alertHtml += `<div class="alert danger">⚠️ <strong>WAKTU GANTI OLI MESIN!</strong> (Spedometer mendekati kelipatan 2.000 KM)</div>`;
+    } else {
+      alertHtml += `<div class="alert">🔧 Ganti Oli Mesin berikutnya dalam: <strong>${sisOli} KM</strong> lagi.</div>`;
+    }
+
+    if (sisaCvt <= 150) {
+      alertHtml += `<div class="alert danger">⚠️ <strong>SERVIS CVT & OLI GARDAN!</strong> (Spedometer mendekati kelipatan 4.000 KM)</div>`;
+    } else {
+      alertHtml += `<div class="alert">🛵 Servis CVT & Oli Gardan berikutnya: <strong>${sisaCvt} KM</strong> lagi.</div>`;
+    }
+
+    document.getElementById('maintenanceAlert').innerHTML = alertHtml;
+  }
+
+  function simpanKeSheet() {
+    const data = {
+      tanggal: new Date().toLocaleDateString('id-ID'),
+      kmAwal: document.getElementById('kmAwal').value,
+      kmAkhir: document.getElementById('kmAkhir').value,
+      totalKm: document.getElementById('kmAkhir').value - document.getElementById('kmAwal').value,
+      pendapatan: document.getElementById('pendapatan').value,
+      bensin: Math.round((document.getElementById('kmAkhir').value - document.getElementById('kmAwal').value) * 263),
+      tabunganMotor: Math.round((document.getElementById('kmAkhir').value - document.getElementById('kmAwal').value) * 162),
+      bersihRumah: document.getElementById('pendapatan').value - Math.round((document.getElementById('kmAkhir').value - document.getElementById('kmAwal').value) * 425)
+    };
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => {
+      alert("Data berhasil disimpan ke Google Sheets!");
+    })
+    .catch(err => {
+      alert("Gagal menyimpan data: " + err);
+    });
+  }
+</script>
+
+</body>
+</html>

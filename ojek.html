@@ -7,7 +7,7 @@
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 12px; }
-    .container { max-width: 440px; margin: auto; background: #1e293b; border-radius: 16px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .container { max-width: 440px; margin: auto; background: #1e293b; border-radius: 16px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; }
     h2 { text-align: center; color: #38bdf8; margin: 0 0 4px 0; font-size: 1.4rem; }
     .subtitle { text-align: center; color: #94a3b8; font-size: 0.8rem; margin-bottom: 16px; }
     
@@ -18,7 +18,8 @@
     .summary-card .value { font-size: 1.1rem; font-weight: 800; color: #38bdf8; }
     .summary-card .value.green { color: #4ade80; }
 
-    .btn-sync { background: transparent; border: 1px solid #334155; color: #94a3b8; width: 100%; padding: 6px; border-radius: 8px; font-size: 0.75rem; margin-bottom: 18px; cursor: pointer; }
+    .btn-sync { background: transparent; border: 1px solid #334155; color: #94a3b8; width: 100%; padding: 8px; border-radius: 8px; font-size: 0.75rem; margin-bottom: 18px; cursor: pointer; transition: 0.2s; }
+    .btn-sync:hover { background: #334155; color: #fff; }
 
     /* Form Input */
     .form-group { margin-bottom: 12px; }
@@ -47,13 +48,65 @@
     .progress-bar-bg { width: 100%; height: 10px; background: #334155; border-radius: 10px; overflow: hidden; }
     .progress-bar-fill { height: 100%; width: 0%; transition: width 0.4s ease; border-radius: 10px; }
     
-    /* Warna Status Indicator */
     .bg-green { background: #22c55e; }
     .bg-yellow { background: #eab308; }
     .bg-red { background: #ef4444; }
+
+    /* ========================================= */
+    /* STYLES OVERLAY LOADING & BURAM (BLUR)      */
+    /* ========================================= */
+    #loadingOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px); /* Efek layar buram */
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #loadingOverlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #334155;
+      border-top: 5px solid #38bdf8;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      margin-top: 14px;
+      color: #f8fafc;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
+
+<!-- OVERLAY LOADING & BLUR -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Menyinkronkan data...</div>
+</div>
 
 <div class="container">
   <h2>Kalkulator Ojek</h2>
@@ -166,7 +219,18 @@
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfQ1tmFLFCnZlEVPqDcg78lVtJ-fiB4Gw1yfnCH31V6cnK2eNvc75VU-5ZdR0FPGkK/exec";
 
+  function showLoading(pesan) {
+    document.getElementById('loadingText').innerText = pesan || "Memproses data...";
+    document.getElementById('loadingOverlay').classList.add('active');
+  }
+
+  function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+  }
+
+  // Callback dari Google Apps Script via JSONP
   window.handleSheetData = function(data) {
+    hideLoading();
     if (data) {
       document.getElementById('dashTotalKm').innerText = (data.totalKmAkumulasi || 0) + " KM";
       document.getElementById('dashTotalCuan').innerText = "Rp " + (data.totalPendapatanAkumulasi || 0).toLocaleString('id-ID');
@@ -185,8 +249,7 @@
   function muatDataSync() {
     if(!SCRIPT_URL) return;
 
-    document.getElementById('dashTotalKm').innerText = "Memuat...";
-    document.getElementById('dashTotalCuan').innerText = "Memuat...";
+    showLoading("Menyinkronkan database...");
 
     const oldScript = document.getElementById('jsonpScript');
     if (oldScript) oldScript.remove();
@@ -194,6 +257,12 @@
     const script = document.createElement('script');
     script.id = 'jsonpScript';
     script.src = SCRIPT_URL + "?callback=handleSheetData&t=" + new Date().getTime();
+    
+    script.onerror = function() {
+      hideLoading();
+      alert("⚠️ Gagal menyambung ke server. Periksa koneksi internet Anda.");
+    };
+
     document.body.appendChild(script);
   }
 
@@ -270,6 +339,8 @@
       bersihRumah: bersih
     };
 
+    showLoading("Menyimpan ke Google Sheet...");
+
     fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -277,10 +348,12 @@
     })
     .then(res => res.json())
     .then(data => {
+      hideLoading();
       alert("✅ Data berhasil disimpan ke Google Sheets!");
-      setTimeout(muatDataSync, 1000);
+      muatDataSync();
     })
     .catch(err => {
+      hideLoading();
       alert("❌ Gagal menyimpan data: " + err);
     });
   }

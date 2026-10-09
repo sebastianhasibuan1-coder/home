@@ -71,17 +71,17 @@
 
   <!-- FORM INPUT -->
   <div class="form-group">
-    <label>KM Awal (Awal Narik):</label>
+    <label for="kmAwal">KM Awal (Awal Narik):</label>
     <input type="number" id="kmAwal" placeholder="Contoh: 32100" inputmode="numeric">
   </div>
 
   <div class="form-group">
-    <label>KM Akhir (Selesai Narik):</label>
+    <label for="kmAkhir">KM Akhir (Selesai Narik):</label>
     <input type="number" id="kmAkhir" placeholder="Contoh: 32145" inputmode="numeric" oninput="updateIndicators()">
   </div>
 
   <div class="form-group">
-    <label>Pendapatan Kotor / App (Rp):</label>
+    <label for="pendapatan">Pendapatan Kotor / App (Rp):</label>
     <input type="number" id="pendapatan" placeholder="Contoh: 80000" inputmode="numeric">
   </div>
 
@@ -161,29 +161,40 @@
 </div>
 
 <script>
-  // LINK GOOGLE APPS SCRIPT WEB APP
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfQ1tmFLFCnZlEVPqDcg78lVtJ-fiB4Gw1yfnCH31V6cnK2eNvc75VU-5ZdR0FPGkK/exec";
 
-  // Muat data akumulasi dari Google Sheets saat aplikasi dibuka
   window.onload = function() {
+    muatDataSync();
+  };
+
+  function muatDataSync() {
+    if(!SCRIPT_URL) return;
+
     fetch(SCRIPT_URL)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("Network response error");
+        return res.json();
+      })
       .then(data => {
-        document.getElementById('dashTotalKm').innerText = (data.totalKmAkumulasi || 0) + " KM";
-        document.getElementById('dashTotalCuan').innerText = "Rp " + (data.totalPendapatanAkumulasi || 0).toLocaleString('id-ID');
-        if(data.lastKm > 0) {
-          document.getElementById('kmAwal').value = data.lastKm;
-          updateIndicators();
+        if (data) {
+          document.getElementById('dashTotalKm').innerText = (data.totalKmAkumulasi || 0) + " KM";
+          document.getElementById('dashTotalCuan').innerText = "Rp " + (data.totalPendapatanAkumulasi || 0).toLocaleString('id-ID');
+          
+          if(data.lastKm && data.lastKm > 0) {
+            document.getElementById('kmAwal').value = data.lastKm;
+            updateIndicators();
+          }
         }
       })
-      .catch(err => console.log("Status sync Google Sheets: " + err));
-  };
+      .catch(err => {
+        console.log("Sync data awal:", err);
+      });
+  }
 
   function updateIndicators() {
     const kmSekarang = parseFloat(document.getElementById('kmAkhir').value) || parseFloat(document.getElementById('kmAwal').value) || 0;
     if(kmSekarang <= 0) return;
 
-    // Perhitungan % Keausan Servis
     setBar('barOli', 'pctOli', kmSekarang % 2000, 2000);
     setBar('barCvt', 'pctCvt', kmSekarang % 4000, 4000);
     setBar('barFilter', 'pctFilter', kmSekarang % 8000, 8000);
@@ -195,16 +206,17 @@
     const barEl = document.getElementById(barId);
     const pctEl = document.getElementById(pctId);
 
-    pctEl.innerText = pct + "%";
-    barEl.style.width = pct + "%";
+    if (barEl && pctEl) {
+      pctEl.innerText = pct + "%";
+      barEl.style.width = pct + "%";
 
-    // Ubah warna indikator berdasarkan % keausan
-    if(pct < 70) {
-      barEl.className = "progress-bar-fill bg-green";
-    } else if(pct < 90) {
-      barEl.className = "progress-bar-fill bg-yellow";
-    } else {
-      barEl.className = "progress-bar-fill bg-red";
+      if(pct < 70) {
+        barEl.className = "progress-bar-fill bg-green";
+      } else if(pct < 90) {
+        barEl.className = "progress-bar-fill bg-yellow";
+      } else {
+        barEl.className = "progress-bar-fill bg-red";
+      }
     }
   }
 
@@ -260,7 +272,7 @@
     .then(res => res.json())
     .then(data => {
       alert("✅ Data berhasil disimpan ke Google Sheets!");
-      location.reload(); // Reload halaman untuk sinkronisasi ulang total dashboard
+      muatDataSync();
     })
     .catch(err => {
       alert("❌ Gagal menyimpan data: " + err);

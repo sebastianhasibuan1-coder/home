@@ -3,61 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tracker Vario 150 - inDrive</title>
+  <title>Kalkulator Ojek Vario 150</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 15px; }
-    .card { background: white; padding: 20px; border-radius: 10px; max-width: 450px; margin: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 12px; }
+    .container { max-width: 440px; margin: auto; background: #1e293b; border-radius: 16px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    h2 { text-align: center; color: #38bdf8; margin: 0 0 4px 0; font-size: 1.4rem; }
+    .subtitle { text-align: center; color: #94a3b8; font-size: 0.8rem; margin-bottom: 16px; }
+    
+    /* Dashboard Summary Header */
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+    .summary-card { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px; text-align: center; }
+    .summary-card .title { font-size: 0.75rem; color: #94a3b8; font-weight: 600; margin-bottom: 4px; }
+    .summary-card .value { font-size: 1.1rem; font-weight: 800; color: #38bdf8; }
+    .summary-card .value.green { color: #4ade80; }
+
+    /* Form Input */
     .form-group { margin-bottom: 12px; }
-    label { font-weight: bold; font-size: 0.9em; display: block; margin-bottom: 4px; }
-    input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-    button { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    button:hover { background: #219150; }
-    .result { background: #eef9f1; padding: 15px; border-radius: 6px; margin-top: 15px; }
-    .result p { margin: 6px 0; font-size: 0.95em; }
-    .alert { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px; margin-top: 15px; font-size: 0.85em; }
-    .danger { background: #f8d7da; border-left: 4px solid #dc3545; }
+    label { display: block; font-weight: 600; color: #cbd5e1; font-size: 0.85rem; margin-bottom: 4px; }
+    input { width: 100%; padding: 12px; border: 1px solid #475569; border-radius: 10px; background: #0f172a; color: #fff; font-size: 1rem; outline: none; }
+    input:focus { border-color: #38bdf8; }
+    
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: 6px; }
+    .btn-primary { background: #22c55e; color: #022c22; }
+    .btn-primary:active { background: #16a34a; }
+    .btn-save { background: #0284c7; color: white; margin-top: 12px; }
+
+    /* Result Card */
+    .card-result { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 14px; margin-top: 16px; }
+    .row-res { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: #cbd5e1; }
+    .row-res.total { border-top: 1px dashed #475569; padding-top: 10px; margin-top: 8px; font-weight: 700; font-size: 1.1rem; color: #4ade80; }
+
+    /* Service Progress Indicators */
+    .service-section { margin-top: 20px; }
+    .service-title { font-weight: 700; color: #f1f5f9; font-size: 0.95rem; margin-bottom: 12px; border-bottom: 1px solid #334155; padding-bottom: 6px; }
+    
+    .service-item { margin-bottom: 14px; background: #0f172a; padding: 10px; border-radius: 10px; border: 1px solid #334155; }
+    .service-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600; }
+    .service-percent { font-weight: 700; color: #38bdf8; }
+    
+    .progress-bar-bg { width: 100%; height: 10px; background: #334155; border-radius: 10px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; width: 0%; transition: width 0.4s ease; border-radius: 10px; }
+    
+    /* Warna Status Indicator */
+    .bg-green { background: #22c55e; }
+    .bg-yellow { background: #eab308; }
+    .bg-red { background: #ef4444; }
   </style>
 </head>
 <body>
 
-<div class="card">
-  <h2>Vario 150 Tracker</h2>
-  
-  <div class="form-group">
-    <label>KM Awal (Awal Shift):</label>
-    <input type="number" id="kmAwal" placeholder="Contoh: 32100">
-  </div>
-  
-  <div class="form-group">
-    <label>KM Akhir (Selesai Shift):</label>
-    <input type="number" id="kmAkhir" placeholder="Contoh: 32145">
-  </div>
-  
-  <div class="form-group">
-    <label>Pendapatan Kotor App (Rp):</label>
-    <input type="number" id="pendapatan" placeholder="Contoh: 80000">
-  </div>
-  
-  <button onclick="kalkulasi()">Hitung Pembagian</button>
+<div class="container">
+  <h2>Kalkulator Ojek</h2>
+  <div class="subtitle">Vario 150 (2020) • Tanjung Morawa</div>
 
-  <div class="result" id="hasil" style="display:none;">
-    <h3>Rincian Pembagian:</h3>
-    <p><strong>Total Jarak:</strong> <span id="resTotalKm">0</span> KM</p>
-    <p><strong>Bensin (Rp263/KM):</strong> Rp<span id="resBensin">0</span></p>
-    <p><strong>Tabungan Motor (Rp162/KM):</strong> Rp<span id="resTabungan">0</span></p>
-    <hr>
-    <p style="color: #27ae60; font-size: 1.1em;"><strong>Uang Bersih Rumah:</strong> Rp<span id="resBersih">0</span></p>
-    
-    <button onclick="simpanKeSheet()" style="background:#2980b9;">Simpan ke Google Sheet</button>
+  <!-- SUMMARY DASHBOARD -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="title">TOTAL KM NAIK</div>
+      <div class="value" id="dashTotalKm">0 KM</div>
+    </div>
+    <div class="summary-card">
+      <div class="title">TOTAL BERSIH (APP)</div>
+      <div class="value green" id="dashTotalCuan">Rp 0</div>
+    </div>
   </div>
 
-  <div id="maintenanceAlert"></div>
+  <!-- FORM INPUT -->
+  <div class="form-group">
+    <label>KM Awal (Awal Narik):</label>
+    <input type="number" id="kmAwal" placeholder="Contoh: 32100" inputmode="numeric">
+  </div>
+
+  <div class="form-group">
+    <label>KM Akhir (Selesai Narik):</label>
+    <input type="number" id="kmAkhir" placeholder="Contoh: 32145" inputmode="numeric" oninput="updateIndicators()">
+  </div>
+
+  <div class="form-group">
+    <label>Pendapatan Kotor / App (Rp):</label>
+    <input type="number" id="pendapatan" placeholder="Contoh: 80000" inputmode="numeric">
+  </div>
+
+  <button class="btn btn-primary" onclick="kalkulasi()">Hitung Pembagian</button>
+
+  <!-- HASIL HITUNGAN HARIAN -->
+  <div id="hasil" class="card-result" style="display:none;">
+    <div class="row-res">
+      <span>Jarak Hari Ini:</span>
+      <span><strong id="resKm">0</strong> KM</span>
+    </div>
+    <div class="row-res">
+      <span>Bensin (Rp263/KM):</span>
+      <span>Rp <strong id="resBensin">0</strong></span>
+    </div>
+    <div class="row-res">
+      <span>Amplop Motor (Rp162/KM):</span>
+      <span>Rp <strong id="resTabungan">0</strong></span>
+    </div>
+    <div class="row-res total">
+      <span>Uang Bersih Rumah:</span>
+      <span>Rp <strong id="resBersih">0</strong></span>
+    </div>
+
+    <button class="btn btn-save" onclick="simpanKeSheet()">Simpan ke Google Sheet</button>
+  </div>
+
+  <!-- INDIKATOR SERVIS PROSES (%) -->
+  <div class="service-section">
+    <div class="service-title">🔧 Status & Indikator Servis Motor</div>
+
+    <!-- 1. Oli Mesin -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Oli Mesin (Kelipatan 2.000 KM)</span>
+        <span class="service-percent" id="pctOli">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill bg-green" id="barOli"></div>
+      </div>
+    </div>
+
+    <!-- 2. Servis CVT & Gardan -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Servis CVT & Oli Gardan (4.000 KM)</span>
+        <span class="service-percent" id="pctCvt">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill bg-green" id="barCvt"></div>
+      </div>
+    </div>
+
+    <!-- 3. Filter Udara & Busi -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>Filter Udara & Busi (8.000 KM)</span>
+        <span class="service-percent" id="pctFilter">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill bg-green" id="barFilter"></div>
+      </div>
+    </div>
+
+    <!-- 4. V-Belt & Part Berat -->
+    <div class="service-item">
+      <div class="service-header">
+        <span>V-Belt, Komster & Radiator (20.000 KM)</span>
+        <span class="service-percent" id="pctVbelt">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill bg-green" id="barVbelt"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  // PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfQ1tmFLFCnZlEVPqDcg78lVtJ-fiB4Gw1yfnCH31V6cnK2eNvc75VU-5ZdR0FPGkK/exec"; 
+  // PASTE KODE DEPLOYMENT GOOGLE APPS SCRIPT ANDA DI SINI
+  const SCRIPT_URL = "URL_WEB_APP_GOOGLE_SCRIPT_ANDA";
+
+  // Muat data akumulasi dari Google Sheets saat aplikasi pertama dibuka
+  window.onload = function() {
+    if(SCRIPT_URL !== "URL_WEB_APP_GOOGLE_SCRIPT_ANDA" && SCRIPT_URL !== "") {
+      fetch(SCRIPT_URL)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('dashTotalKm').innerText = (data.totalKmAkumulasi || 0) + " KM";
+          document.getElementById('dashTotalCuan').innerText = "Rp " + (data.totalPendapatanAkumulasi || 0).toLocaleString('id-ID');
+          if(data.lastKm > 0) {
+            document.getElementById('kmAwal').value = data.lastKm;
+          }
+        })
+        .catch(err => console.log("Gagal memuat sync: " + err));
+    }
+  };
+
+  function updateIndicators() {
+    const kmSekarang = parseFloat(document.getElementById('kmAkhir').value) || parseFloat(document.getElementById('kmAwal').value) || 0;
+    if(kmSekarang <= 0) return;
+
+    // Perhitungan % Keausan Servis
+    setBar('barOli', 'pctOli', kmSekarang % 2000, 2000);
+    setBar('barCvt', 'pctCvt', kmSekarang % 4000, 4000);
+    setBar('barFilter', 'pctFilter', kmSekarang % 8000, 8000);
+    setBar('barVbelt', 'pctVbelt', kmSekarang % 20000, 20000);
+  }
+
+  function setBar(barId, pctId, currentUsage, maxInterval) {
+    let pct = Math.min(Math.round((currentUsage / maxInterval) * 100), 100);
+    const barEl = document.getElementById(barId);
+    const pctEl = document.getElementById(pctId);
+
+    pctEl.innerText = pct + "%";
+    barEl.style.width = pct + "%";
+
+    // Ubah warna indikator berdasarkan % keausan
+    if(pct < 70) {
+      barEl.className = "progress-bar-fill bg-green";
+    } else if(pct < 90) {
+      barEl.className = "progress-bar-fill bg-yellow";
+    } else {
+      barEl.className = "progress-bar-fill bg-red";
+    }
+  }
 
   function kalkulasi() {
     const kmAwal = parseFloat(document.getElementById('kmAwal').value) || 0;
@@ -74,61 +224,52 @@
     const tabungan = Math.round(totalKm * 162);
     const bersih = pendapatan - bensin - tabungan;
 
-    document.getElementById('resTotalKm').innerText = totalKm;
+    document.getElementById('resKm').innerText = totalKm;
     document.getElementById('resBensin').innerText = bensin.toLocaleString('id-ID');
     document.getElementById('resTabungan').innerText = tabungan.toLocaleString('id-ID');
     document.getElementById('resBersih').innerText = bersih.toLocaleString('id-ID');
 
     document.getElementById('hasil').style.display = 'block';
-
-    cekServis(kmAkhir);
-  }
-
-  function cekServis(kmSekarang) {
-    let alertHtml = "";
-    
-    // Asumsi interval servis berdasarkan KM
-    const sisOli = 2000 - (kmSekarang % 2000);
-    const sisaCvt = 4000 - (kmSekarang % 4000);
-    const sisaVbelt = 20000 - (kmSekarang % 20000);
-
-    if (sisOli <= 100) {
-      alertHtml += `<div class="alert danger">⚠️ <strong>WAKTU GANTI OLI MESIN!</strong> (Spedometer mendekati kelipatan 2.000 KM)</div>`;
-    } else {
-      alertHtml += `<div class="alert">🔧 Ganti Oli Mesin berikutnya dalam: <strong>${sisOli} KM</strong> lagi.</div>`;
-    }
-
-    if (sisaCvt <= 150) {
-      alertHtml += `<div class="alert danger">⚠️ <strong>SERVIS CVT & OLI GARDAN!</strong> (Spedometer mendekati kelipatan 4.000 KM)</div>`;
-    } else {
-      alertHtml += `<div class="alert">🛵 Servis CVT & Oli Gardan berikutnya: <strong>${sisaCvt} KM</strong> lagi.</div>`;
-    }
-
-    document.getElementById('maintenanceAlert').innerHTML = alertHtml;
+    updateIndicators();
   }
 
   function simpanKeSheet() {
-    const data = {
+    if (SCRIPT_URL === "URL_WEB_APP_GOOGLE_SCRIPT_ANDA" || SCRIPT_URL === "") {
+      alert("Masukkan SCRIPT_URL terlebih dahulu di dalam file ojek.html!");
+      return;
+    }
+
+    const kmAwal = parseFloat(document.getElementById('kmAwal').value);
+    const kmAkhir = parseFloat(document.getElementById('kmAkhir').value);
+    const totalKm = kmAkhir - kmAwal;
+    const pendapatan = parseFloat(document.getElementById('pendapatan').value);
+    const bensin = Math.round(totalKm * 263);
+    const tabungan = Math.round(totalKm * 162);
+    const bersih = pendapatan - bensin - tabungan;
+
+    const payload = {
       tanggal: new Date().toLocaleDateString('id-ID'),
-      kmAwal: document.getElementById('kmAwal').value,
-      kmAkhir: document.getElementById('kmAkhir').value,
-      totalKm: document.getElementById('kmAkhir').value - document.getElementById('kmAwal').value,
-      pendapatan: document.getElementById('pendapatan').value,
-      bensin: Math.round((document.getElementById('kmAkhir').value - document.getElementById('kmAwal').value) * 263),
-      tabunganMotor: Math.round((document.getElementById('kmAkhir').value - document.getElementById('kmAwal').value) * 162),
-      bersihRumah: document.getElementById('pendapatan').value - Math.round((document.getElementById('kmAkhir').value - document.getElementById('kmAwal').value) * 425)
+      kmAwal: kmAwal,
+      kmAkhir: kmAkhir,
+      totalKm: totalKm,
+      pendapatan: pendapatan,
+      bensin: bensin,
+      tabunganMotor: tabungan,
+      bersihRumah: bersih
     };
 
     fetch(SCRIPT_URL, {
       method: 'POST',
-      body: JSON.stringify(data)
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
     })
     .then(res => res.json())
-    .then(response => {
-      alert("Data berhasil disimpan ke Google Sheets!");
+    .then(data => {
+      alert("✅ Data berhasil disimpan ke Google Sheets!");
+      location.reload(); // Reload untuk memperbarui akumulasi Dashboard
     })
     .catch(err => {
-      alert("Gagal menyimpan data: " + err);
+      alert("❌ Gagal menyimpan data: " + err);
     });
   }
 </script>

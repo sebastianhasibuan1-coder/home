@@ -119,20 +119,20 @@
     </div>
   </div>
 
-  <!-- FORM INPUT -->
+  <!-- FORM INPUT (Tipe Text untuk Formatting Ribuan) -->
   <div class="form-group">
     <label for="kmAwal">KM Awal (Awal Narik):</label>
-    <input type="number" id="kmAwal" placeholder="Contoh: 32100" inputmode="numeric">
+    <input type="text" id="kmAwal" placeholder="Contoh: 32.100" inputmode="numeric" oninput="formatNumberInput(this)">
   </div>
 
   <div class="form-group">
     <label for="kmAkhir">KM Akhir (Selesai Narik):</label>
-    <input type="number" id="kmAkhir" placeholder="Contoh: 32145" inputmode="numeric" oninput="updateIndicators()">
+    <input type="text" id="kmAkhir" placeholder="Contoh: 32.145" inputmode="numeric" oninput="formatNumberInput(this); updateIndicators();">
   </div>
 
   <div class="form-group">
     <label for="pendapatan">Pendapatan Kotor / App (Rp):</label>
-    <input type="number" id="pendapatan" placeholder="Contoh: 80000" inputmode="numeric">
+    <input type="text" id="pendapatan" placeholder="Contoh: 80.000" inputmode="numeric" oninput="formatNumberInput(this)">
   </div>
 
   <button class="btn btn-primary" onclick="kalkulasi()">Hitung Pembagian</button>
@@ -213,6 +213,22 @@
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfQ1tmFLFCnZlEVPqDcg78lVtJ-fiB4Gw1yfnCH31V6cnK2eNvc75VU-5ZdR0FPGkK/exec";
 
+  // Fungsi mengubah input angka murni ke format titik ribuan (contoh: 100000 -> 100.000)
+  function formatNumberInput(element) {
+    let rawValue = element.value.replace(/\D/g, ""); // Hapus semua karakter selain angka
+    if (rawValue === "") {
+      element.value = "";
+      return;
+    }
+    element.value = parseInt(rawValue, 10).toLocaleString('id-ID');
+  }
+
+  // Fungsi mengambil nilai numerik murni dari string berkoma/titik
+  function getRawValue(elementId) {
+    const val = document.getElementById(elementId).value;
+    return parseFloat(val.replace(/\./g, "").replace(/,/g, "")) || 0;
+  }
+
   function showLoading(pesan) {
     document.getElementById('loadingText').innerText = pesan || "Memproses data...";
     document.getElementById('loadingOverlay').classList.add('active');
@@ -225,11 +241,11 @@
   window.handleSheetData = function(data) {
     hideLoading();
     if (data) {
-      document.getElementById('dashTotalKm').innerText = (data.totalKmAkumulasi || 0) + " KM";
+      document.getElementById('dashTotalKm').innerText = (data.totalKmAkumulasi || 0).toLocaleString('id-ID') + " KM";
       document.getElementById('dashTotalCuan').innerText = "Rp " + (data.totalPendapatanAkumulasi || 0).toLocaleString('id-ID');
       
       if(data.lastKm && data.lastKm > 0) {
-        document.getElementById('kmAwal').value = data.lastKm;
+        document.getElementById('kmAwal').value = data.lastKm.toLocaleString('id-ID');
         updateIndicators();
       }
     }
@@ -260,7 +276,7 @@
   }
 
   function updateIndicators() {
-    const kmSekarang = parseFloat(document.getElementById('kmAkhir').value) || parseFloat(document.getElementById('kmAwal').value) || 0;
+    const kmSekarang = getRawValue('kmAkhir') || getRawValue('kmAwal') || 0;
     if(kmSekarang <= 0) return;
 
     setBar('barOli', 'pctOli', kmSekarang % 2000, 2000);
@@ -289,9 +305,9 @@
   }
 
   function kalkulasi() {
-    const kmAwal = parseFloat(document.getElementById('kmAwal').value) || 0;
-    const kmAkhir = parseFloat(document.getElementById('kmAkhir').value) || 0;
-    const pendapatan = parseFloat(document.getElementById('pendapatan').value) || 0;
+    const kmAwal = getRawValue('kmAwal');
+    const kmAkhir = getRawValue('kmAkhir');
+    const pendapatan = getRawValue('pendapatan');
 
     if (kmAkhir <= kmAwal) {
       alert("KM Akhir harus lebih besar dari KM Awal!");
@@ -303,7 +319,7 @@
     const tabungan = Math.round(totalKm * 162);
     const bersih = pendapatan - bensin - tabungan;
 
-    document.getElementById('resKm').innerText = totalKm;
+    document.getElementById('resKm').innerText = totalKm.toLocaleString('id-ID');
     document.getElementById('resBensin').innerText = bensin.toLocaleString('id-ID');
     document.getElementById('resTabungan').innerText = tabungan.toLocaleString('id-ID');
     document.getElementById('resBersih').innerText = bersih.toLocaleString('id-ID');
@@ -313,10 +329,10 @@
   }
 
   function simpanKeSheet() {
-    const kmAwal = parseFloat(document.getElementById('kmAwal').value);
-    const kmAkhir = parseFloat(document.getElementById('kmAkhir').value);
+    const kmAwal = getRawValue('kmAwal');
+    const kmAkhir = getRawValue('kmAkhir');
     const totalKm = kmAkhir - kmAwal;
-    const pendapatan = parseFloat(document.getElementById('pendapatan').value);
+    const pendapatan = getRawValue('pendapatan');
     const bensin = Math.round(totalKm * 263);
     const tabungan = Math.round(totalKm * 162);
     const bersih = pendapatan - bensin - tabungan;
@@ -341,15 +357,14 @@
     })
     .then(res => res.json())
     .then(data => {
-      // RESET FORM & RESULT CARD SECARA OTOMATIS
+      // RESET FORM INPUT & FORMAT KEMBALI
       document.getElementById('kmAkhir').value = "";
       document.getElementById('pendapatan').value = "";
       document.getElementById('hasil').style.display = "none";
       
-      // KM Awal otomatis berpindah ke KM Akhir yang baru disimpan
-      document.getElementById('kmAwal').value = kmAkhir;
+      // Set KM Awal otomatis dengan KM Akhir terformat titik
+      document.getElementById('kmAwal').value = kmAkhir.toLocaleString('id-ID');
 
-      // Pembaruan data akumulasi & indikator servis
       muatDataSync();
     })
     .catch(err => {

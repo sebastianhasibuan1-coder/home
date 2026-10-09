@@ -61,11 +61,11 @@
   <div class="summary-grid">
     <div class="summary-card">
       <div class="title">TOTAL KM NARIK</div>
-      <div class="value" id="dashTotalKm">0 KM</div>
+      <div class="value" id="dashTotalKm">...</div>
     </div>
     <div class="summary-card">
       <div class="title">TOTAL BERSIH (APP)</div>
-      <div class="value green" id="dashTotalCuan">Rp 0</div>
+      <div class="value green" id="dashTotalCuan">...</div>
     </div>
   </div>
 
@@ -163,6 +163,19 @@
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfQ1tmFLFCnZlEVPqDcg78lVtJ-fiB4Gw1yfnCH31V6cnK2eNvc75VU-5ZdR0FPGkK/exec";
 
+  // Callback function global untuk menerima data dari Google Apps Script via JSONP
+  window.handleSheetData = function(data) {
+    if (data) {
+      document.getElementById('dashTotalKm').innerText = (data.totalKmAkumulasi || 0) + " KM";
+      document.getElementById('dashTotalCuan').innerText = "Rp " + (data.totalPendapatanAkumulasi || 0).toLocaleString('id-ID');
+      
+      if(data.lastKm && data.lastKm > 0) {
+        document.getElementById('kmAwal').value = data.lastKm;
+        updateIndicators();
+      }
+    }
+  };
+
   window.onload = function() {
     muatDataSync();
   };
@@ -170,25 +183,15 @@
   function muatDataSync() {
     if(!SCRIPT_URL) return;
 
-    fetch(SCRIPT_URL)
-      .then(res => {
-        if (!res.ok) throw new Error("Network response error");
-        return res.json();
-      })
-      .then(data => {
-        if (data) {
-          document.getElementById('dashTotalKm').innerText = (data.totalKmAkumulasi || 0) + " KM";
-          document.getElementById('dashTotalCuan').innerText = "Rp " + (data.totalPendapatanAkumulasi || 0).toLocaleString('id-ID');
-          
-          if(data.lastKm && data.lastKm > 0) {
-            document.getElementById('kmAwal').value = data.lastKm;
-            updateIndicators();
-          }
-        }
-      })
-      .catch(err => {
-        console.log("Sync data awal:", err);
-      });
+    // Menghapus script JSONP lama jika ada
+    const oldScript = document.getElementById('jsonpScript');
+    if (oldScript) oldScript.remove();
+
+    // Membuat tag script dinamis untuk memanggil API tanpa hambatan CORS
+    const script = document.createElement('script');
+    script.id = 'jsonpScript';
+    script.src = SCRIPT_URL + "?callback=handleSheetData&t=" + new Date().getTime();
+    document.body.appendChild(script);
   }
 
   function updateIndicators() {
@@ -272,7 +275,7 @@
     .then(res => res.json())
     .then(data => {
       alert("✅ Data berhasil disimpan ke Google Sheets!");
-      muatDataSync();
+      setTimeout(muatDataSync, 1000); // Sinkronisasi ulang dashboard
     })
     .catch(err => {
       alert("❌ Gagal menyimpan data: " + err);

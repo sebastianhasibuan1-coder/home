@@ -341,7 +341,15 @@
     })
     .then(res => res.json())
     .then(data => {
-      // Tanpa alert berhasil, langsung muat ulang data secara otomatis
+      // RESET FORM & RESULT CARD SECARA OTOMATIS
+      document.getElementById('kmAkhir').value = "";
+      document.getElementById('pendapatan').value = "";
+      document.getElementById('hasil').style.display = "none";
+      
+      // KM Awal otomatis berpindah ke KM Akhir yang baru disimpan
+      document.getElementById('kmAwal').value = kmAkhir;
+
+      // Pembaruan data akumulasi & indikator servis
       muatDataSync();
     })
     .catch(err => {

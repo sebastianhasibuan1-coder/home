@@ -13,14 +13,16 @@
 
     <style>
         :root {
-            --bg-game: #f2f7f5;       /* Tema Calm Sage */
-            --card-bg: #ffffff;
-            --card-inner: #e6f0ec;
-            --primary-accent: #0d9488;
-            --gold-accent: #d97706;
-            --purple-rpg: #7c3aed;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
+            --bg-game: #08090c;         /* Dark Peat Sci-Fi */
+            --card-bg: #11131b;         /* Dark Card Header */
+            --card-inner: #1a1d29;      /* Dark Input Inner */
+            --primary-accent: #ff2a2a;  /* Red Neon LED */
+            --primary-glow: rgba(255, 42, 42, 0.4);
+            --gold-accent: #ffbe0b;
+            --purple-rpg: #a855f7;
+            --text-dark: #f8fafc;       /* Bright White Text */
+            --text-muted: #94a3b8;      /* Slate Muted Text */
+            --border-color: rgba(255, 42, 42, 0.25);
         }
 
         * {
@@ -65,7 +67,7 @@
         }
 
         .header-logo {
-            background: linear-gradient(135deg, #a855f7, var(--purple-rpg));
+            background: linear-gradient(135deg, #ff2a2a, #990000);
             width: 38px;
             height: 38px;
             border-radius: 12px;
@@ -74,7 +76,8 @@
             justify-content: center;
             color: #ffffff;
             font-size: 20px;
-            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.25);
+            box-shadow: 0 4px 14px var(--primary-glow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .header h1 {
@@ -92,18 +95,23 @@
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
-            border: 1px solid rgba(13, 148, 136, 0.15);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
             transition: all 0.2s ease;
+        }
+
+        .btn-back:active {
+            transform: scale(0.95);
+            border-color: var(--primary-accent);
         }
 
         /* --- CHARACTER STATUS CARD --- */
         .status-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
+            background: linear-gradient(135deg, #11131b 0%, #1a0808 100%);
             border-radius: 22px;
             padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.12);
-            border: 1px solid rgba(124, 58, 237, 0.18);
+            box-shadow: 0 10px 25px -5px rgba(255, 0, 0, 0.15);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -122,9 +130,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #ffffff;
-            border: 3px solid #7c3aed;
-            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.25);
+            background: #000000;
+            border: 3px solid var(--primary-accent);
+            box-shadow: 0 6px 18px var(--primary-glow);
             transition: all 0.4s ease;
             position: relative;
             flex-shrink: 0;
@@ -150,11 +158,11 @@
             font-family: 'Russo One', sans-serif;
             font-size: 26px;
             font-weight: 400;
-            color: var(--purple-rpg);
+            color: #ff2a2a;
             letter-spacing: 0.5px;
             line-height: 1.1;
             text-transform: uppercase;
-            text-shadow: 1px 1px 2px rgba(124, 58, 237, 0.15);
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.6);
         }
 
         .rank-title {
@@ -168,7 +176,7 @@
             width: fit-content;
             margin-top: 4px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
         }
 
         .exp-info {
@@ -180,17 +188,19 @@
         }
 
         .progress-bar-bg {
-            background-color: rgba(124, 58, 237, 0.12);
+            background-color: rgba(255, 42, 42, 0.15);
             height: 12px;
             border-radius: 6px;
             overflow: hidden;
             position: relative;
+            border: 1px solid rgba(255, 42, 42, 0.2);
         }
 
         .progress-bar-fill {
-            background: linear-gradient(90deg, #a855f7, var(--purple-rpg));
+            background: linear-gradient(90deg, #ff2a2a, #ff7b00);
             height: 100%;
             width: 0%;
+            box-shadow: 0 0 12px rgba(255, 42, 42, 0.8);
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -199,8 +209,8 @@
             background: #090a0f;
             border-radius: 20px;
             padding: 16px 14px;
-            border: 1px solid rgba(239, 68, 68, 0.35);
-            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.25);
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -300,8 +310,8 @@
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 22px;
-            box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.08);
-            border: 1px solid rgba(13, 148, 136, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
         }
 
         .form-group {
@@ -323,7 +333,7 @@
             width: 100%;
             padding: 14px;
             background-color: var(--card-inner);
-            border: 1px solid rgba(13, 148, 136, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             color: var(--text-dark);
             font-size: 15px;
@@ -332,9 +342,9 @@
         }
 
         input:focus {
-            border-color: var(--purple-rpg);
-            background-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+            border-color: var(--primary-accent);
+            background-color: #11131b;
+            box-shadow: 0 0 0 3px rgba(255, 42, 42, 0.25);
         }
 
         .preset-grid {
@@ -346,25 +356,25 @@
 
         .btn-preset {
             background-color: var(--card-inner);
-            border: 1px solid rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(255, 42, 42, 0.25);
             padding: 10px 4px;
             border-radius: 10px;
             font-size: 12px;
             font-weight: 700;
-            color: var(--purple-rpg);
+            color: #ff4d4d;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .btn-preset:active {
             transform: scale(0.95);
-            background-color: rgba(124, 58, 237, 0.2);
+            background-color: rgba(255, 42, 42, 0.2);
         }
 
         .btn-submit {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #a855f7, var(--purple-rpg));
+            background: linear-gradient(135deg, #ff2a2a, #b91c1c);
             border: none;
             border-radius: 14px;
             color: #ffffff;
@@ -372,7 +382,7 @@
             font-weight: 700;
             cursor: pointer;
             margin-top: 6px;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+            box-shadow: 0 4px 15px var(--primary-glow);
             transition: all 0.2s ease;
         }
 
@@ -385,8 +395,8 @@
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.08);
-            border: 1px solid rgba(124, 58, 237, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -436,9 +446,9 @@
             padding: 14px 16px;
             background-color: var(--card-bg);
             border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.04);
-            border: 1px solid rgba(124, 58, 237, 0.08);
-            border-left: 4px solid var(--purple-rpg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 4px solid var(--primary-accent);
         }
 
         .item-info .title {
@@ -456,31 +466,32 @@
         .item-exp {
             font-size: 14px;
             font-weight: 800;
-            color: var(--purple-rpg);
-            background-color: rgba(124, 58, 237, 0.1);
+            color: #ff4d4d;
+            background-color: rgba(255, 42, 42, 0.15);
             padding: 4px 10px;
             border-radius: 10px;
+            border: 1px solid rgba(255, 42, 42, 0.3);
         }
 
         .btn-toggle-history {
             width: 100%;
             padding: 12px;
             background-color: var(--card-bg);
-            border: 1px solid rgba(124, 58, 237, 0.2);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
-            color: var(--purple-rpg);
+            color: #ff4d4d;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
             margin-top: 12px;
             text-align: center;
-            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.05);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
             transition: all 0.2s ease;
         }
 
         .btn-toggle-history:active {
             transform: scale(0.98);
-            background-color: rgba(124, 58, 237, 0.06);
+            background-color: rgba(255, 42, 42, 0.1);
         }
 
         /* --- LOADING OVERLAY --- */
@@ -489,7 +500,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background-color: rgba(242, 247, 245, 0.92);
+            background-color: rgba(8, 9, 12, 0.95);
             z-index: 9999;
             flex-direction: column;
             align-items: center;
@@ -499,10 +510,11 @@
 
         .spinner {
             width: 44px; height: 44px;
-            border: 4px solid rgba(124, 58, 237, 0.15);
-            border-top-color: var(--purple-rpg);
+            border: 4px solid rgba(255, 42, 42, 0.2);
+            border-top-color: var(--primary-accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+            box-shadow: 0 0 15px var(--primary-glow);
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -544,7 +556,7 @@
         </div>
 
         <div class="exp-info">
-            <span>EXP Akumulasi: <strong id="totalExpDisplay" style="color: var(--purple-rpg);">0 EXP</strong></span>
+            <span>EXP Akumulasi: <strong id="totalExpDisplay" style="color: #ff4d4d;">0 EXP</strong></span>
             <span id="levelProgressText">0 / 100 EXP</span>
         </div>
     </div>
@@ -610,7 +622,7 @@
     <div class="chart-card">
         <div class="chart-header">
             <span class="chart-title">⚡ Perolehan EXP Harian</span>
-            <span style="font-size: 11px; color: var(--purple-rpg); font-weight: 600;">30 Hari Terakhir</span>
+            <span style="font-size: 11px; color: #ff4d4d; font-weight: 600;">30 Hari Terakhir</span>
         </div>
         <div class="chart-container">
             <canvas id="dailyExpChart"></canvas>
@@ -676,7 +688,6 @@
 
         requestAnimationFrame(updateBombCountdown);
     }
-    // Jalankan countdown bom
     requestAnimationFrame(updateBombCountdown);
 
     function setExp(val) {
@@ -688,30 +699,29 @@
         renderHistory();
     });
 
-    // KATALOG DEDIKASI SPESIFIK NAMA GELAR & WARNA VISUAL DENGAN KATA-KATA PEMBAKAR SEMANGAT
+    // KATALOG DEDIKASI GELAR PANGKAT (DENGAN SKEMA WARNA GELAP NEON)
     const SPECIFIC_RANKS = {
-        1:  { title: "PEMULA AMATIR 🌿", bg: "#ecfdf5", border: "#10b981", text: "#047857", glow: "rgba(16, 185, 129, 0.25)" },
-        2:  { title: "PEMULA BERSEMANGAT ⚡", bg: "#f0fdf4", border: "#22c55e", text: "#15803d", glow: "rgba(34, 197, 94, 0.25)" },
-        3:  { title: "PEJUANG KONSISTEN 🛡️", bg: "#e0f2fe", border: "#0284c7", text: "#0369a1", glow: "rgba(2, 132, 199, 0.25)" },
-        4:  { title: "PENAKLUK RASA MALAS 🔥", bg: "#ffedd5", border: "#f97316", text: "#c2410c", glow: "rgba(249, 115, 22, 0.3)" },
-        5:  { title: "PEMBANGUN KEBIASAAN 🧱", bg: "#fef3c7", border: "#d97706", text: "#b45309", glow: "rgba(217, 119, 6, 0.3)" },
-        6:  { title: "PEMBURU TARGET 🎯", bg: "#fae8ff", border: "#c084fc", text: "#7e22ce", glow: "rgba(192, 132, 252, 0.3)" },
-        7:  { title: "DISIPLIN BAJA 🦾", bg: "#f1f5f9", border: "#64748b", text: "#334155", glow: "rgba(100, 116, 139, 0.3)" },
-        8:  { title: "PENGUASA WAKTU ⏳", bg: "#e0e7ff", border: "#6366f1", text: "#4338ca", glow: "rgba(99, 102, 241, 0.3)" },
-        9:  { title: "MOTIVASI TANPA HENTI 💥", bg: "#ffe4e6", border: "#f43f5e", text: "#be123c", glow: "rgba(244, 63, 94, 0.3)" },
-        10: { title: "SATRIA PRODUKTIF ⚔️", bg: "#fef08a", border: "#eab308", text: "#a16207", glow: "rgba(234, 179, 8, 0.35)" },
-        12: { title: "KONSISTENSI EMAS 🥇", bg: "#fef3c7", border: "#f59e0b", text: "#b45309", glow: "rgba(245, 158, 11, 0.35)" },
-        15: { title: "PENGENDALI DIRI 🧠", bg: "#f3e8ff", border: "#9333ea", text: "#6b21a8", glow: "rgba(147, 51, 234, 0.35)" },
-        20: { title: "MAGNET KEBERHASILAN 💎", bg: "#e0f2fe", border: "#06b6d4", text: "#0e7490", glow: "rgba(6, 182, 212, 0.4)" },
-        25: { title: "PENAKLUK BATAS DIRI 🚀", bg: "#fce7f3", border: "#ec4899", text: "#be185d", glow: "rgba(236, 72, 153, 0.4)" },
-        30: { title: "MASTER PRODUKTIVITAS 🌟", bg: "#fae8ff", border: "#a855f7", text: "#7e22ce", glow: "rgba(168, 85, 247, 0.4)" },
-        40: { title: "RAJA FOKUS & KARYA 👑", bg: "#fef3c7", border: "#d97706", text: "#92400e", glow: "rgba(217, 119, 6, 0.45)" },
-        50: { title: "LEGENDARIS PENTING 🐉", bg: "#fee2e2", border: "#ef4444", text: "#b91c1c", glow: "rgba(239, 68, 68, 0.45)" },
-        75: { title: "MANUSIA SUPER DISIPLIN 🔮", bg: "#ede9fe", border: "#8b5cf6", text: "#5b21b6", glow: "rgba(139, 92, 246, 0.5)" },
-        100:{ title: "DEWA PRODUKTIVITAS ABADI 🏆", bg: "#fff7ed", border: "#ea580c", text: "#9a3412", glow: "rgba(234, 88, 12, 0.5)" }
+        1:  { title: "PEMULA AMATIR 🌿", bg: "rgba(16, 185, 129, 0.15)", border: "#10b981", text: "#34d399", glow: "rgba(16, 185, 129, 0.4)" },
+        2:  { title: "PEMULA BERSEMANGAT ⚡", bg: "rgba(34, 197, 94, 0.15)", border: "#22c55e", text: "#4ade80", glow: "rgba(34, 197, 94, 0.4)" },
+        3:  { title: "PEJUANG KONSISTEN 🛡️", bg: "rgba(2, 132, 199, 0.15)", border: "#0284c7", text: "#38bdf8", glow: "rgba(2, 132, 199, 0.4)" },
+        4:  { title: "PENAKLUK RASA MALAS 🔥", bg: "rgba(249, 115, 22, 0.15)", border: "#f97316", text: "#fb923c", glow: "rgba(249, 115, 22, 0.4)" },
+        5:  { title: "PEMBANGUN KEBIASAAN 🧱", bg: "rgba(217, 119, 6, 0.15)", border: "#d97706", text: "#fbbf24", glow: "rgba(217, 119, 6, 0.4)" },
+        6:  { title: "PEMBURU TARGET 🎯", bg: "rgba(192, 132, 252, 0.15)", border: "#c084fc", text: "#e879f9", glow: "rgba(192, 132, 252, 0.4)" },
+        7:  { title: "DISIPLIN BAJA 🦾", bg: "rgba(100, 116, 139, 0.15)", border: "#64748b", text: "#94a3b8", glow: "rgba(100, 116, 139, 0.4)" },
+        8:  { title: "PENGUASA WAKTU ⏳", bg: "rgba(99, 102, 241, 0.15)", border: "#6366f1", text: "#818cf8", glow: "rgba(99, 102, 241, 0.4)" },
+        9:  { title: "MOTIVASI TANPA HENTI 💥", bg: "rgba(244, 63, 94, 0.15)", border: "#f43f5e", text: "#fb7185", glow: "rgba(244, 63, 94, 0.4)" },
+        10: { title: "SATRIA PRODUKTIF ⚔️", bg: "rgba(234, 179, 8, 0.15)", border: "#eab308", text: "#facc15", glow: "rgba(234, 179, 8, 0.4)" },
+        12: { title: "KONSISTENSI EMAS 🥇", bg: "rgba(245, 158, 11, 0.15)", border: "#f59e0b", text: "#fbbf24", glow: "rgba(245, 158, 11, 0.4)" },
+        15: { title: "PENGENDALI DIRI 🧠", bg: "rgba(147, 51, 234, 0.15)", border: "#9333ea", text: "#c084fc", glow: "rgba(147, 51, 234, 0.4)" },
+        20: { title: "MAGNET KEBERHASILAN 💎", bg: "rgba(6, 182, 212, 0.15)", border: "#06b6d4", text: "#22d3ee", glow: "rgba(6, 182, 212, 0.4)" },
+        25: { title: "PENAKLUK BATAS DIRI 🚀", bg: "rgba(236, 72, 153, 0.15)", border: "#ec4899", text: "#f472b6", glow: "rgba(236, 72, 153, 0.4)" },
+        30: { title: "MASTER PRODUKTIVITAS 🌟", bg: "rgba(168, 85, 247, 0.15)", border: "#a855f7", text: "#c084fc", glow: "rgba(168, 85, 247, 0.4)" },
+        40: { title: "RAJA FOKUS & KARYA 👑", bg: "rgba(217, 119, 6, 0.2)", border: "#f59e0b", text: "#fef08a", glow: "rgba(245, 158, 11, 0.5)" },
+        50: { title: "LEGENDARIS PENTING 🐉", bg: "rgba(239, 68, 68, 0.2)", border: "#ef4444", text: "#fca5a5", glow: "rgba(239, 68, 68, 0.5)" },
+        75: { title: "MANUSIA SUPER DISIPLIN 🔮", bg: "rgba(139, 92, 246, 0.2)", border: "#8b5cf6", text: "#ddd6fe", glow: "rgba(139, 92, 246, 0.5)" },
+        100:{ title: "DEWA PRODUKTIVITAS ABADI 🏆", bg: "rgba(234, 88, 12, 0.25)", border: "#ea580c", text: "#ffedd5", glow: "rgba(234, 88, 12, 0.6)" }
     };
 
-    // FORMULA GENERATOR SPESIFIK UNTUK LEVEL YANG BELUM TERDAFTAR KUSTUM
     function getRankConfigForLevel(lvl) {
         if (SPECIFIC_RANKS[lvl]) return SPECIFIC_RANKS[lvl];
 
@@ -727,10 +737,10 @@
         const hue = (lvl * 137.5) % 360; 
         return {
             title: `${titlePrefix} TIER ${lvl} ⚡`,
-            bg: `hsla(${hue}, 85%, 96%, 1)`,
-            border: `hsla(${hue}, 80%, 45%, 1)`,
-            text: `hsla(${hue}, 90%, 25%, 1)`,
-            glow: `hsla(${hue}, 80%, 45%, 0.35)`
+            bg: `hsla(${hue}, 80%, 20%, 0.3)`,
+            border: `hsla(${hue}, 80%, 55%, 1)`,
+            text: `hsla(${hue}, 90%, 75%, 1)`,
+            glow: `hsla(${hue}, 80%, 55%, 0.4)`
         };
     }
 
@@ -783,7 +793,7 @@
     function renderHistory() {
         activityList.innerHTML = '';
         if (activityLogs.length === 0) {
-            activityList.innerHTML = '<div style="text-align:center; color:#64748b; font-size:13px; padding:20px;">Belum ada kegiatan tercatat. Kumpulkan EXP pertamamu!</div>';
+            activityList.innerHTML = '<div style="text-align:center; color:#94a3b8; font-size:13px; padding:20px;">Belum ada kegiatan tercatat. Kumpulkan EXP pertamamu!</div>';
             toggleHistoryBtn.style.display = 'none';
             return;
         }
@@ -852,13 +862,13 @@
                 datasets: [{
                     label: 'Perolehan EXP',
                     data: dataValues.length ? dataValues : [0],
-                    borderColor: '#7c3aed',
-                    backgroundColor: 'rgba(124, 58, 237, 0.08)',
+                    borderColor: '#ff2a2a',
+                    backgroundColor: 'rgba(255, 42, 42, 0.12)',
                     borderWidth: 2.5,
                     fill: true,
                     tension: 0.35,
-                    pointBackgroundColor: '#7c3aed',
-                    pointBorderColor: '#ffffff',
+                    pointBackgroundColor: '#ff2a2a',
+                    pointBorderColor: '#000000',
                     pointBorderWidth: 1.5,
                     pointRadius: 4,
                     pointHoverRadius: 6
@@ -881,15 +891,15 @@
                     x: {
                         grid: { display: false },
                         ticks: {
-                            color: '#64748b',
+                            color: '#94a3b8',
                             font: { family: 'Inter', size: 10 }
                         }
                     },
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(124, 58, 237, 0.08)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.08)' },
                         ticks: {
-                            color: '#64748b',
+                            color: '#94a3b8',
                             font: { family: 'Inter', size: 10 },
                             callback: function(val) {
                                 return '+' + val + ' EXP';

@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Level Diri - Gamifikasi Karakter</title>
+    <title>Dompet Hasibuan - Calm Sage Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
-    <!-- Library Chart.js untuk Grafik Statik EXP -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Library Chart.js untuk Grafik Statik Naik Turun -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            --bg-game: #f2f7f5;       /* Tema Calm Sage */
-            --card-bg: #ffffff;
-            --card-inner: #e6f0ec;
-            --primary-accent: #0d9488;
-            --gold-accent: #d97706;
-            --purple-rpg: #7c3aed;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
+            --bg-finance: #f2f7f5;   /* Hijau sage pudar super adem & menenangkan */
+            --card-bg: #ffffff;      /* Putih bersih bersinar */
+            --card-inner: #e6f0ec;   /* Soft mint/sage tipis untuk input box */
+            --emerald-money: #0f766e; /* Teal-green teduh & kontras untuk Pemasukan */
+            --rose-expense: #c2410c;  /* Terracotta / Burnt Amber lembut (Pengganti merah bahaya) */
+            --calm-accent: #0d9488;   /* Aksen hijau teal utama */
+            --text-dark: #1e293b;    /* Teks utama gelap tajam */
+            --text-muted: #64748b;   /* Teks sekunder kelabu */
         }
 
         * {
@@ -32,7 +32,7 @@
         }
 
         body {
-            background-color: var(--bg-game);
+            background-color: var(--bg-finance);
             color: var(--text-dark);
             padding: 20px 16px;
             display: flex;
@@ -50,12 +50,18 @@
             padding-bottom: 30px;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER THEME CALM SAGE --- */
         .header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 6px 4px;
+        }
+
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 4px;
         }
 
         .header-brand {
@@ -65,16 +71,14 @@
         }
 
         .header-logo {
-            background: linear-gradient(135deg, #a855f7, var(--purple-rpg));
+            background: linear-gradient(135deg, #2dd4bf, var(--calm-accent));
             width: 38px;
             height: 38px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
-            font-size: 20px;
-            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.25);
+            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2);
         }
 
         .header h1 {
@@ -84,226 +88,126 @@
             color: var(--text-dark);
         }
 
-        .btn-back {
-            background-color: var(--card-bg);
-            color: var(--text-dark);
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            width: 100%;
+        }
+
+        .btn-nav {
             text-decoration: none;
-            padding: 8px 14px;
+            padding: 8px 4px;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            border: 1px solid rgba(13, 148, 136, 0.15);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
             transition: all 0.2s ease;
-        }
-
-        /* --- CHARACTER STATUS CARD --- */
-        .status-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%);
-            border-radius: 22px;
-            padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.12);
-            border: 1px solid rgba(124, 58, 237, 0.18);
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .character-profile {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .rank-avatar-frame {
-            width: 76px;
-            height: 76px;
-            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #ffffff;
-            border: 3px solid #7c3aed;
-            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.25);
-            transition: all 0.4s ease;
-            position: relative;
-            flex-shrink: 0;
-            overflow: hidden;
-            padding: 3px;
+            gap: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            white-space: nowrap;
         }
 
-        .rank-avatar-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 14px;
+        .btn-nav.level {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+            border: 1px solid rgba(124, 58, 237, 0.2);
         }
 
-        .profile-details {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .btn-nav.cicilan {
+            background-color: #e0f0fe;
+            color: #0284c7;
+            border: 1px solid rgba(2, 132, 199, 0.2);
         }
 
-        /* FONT RUSSO ONE UNTUK LEVEL KEREN */
-        .level-badge {
-            font-family: 'Russo One', sans-serif;
-            font-size: 26px;
-            font-weight: 400;
-            color: var(--purple-rpg);
-            letter-spacing: 0.5px;
-            line-height: 1.1;
-            text-transform: uppercase;
-            text-shadow: 1px 1px 2px rgba(124, 58, 237, 0.15);
-        }
-
-        .rank-title {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            display: inline-block;
-            width: fit-content;
-            margin-top: 4px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .exp-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .progress-bar-bg {
-            background-color: rgba(124, 58, 237, 0.12);
-            height: 12px;
-            border-radius: 6px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-bar-fill {
-            background: linear-gradient(90deg, #a855f7, var(--purple-rpg));
-            height: 100%;
-            width: 0%;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* --- STYLES BOMB COUNTDOWN 2030 --- */
-        .bomb-timer-card {
-            background: #090a0f;
-            border-radius: 20px;
-            padding: 16px 14px;
-            border: 1px solid rgba(239, 68, 68, 0.35);
-            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.3);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .bomb-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 8px;
-        }
-
-        .bomb-title {
-            font-size: 11px;
-            font-weight: 800;
-            color: #f87171;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .bomb-status {
-            font-size: 9px;
+        .btn-nav.investasi {
+            background-color: #dcfce7;
+            color: #059669;
+            border: 1px solid rgba(5, 150, 105, 0.25);
             font-weight: 700;
-            background: rgba(239, 68, 68, 0.2);
-            color: #ff4d4d;
-            padding: 2px 8px;
-            border-radius: 10px;
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            animation: pulse-red 1.2s infinite ease-in-out;
         }
 
-        @keyframes pulse-red {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.96); }
+        .btn-nav.analisis {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid rgba(46, 125, 50, 0.2);
         }
 
-        .bomb-display {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #000000;
-            padding: 12px 8px;
-            border-radius: 14px;
-            border: 1px solid #1e293b;
-            box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.15);
+        .btn-nav:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
         }
 
-        .time-block {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-        }
-
-        .time-block .digit {
-            font-family: 'Share Tech Mono', 'Russo One', monospace;
-            font-size: 20px;
-            font-weight: bold;
-            color: #ff2a2a;
-            text-shadow: 0 0 10px rgba(255, 42, 42, 0.9), 0 0 20px rgba(255, 0, 0, 0.5);
-            line-height: 1;
-        }
-
-        .time-block.highlight .digit {
-            color: #ffbe0b;
-            text-shadow: 0 0 10px rgba(255, 190, 11, 0.9);
-        }
-
-        .time-block .label {
-            font-size: 8px;
-            font-weight: 700;
-            color: #64748b;
-            margin-top: 4px;
-            letter-spacing: 0.5px;
-        }
-
-        .colon {
-            font-family: 'Russo One', monospace;
-            font-size: 16px;
-            color: #ff2a2a;
-            margin-top: -12px;
-            text-shadow: 0 0 8px rgba(255, 42, 42, 0.8);
-            animation: blink-colon 1s infinite;
-        }
-
-        @keyframes blink-colon {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
-
-        /* --- CARD FORM INPUT --- */
+        /* --- DASHBOARD CARD --- */
         .card {
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 22px;
-            box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
             border: 1px solid rgba(13, 148, 136, 0.08);
+            position: relative;
+            overflow: hidden;
         }
 
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .balance-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .balance-amount {
+            font-size: 34px;
+            font-weight: 700;
+            margin-top: 4px;
+            color: var(--text-dark);
+            letter-spacing: -1px;
+        }
+
+        .flow-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(13, 148, 136, 0.12);
+        }
+
+        .flow-box {
+            background-color: var(--card-inner);
+            padding: 12px;
+            border-radius: 14px;
+        }
+
+        .flow-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .flow-val {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 4px;
+            letter-spacing: -0.3px;
+        }
+        .flow-val.in { color: var(--emerald-money); }
+        .flow-val.out { color: var(--rose-expense); }
+
+        /* --- FORM STYLING --- */
         .form-group {
             margin-bottom: 16px;
             display: flex;
@@ -317,9 +221,10 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            padding-left: 2px;
         }
 
-        input[type="text"], input[type="number"] {
+        input[type="text"], input[type="tel"], select {
             width: 100%;
             padding: 14px;
             background-color: var(--card-inner);
@@ -331,40 +236,55 @@
             transition: all 0.2s ease;
         }
 
-        input:focus {
-            border-color: var(--purple-rpg);
+        input:focus, select:focus {
+            border-color: var(--calm-accent);
             background-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
         }
 
-        .preset-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 2px;
+        }
+
+        .radio-label {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 8px;
-            margin-top: 4px;
-        }
-
-        .btn-preset {
+            padding: 14px;
             background-color: var(--card-inner);
-            border: 1px solid rgba(124, 58, 237, 0.15);
-            padding: 10px 4px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--purple-rpg);
+            border: 1px solid rgba(13, 148, 136, 0.08);
+            border-radius: 12px;
             cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
             transition: all 0.2s ease;
+            color: var(--text-muted);
         }
 
-        .btn-preset:active {
-            transform: scale(0.95);
-            background-color: rgba(124, 58, 237, 0.2);
+        input[type="radio"] {
+            display: none;
+        }
+
+        #typeIncome:checked + .radio-label {
+            border-color: var(--emerald-money);
+            background-color: rgba(15, 118, 110, 0.12);
+            color: var(--emerald-money);
+        }
+
+        #typeExpense:checked + .radio-label {
+            border-color: var(--rose-expense);
+            background-color: rgba(194, 65, 12, 0.1);
+            color: var(--rose-expense);
         }
 
         .btn-submit {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #a855f7, var(--purple-rpg));
+            background: linear-gradient(135deg, #14b8a6, var(--calm-accent));
             border: none;
             border-radius: 14px;
             color: #ffffff;
@@ -372,7 +292,7 @@
             font-weight: 700;
             cursor: pointer;
             margin-top: 6px;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
             transition: all 0.2s ease;
         }
 
@@ -380,13 +300,68 @@
             transform: scale(0.98);
         }
 
-        /* --- CHART STYLING UNTUK GRAFIK EXP HARIAN --- */
+        .btn-submit:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* --- FEED TRANSAKSI --- */
+        .recent-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-left: 4px;
+        }
+
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.04);
+            border: 1px solid rgba(13, 148, 136, 0.05);
+            border-left: 4px solid transparent;
+        }
+
+        .transaction-item.income { border-left-color: var(--emerald-money); }
+        .transaction-item.expense { border-left-color: var(--rose-expense); }
+
+        .item-desc {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .item-amount {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .item-amount.income { color: var(--emerald-money); }
+        .item-amount.expense { color: var(--rose-expense); }
+
+        #debtGroup {
+            display: none;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        /* --- CHART STYLING UNTUK GRAFIK HARIAN --- */
         .chart-card {
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.08);
-            border: 1px solid rgba(124, 58, 237, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(13, 148, 136, 0.05);
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -412,83 +387,14 @@
             height: 220px;
         }
 
-        /* --- FEED LOG KEGIATAN & EXPAND BUTTON --- */
-        .recent-title {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding-left: 4px;
-        }
-
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .activity-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 16px;
-            background-color: var(--card-bg);
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.04);
-            border: 1px solid rgba(124, 58, 237, 0.08);
-            border-left: 4px solid var(--purple-rpg);
-        }
-
-        .item-info .title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .item-info .date {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .item-exp {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--purple-rpg);
-            background-color: rgba(124, 58, 237, 0.1);
-            padding: 4px 10px;
-            border-radius: 10px;
-        }
-
-        .btn-toggle-history {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--card-bg);
-            border: 1px solid rgba(124, 58, 237, 0.2);
-            border-radius: 12px;
-            color: var(--purple-rpg);
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 12px;
-            text-align: center;
-            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.05);
-            transition: all 0.2s ease;
-        }
-
-        .btn-toggle-history:active {
-            transform: scale(0.98);
-            background-color: rgba(124, 58, 237, 0.06);
-        }
-
-        /* --- LOADING OVERLAY --- */
+        /* --- OVERLAY LOADING FULL LAYAR --- */
         .full-screen-overlay {
             display: none;
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background-color: rgba(242, 247, 245, 0.92);
             z-index: 9999;
             flex-direction: column;
@@ -498,366 +404,309 @@
         }
 
         .spinner {
-            width: 44px; height: 44px;
-            border: 4px solid rgba(124, 58, 237, 0.15);
-            border-top-color: var(--purple-rpg);
+            width: 44px;
+            height: 44px;
+            border: 4px solid rgba(13, 148, 136, 0.15);
+            border-top-color: var(--calm-accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            letter-spacing: -0.3px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
+<!-- WIDGET OVERLAY LOADING FULL LAYAR -->
 <div id="fullScreenOverlay" class="full-screen-overlay">
     <div class="spinner"></div>
-    <div id="overlayText" style="font-size:15px; font-weight:600; color:var(--text-dark);">Menyinkronkan EXP Karakter...</div>
+    <div id="overlayText" class="loading-text">Menyinkronkan Dengan Database...</div>
 </div>
 
 <div class="container">
-    <!-- HEADER -->
+    <!-- PANEL HEADER BRAND & NAVIGASI -->
     <div class="header">
-        <div class="header-brand">
-            <div class="header-logo">⚔️</div>
-            <h1>Level Diri Hasibuan</h1>
-        </div>
-        <a href="index.html" class="btn-back">⬅️ Keuangan</a>
-    </div>
-
-    <!-- CHARACTER STATUS CARD -->
-    <div class="status-card">
-        <div class="character-profile">
-            <div id="rankAvatarFrame" class="rank-avatar-frame">
-                <img src="https://raw.githubusercontent.com/sebastianhasibuan1-coder/home/main/Fotoku.jpg" alt="Foto Karakter">
-            </div>
-            
-            <div class="profile-details">
-                <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Pangkat Saat Ini</div>
-                <div id="levelDisplay" class="level-badge">Level 1</div>
-                <div id="rankTitleDisplay" class="rank-title">PEMULA AMATIR 🌿</div>
+        <div class="header-top">
+            <div class="header-brand">
+                <div class="header-logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="6" width="20" height="12" rx="2"/>
+                        <circle cx="12" cy="12" r="2.5"/>
+                        <path d="M6 12h.01M18 12h.01"/>
+                    </svg>
+                </div>
+                <h1>Dompet Hasibuan</h1>
             </div>
         </div>
-
-        <div class="progress-bar-bg">
-            <div id="progressBarFill" class="progress-bar-fill"></div>
-        </div>
-
-        <div class="exp-info">
-            <span>EXP Akumulasi: <strong id="totalExpDisplay" style="color: var(--purple-rpg);">0 EXP</strong></span>
-            <span id="levelProgressText">0 / 100 EXP</span>
+        
+        <!-- ROW TOMBOL NAVIGASI DENGAN INVESTASI -->
+        <div class="nav-buttons">
+            <a href="level.html" class="btn-nav level">Level ⚔️</a>
+            <a href="cicilan.html" class="btn-nav cicilan">Cicilan ❄️</a>
+            <a href="investasi.html" class="btn-nav investasi">Aset 💎</a>
+            <a href="history.html" class="btn-nav analisis">Histori 🌲</a>
         </div>
     </div>
 
-    <!-- WIDGET HITUNGAN MUNDUR BOM 2030 -->
-    <div class="bomb-timer-card">
-        <div class="bomb-header">
-            <span class="bomb-title">💣 TARGET UTAMA 2030</span>
-            <span class="bomb-status">COUNTDOWN</span>
-        </div>
-        <div class="bomb-display">
-            <div class="time-block">
-                <span id="bombDays" class="digit">0000</span>
-                <span class="label">HARI</span>
-            </div>
-            <span class="colon">:</span>
-            <div class="time-block">
-                <span id="bombHours" class="digit">00</span>
-                <span class="label">JAM</span>
-            </div>
-            <span class="colon">:</span>
-            <div class="time-block">
-                <span id="bombMinutes" class="digit">00</span>
-                <span class="label">MENIT</span>
-            </div>
-            <span class="colon">:</span>
-            <div class="time-block">
-                <span id="bombSeconds" class="digit">00</span>
-                <span class="label">DETIK</span>
-            </div>
-            <span class="colon">:</span>
-            <div class="time-block highlight">
-                <span id="bombMs" class="digit">000</span>
-                <span class="label">MS</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- FORM INPUT KEGIATAN -->
+    <!-- DASHBOARD CARD -->
     <div class="card">
-        <form id="expForm">
-            <div class="form-group">
-                <label>Nama Kegiatan Positif</label>
-                <input type="text" id="kegiatanInput" placeholder="Contoh: Olahraga 30 Menit / Baca Buku" required>
+        <div class="balance-label">Saldo Bersih Saat Ini</div>
+        <div id="netBalance" class="balance-amount">Rp 0</div>
+        
+        <div class="flow-grid">
+            <div class="flow-box">
+                <div class="flow-title">🌱 Pemasukan</div>
+                <div id="totalIncomeBox" class="flow-val in">Rp 0</div>
             </div>
+            <div class="flow-box">
+                <div class="flow-title">🍂 Pengeluaran</div>
+                <div id="totalExpenseBox" class="flow-val out">Rp 0</div>
+            </div>
+        </div>
+    </div>
 
+    <!-- CARD FORM INPUT TRANSAKSI -->
+    <div class="card">
+        <form id="financeForm">
             <div class="form-group">
-                <label>Perolehan EXP</label>
-                <input type="number" id="expInput" placeholder="Contoh: 50" min="1" required>
-                
-                <div class="preset-grid">
-                    <button type="button" class="btn-preset" onclick="setExp(25)">+25 (Ringan)</button>
-                    <button type="button" class="btn-preset" onclick="setExp(50)">+50 (Sedang)</button>
-                    <button type="button" class="btn-preset" onclick="setExp(100)">+100 (Berat)</button>
+                <label>Tipe Kas</label>
+                <div class="radio-group">
+                    <input type="radio" id="typeIncome" name="transactionType" value="income" checked>
+                    <label for="typeIncome" class="radio-label">🌱 Pemasukan</label>
+
+                    <input type="radio" id="typeExpense" name="transactionType" value="expense">
+                    <label for="typeExpense" class="radio-label">🍂 Pengeluaran</label>
                 </div>
             </div>
 
-            <button type="submit" id="submitBtn" class="btn-submit">⚡ Klaim EXP & Simpan</button>
+            <!-- HUTANG INTEGRATION LIST -->
+            <div class="form-group" id="debtGroup">
+                <label>Pilih Kategori Hutang</label>
+                <select id="debtSelect">
+                    <option value="">-- Bukan Bayar Hutang (Ketik Manual) --</option>
+                    <option value="HCI 1">Bayar Cicilan HCI 1 (Rp 781.700)</option>
+                    <option value="HCI 2">Bayar Cicilan HCI 2 (Rp 511.000)</option>
+                    <option value="SPP 1">Bayar Cicilan SPP 1 (Rp 1.869.303)</option>
+                    <option value="SPP 2">Bayar Cicilan SPP 2 (Rp 226.132)</option>
+                    <option value="SPP 3">Bayar Cicilan SPP 3 (Rp 2.506.666)</option>
+                    <option value="MKR">Bayar Cicilan MKR (Rp 520.000)</option>
+                    <option value="AGS">Bayar Cicilan AGS (Rp 1.500.000)</option>
+                    <option value="BPR">Bayar Cicilan BPR (Rp 2.550.000)</option>
+                    <option value="LHT">Bayar Cicilan LHT (Input Manual Sesuai Setoran)</option>
+                    <option value="FLN">Bayar Cicilan FLN (Input Manual Sesuai Setoran)</option>
+                    <option value="TLS">Bayar Cicilan TLS (Input Manual Sesuai Setoran)</option>
+                    <option value="GRJA">Bayar Cicilan GRJA (Input Manual Sesuai Setoran)</option>
+                    <option value="IBAO">Bayar Cicilan IBAO (Input Manual Sesuai Setoran)</option>
+                    <option value="PTRA">Bayar Cicilan PTRA (Input Manual Sesuai Setoran)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Keterangan Transaksi</label>
+                <input type="text" id="descriptionInput" placeholder="Isi Keterangan" required>
+            </div>
+
+            <div class="form-group">
+                <label>Jumlah Uang (Rupiah)</label>
+                <input type="tel" id="amountInput" placeholder="Rp 0" required>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-submit">Simpan Transaksi</button>
         </form>
     </div>
 
-    <!-- GRAFIK STATIK EXP HARIAN (DI ATAS RIWAYAT) -->
-    <div class="chart-card">
-        <div class="chart-header">
-            <span class="chart-title">⚡ Perolehan EXP Harian</span>
-            <span style="font-size: 11px; color: var(--purple-rpg); font-weight: 600;">30 Hari Terakhir</span>
-        </div>
-        <div class="chart-container">
-            <canvas id="dailyExpChart"></canvas>
-        </div>
+    <div>
+        <div class="recent-title">5 Transaksi Terakhir</div>
+        <div id="transactionList" class="transaction-list"></div>
     </div>
 
-    <!-- LOG RIWAYAT KEGIATAN & TOMBOL TOGGLE EXPAND -->
-    <div>
-        <div class="recent-title">Riwayat Pencapaian EXP</div>
-        <div id="activityList" class="activity-list"></div>
-        <button id="toggleHistoryBtn" class="btn-toggle-history" style="display: none;">Tampilkan Seluruh Riwayat 🔽</button>
+    <!-- GRAFIK STATIK NAIK TURUN PENGELUARAN HARIAN NON-CICILAN -->
+    <div class="chart-card">
+        <div class="chart-header">
+            <span class="chart-title">📈 Pengeluaran Harian (Non-Cicilan)</span>
+            <span style="font-size: 11px; color: var(--rose-expense); font-weight: 600;">30 Hari Terakhir</span>
+        </div>
+        <div class="chart-container">
+            <canvas id="dailyExpenseChart"></canvas>
+        </div>
     </div>
 </div>
 
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2ZZSIzVhc06PltwCjtZVk9TjNl7bXJ_DAkafiOiR7OWS1cmBF0laaEMJY_oR4OLdw/exec';
-
-    let activityLogs = [];
-    let dailyExpChartInstance = null;
-    let showAllHistory = false;
-
-    const levelDisplay = document.getElementById('levelDisplay');
-    const rankTitleDisplay = document.getElementById('rankTitleDisplay');
-    const rankAvatarFrame = document.getElementById('rankAvatarFrame');
-    const progressBarFill = document.getElementById('progressBarFill');
-    const totalExpDisplay = document.getElementById('totalExpDisplay');
-    const levelProgressText = document.getElementById('levelProgressText');
-    const activityList = document.getElementById('activityList');
-    const toggleHistoryBtn = document.getElementById('toggleHistoryBtn');
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJI3zjmID6Io0Xu_TlCu3s3GFbLU6JDY1zuS-6mj_VXOOO5E9Cm77U3AE6O-X_floq/exec';
     
-    const expForm = document.getElementById('expForm');
-    const kegiatanInput = document.getElementById('kegiatanInput');
-    const expInput = document.getElementById('expInput');
+    // KATALOG POS CICILAN UNTUK FILTER EXPENSE
+    const DEBT_KEYS = ["HCI 1", "HCI 2", "SPP 1", "SPP 2", "SPP 3", "MKR", "AGS", "BPR", "LHT", "FLN", "TLS", "GRJA", "IBAO", "PTRA"];
+
+    let transactions = [];
+    let dailyExpenseChartInstance = null;
+
+    const form = document.getElementById('financeForm');
+    const descriptionInput = document.getElementById('descriptionInput');
+    const amountInput = document.getElementById('amountInput');
+    const typeIncome = document.getElementById('typeIncome');
+    const typeExpense = document.getElementById('typeExpense');
+    const debtGroup = document.getElementById('debtGroup');
+    const debtSelect = document.getElementById('debtSelect');
+    const submitBtn = document.getElementById('submitBtn');
+    const netBalance = document.getElementById('netBalance');
+    const totalIncomeBox = document.getElementById('totalIncomeBox');
+    const totalExpenseBox = document.getElementById('totalExpenseBox');
+    const transactionList = document.getElementById('transactionList');
+    
+    // Element Kontrol Full Screen Loading
     const fullScreenOverlay = document.getElementById('fullScreenOverlay');
+    const overlayText = document.getElementById('overlayText');
 
-    /* --- LOGIKA HITUNGAN MUNDUR BOM 2030 --- */
-    const targetDate2030 = new Date('2030-01-01T00:00:00').getTime();
+    typeIncome.addEventListener('change', () => { debtGroup.style.display = 'none'; debtSelect.value = ""; });
+    typeExpense.addEventListener('change', () => { debtGroup.style.display = 'block'; });
 
-    function updateBombCountdown() {
-        const now = new Date().getTime();
-        const diff = targetDate2030 - now;
-
-        if (diff <= 0) {
-            document.getElementById('bombDays').innerText = "0000";
-            document.getElementById('bombHours').innerText = "00";
-            document.getElementById('bombMinutes').innerText = "00";
-            document.getElementById('bombSeconds').innerText = "00";
-            document.getElementById('bombMs').innerText = "000";
+    debtSelect.addEventListener('change', (e) => {
+        const pilihan = e.target.value;
+        if (pilihan === "") {
+            descriptionInput.value = "";
+            amountInput.value = "";
             return;
         }
 
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        const ms = Math.floor((diff % 1000));
+        descriptionInput.value = "Bayar Cicilan " + pilihan;
 
-        document.getElementById('bombDays').innerText = String(days).padStart(4, '0');
-        document.getElementById('bombHours').innerText = String(hours).padStart(2, '0');
-        document.getElementById('bombMinutes').innerText = String(minutes).padStart(2, '0');
-        document.getElementById('bombSeconds').innerText = String(seconds).padStart(2, '0');
-        document.getElementById('bombMs').innerText = String(ms).padStart(3, '0');
-
-        requestAnimationFrame(updateBombCountdown);
-    }
-    // Jalankan countdown bom
-    requestAnimationFrame(updateBombCountdown);
-
-    function setExp(val) {
-        expInput.value = val;
-    }
-
-    toggleHistoryBtn.addEventListener('click', () => {
-        showAllHistory = !showAllHistory;
-        renderHistory();
+        if (pilihan === "HCI 1") amountInput.value = "781.700";
+        else if (pilihan === "HCI 2") amountInput.value = "511.000";
+        else if (pilihan === "SPP 1") amountInput.value = "1.869.303";
+        else if (pilihan === "SPP 2") amountInput.value = "226.132";
+        else if (pilihan === "SPP 3") amountInput.value = "2.506.666";
+        else if (pilihan === "MKR") amountInput.value = "520.000";
+        else if (pilihan === "AGS") amountInput.value = "1.500.000";
+        else if (pilihan === "BPR") amountInput.value = "2.550.000";
+        else if (["LHT", "FLN", "TLS", "GRJA", "IBAO", "PTRA"].includes(pilihan)) {
+            amountInput.value = "";
+        }
     });
 
-    // KATALOG DEDIKASI SPESIFIK NAMA GELAR & WARNA VISUAL DENGAN KATA-KATA PEMBAKAR SEMANGAT
-    const SPECIFIC_RANKS = {
-        1:  { title: "PEMULA AMATIR 🌿", bg: "#ecfdf5", border: "#10b981", text: "#047857", glow: "rgba(16, 185, 129, 0.25)" },
-        2:  { title: "PEMULA BERSEMANGAT ⚡", bg: "#f0fdf4", border: "#22c55e", text: "#15803d", glow: "rgba(34, 197, 94, 0.25)" },
-        3:  { title: "PEJUANG KONSISTEN 🛡️", bg: "#e0f2fe", border: "#0284c7", text: "#0369a1", glow: "rgba(2, 132, 199, 0.25)" },
-        4:  { title: "PENAKLUK RASA MALAS 🔥", bg: "#ffedd5", border: "#f97316", text: "#c2410c", glow: "rgba(249, 115, 22, 0.3)" },
-        5:  { title: "PEMBANGUN KEBIASAAN 🧱", bg: "#fef3c7", border: "#d97706", text: "#b45309", glow: "rgba(217, 119, 6, 0.3)" },
-        6:  { title: "PEMBURU TARGET 🎯", bg: "#fae8ff", border: "#c084fc", text: "#7e22ce", glow: "rgba(192, 132, 252, 0.3)" },
-        7:  { title: "DISIPLIN BAJA 🦾", bg: "#f1f5f9", border: "#64748b", text: "#334155", glow: "rgba(100, 116, 139, 0.3)" },
-        8:  { title: "PENGUASA WAKTU ⏳", bg: "#e0e7ff", border: "#6366f1", text: "#4338ca", glow: "rgba(99, 102, 241, 0.3)" },
-        9:  { title: "MOTIVASI TANPA HENTI 💥", bg: "#ffe4e6", border: "#f43f5e", text: "#be123c", glow: "rgba(244, 63, 94, 0.3)" },
-        10: { title: "SATRIA PRODUKTIF ⚔️", bg: "#fef08a", border: "#eab308", text: "#a16207", glow: "rgba(234, 179, 8, 0.35)" },
-        12: { title: "KONSISTENSI EMAS 🥇", bg: "#fef3c7", border: "#f59e0b", text: "#b45309", glow: "rgba(245, 158, 11, 0.35)" },
-        15: { title: "PENGENDALI DIRI 🧠", bg: "#f3e8ff", border: "#9333ea", text: "#6b21a8", glow: "rgba(147, 51, 234, 0.35)" },
-        20: { title: "MAGNET KEBERHASILAN 💎", bg: "#e0f2fe", border: "#06b6d4", text: "#0e7490", glow: "rgba(6, 182, 212, 0.4)" },
-        25: { title: "PENAKLUK BATAS DIRI 🚀", bg: "#fce7f3", border: "#ec4899", text: "#be185d", glow: "rgba(236, 72, 153, 0.4)" },
-        30: { title: "MASTER PRODUKTIVITAS 🌟", bg: "#fae8ff", border: "#a855f7", text: "#7e22ce", glow: "rgba(168, 85, 247, 0.4)" },
-        40: { title: "RAJA FOKUS & KARYA 👑", bg: "#fef3c7", border: "#d97706", text: "#92400e", glow: "rgba(217, 119, 6, 0.45)" },
-        50: { title: "LEGENDARIS PENTING 🐉", bg: "#fee2e2", border: "#ef4444", text: "#b91c1c", glow: "rgba(239, 68, 68, 0.45)" },
-        75: { title: "MANUSIA SUPER DISIPLIN 🔮", bg: "#ede9fe", border: "#8b5cf6", text: "#5b21b6", glow: "rgba(139, 92, 246, 0.5)" },
-        100:{ title: "DEWA PRODUKTIVITAS ABADI 🏆", bg: "#fff7ed", border: "#ea580c", text: "#9a3412", glow: "rgba(234, 88, 12, 0.5)" }
-    };
-
-    // FORMULA GENERATOR SPESIFIK UNTUK LEVEL YANG BELUM TERDAFTAR KUSTUM
-    function getRankConfigForLevel(lvl) {
-        if (SPECIFIC_RANKS[lvl]) return SPECIFIC_RANKS[lvl];
-
-        let titlePrefix = "PEMUDA BERBAKTI";
-        if (lvl >= 90) titlePrefix = "MAHA BINTANG";
-        else if (lvl >= 70) titlePrefix = "PEMIMPIN SEJATI";
-        else if (lvl >= 50) titlePrefix = "PAHLAWAN KONSISTENSI";
-        else if (lvl >= 35) titlePrefix = "PAKAR PRODUKTIF";
-        else if (lvl >= 25) titlePrefix = "PEMBAWA PERUBAHAN";
-        else if (lvl >= 15) titlePrefix = "PEJUANG HEBAT";
-        else if (lvl >= 10) titlePrefix = "DISIPLIN TINGGI";
-
-        const hue = (lvl * 137.5) % 360; 
-        return {
-            title: `${titlePrefix} TIER ${lvl} ⚡`,
-            bg: `hsla(${hue}, 85%, 96%, 1)`,
-            border: `hsla(${hue}, 80%, 45%, 1)`,
-            text: `hsla(${hue}, 90%, 25%, 1)`,
-            glow: `hsla(${hue}, 80%, 45%, 0.35)`
-        };
+    function formatRupiah(angka) {
+        return 'Rp ' + String(Math.round(angka)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
-    function calculateLevel(totalExp) {
-        let level = 1;
-        let expNeededForNext = 100; 
-        let currentExp = totalExp;
+    amountInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, "");
+        e.target.value = value ? String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "";
+    });
 
-        while (currentExp >= expNeededForNext) {
-            currentExp -= expNeededForNext;
-            level++;
-            expNeededForNext = level * 100;
-        }
-
-        const rankConfig = getRankConfigForLevel(level);
-        const pct = Math.min(100, Math.floor((currentExp / expNeededForNext) * 100));
-
-        return {
-            level: level,
-            rankConfig: rankConfig,
-            currentExpInLevel: currentExp,
-            expNeededForNext: expNeededForNext,
-            progressPct: pct
-        };
-    }
-
-    function renderStatus() {
-        let grandTotalExp = 0;
-        activityLogs.forEach(item => {
-            grandTotalExp += Number(item.exp) || 0;
+    function updateBudget() {
+        let incomeTotal = 0;
+        let expenseTotal = 0;
+        transactions.forEach(t => {
+            const tipe = String(t.type || t.jenis || "").toLowerCase();
+            const nominal = Number(t.amount || t.jumlah) || 0;
+            if (tipe === 'income' || tipe === 'pemasukan') incomeTotal += nominal;
+            else expenseTotal += nominal;
         });
-
-        const stats = calculateLevel(grandTotalExp);
-        const cfg = stats.rankConfig;
-
-        levelDisplay.innerText = `Level ${stats.level}`;
-        rankTitleDisplay.innerText = cfg.title;
-        totalExpDisplay.innerText = `${grandTotalExp.toLocaleString('id-ID')} EXP`;
-        levelProgressText.innerText = `${stats.currentExpInLevel} / ${stats.expNeededForNext} EXP`;
-        progressBarFill.style.width = `${stats.progressPct}%`;
-
-        rankAvatarFrame.style.borderColor = cfg.border;
-        rankAvatarFrame.style.boxShadow = `0 6px 18px ${cfg.glow}`;
         
-        rankTitleDisplay.style.backgroundColor = cfg.bg;
-        rankTitleDisplay.style.color = cfg.text;
-        rankTitleDisplay.style.border = `1px solid ${cfg.border}`;
+        netBalance.innerText = formatRupiah(incomeTotal - expenseTotal);
+        totalIncomeBox.innerText = formatRupiah(incomeTotal);
+        totalExpenseBox.innerText = formatRupiah(expenseTotal);
     }
 
-    function renderHistory() {
-        activityList.innerHTML = '';
-        if (activityLogs.length === 0) {
-            activityList.innerHTML = '<div style="text-align:center; color:#64748b; font-size:13px; padding:20px;">Belum ada kegiatan tercatat. Kumpulkan EXP pertamamu!</div>';
-            toggleHistoryBtn.style.display = 'none';
-            return;
-        }
-
-        const reversedLogs = [...activityLogs].reverse();
-        const displayLogs = showAllHistory ? reversedLogs : reversedLogs.slice(0, 5);
-
-        displayLogs.forEach(act => {
-            const dateObj = new Date(act.tanggal);
-            const dateStr = isNaN(dateObj.getTime()) ? 'Baru saja' : dateObj.toLocaleDateString('id-ID', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB';
-
+    function renderTransactions() {
+        transactionList.innerHTML = '';
+        const recent = transactions.slice(-5).reverse();
+        recent.forEach(t => {
+            const tipe = String(t.type || t.jenis || "").toLowerCase();
+            const nominal = Number(t.amount || t.jumlah) || 0;
+            const ket = t.description || t.keterangan || "Tanpa Keterangan";
+            
+            const isIncome = (tipe === 'income' || tipe === 'pemasukan');
+            const itemClass = isIncome ? 'income' : 'expense';
+            const sign = isIncome ? '+' : '-';
+            
             const div = document.createElement('div');
-            div.className = 'activity-item';
+            div.className = `transaction-item ${itemClass}`;
             div.innerHTML = `
-                <div class="item-info">
-                    <div class="title">${act.kegiatan}</div>
-                    <div class="date">📅 ${dateStr}</div>
-                </div>
-                <div class="item-exp">+${act.exp} EXP</div>
+                <span class="item-desc">${ket}</span>
+                <span class="item-amount ${itemClass}">${sign} ${formatRupiah(nominal)}</span>
             `;
-            activityList.appendChild(div);
+            transactionList.appendChild(div);
         });
-
-        if (activityLogs.length > 5) {
-            toggleHistoryBtn.style.display = 'block';
-            toggleHistoryBtn.innerText = showAllHistory ? 'Sembunyikan Riwayat 🔼' : 'Tampilkan Seluruh Riwayat 🔽';
-        } else {
-            toggleHistoryBtn.style.display = 'none';
-        }
     }
 
-    function renderDailyExpChart() {
+    // FUNGSI UTAMA UNTUK MENGOLAH GRAFIK HARIAN DENGAN FILTER EXCLUDE CICILAN
+    function renderDailyExpenseChart() {
         const dailyTotals = {};
 
-        activityLogs.forEach(act => {
-            const expVal = Number(act.exp) || 0;
-            const dateVal = act.tanggal || act.date || act.timestamp;
+        transactions.forEach(t => {
+            const tipe = String(t.type || t.jenis || "").toLowerCase();
+            const isExpense = (tipe === 'expense' || tipe === 'pengeluaran' || tipe === '');
 
-            let dateKey = "";
-            if (dateVal) {
-                const d = new Date(dateVal);
-                if (!isNaN(d.getTime())) {
-                    const day = String(d.getDate()).padStart(2, '0');
-                    const month = String(d.getMonth() + 1).padStart(2, '0');
-                    dateKey = `${day}/${month}`;
+            if (isExpense) {
+                const desc = String(t.description || t.keterangan || "").toUpperCase().replace(/\s+/g, ' ');
+
+                // PELEWAKAN/FILTERING: Cek apakah keterangan mengandung unsur "BAYAR CICILAN" atau pos kode hutang
+                const isDebtPayment = DEBT_KEYS.some(key => {
+                    const cleanKey = key.toUpperCase().replace(/\s+/g, '');
+                    const cleanDesc = desc.replace(/\s+/g, '');
+                    return cleanDesc.includes("CICILAN") || cleanDesc.includes(cleanKey);
+                });
+
+                // HANYA DIPROSES JIKA BUKAN BAYAR CICILAN
+                if (!isDebtPayment) {
+                    const nominal = Number(t.amount || t.jumlah) || 0;
+                    const dateVal = t.tanggal || t.date || t.timestamp || t.waktu;
+                    
+                    let dateKey = "";
+                    if (dateVal) {
+                        const d = new Date(dateVal);
+                        if (!isNaN(d.getTime())) {
+                            const day = String(d.getDate()).padStart(2, '0');
+                            const month = String(d.getMonth() + 1).padStart(2, '0');
+                            dateKey = `${day}/${month}`;
+                        }
+                    }
+                    
+                    if (!dateKey) dateKey = "Lainnya";
+
+                    dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + nominal;
                 }
             }
-
-            if (!dateKey) dateKey = "Lainnya";
-            dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + expVal;
         });
 
+        // Ambil maksimal 30 titik tanggal ter-update dari database
         const sortedDates = Object.keys(dailyTotals).slice(-30);
         const dataValues = sortedDates.map(d => dailyTotals[d]);
 
-        const ctx = document.getElementById('dailyExpChart').getContext('2d');
+        const ctx = document.getElementById('dailyExpenseChart').getContext('2d');
 
-        if (dailyExpChartInstance) {
-            dailyExpChartInstance.destroy();
+        if (dailyExpenseChartInstance) {
+            dailyExpenseChartInstance.destroy();
         }
 
-        dailyExpChartInstance = new Chart(ctx, {
+        dailyExpenseChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: sortedDates.length ? sortedDates : ['Belum Ada Data'],
                 datasets: [{
-                    label: 'Perolehan EXP',
+                    label: 'Pengeluaran Murni (Rp)',
                     data: dataValues.length ? dataValues : [0],
-                    borderColor: '#7c3aed',
-                    backgroundColor: 'rgba(124, 58, 237, 0.08)',
+                    borderColor: '#c2410c',
+                    backgroundColor: 'rgba(194, 65, 12, 0.08)',
                     borderWidth: 2.5,
                     fill: true,
                     tension: 0.35,
-                    pointBackgroundColor: '#7c3aed',
+                    pointBackgroundColor: '#c2410c',
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 1.5,
                     pointRadius: 4,
@@ -872,7 +721,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return 'EXP: +' + context.raw + ' EXP';
+                                return 'Pengeluaran Murni: ' + formatRupiah(context.raw);
                             }
                         }
                     }
@@ -887,12 +736,14 @@
                     },
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(124, 58, 237, 0.08)' },
+                        grid: { color: 'rgba(13, 148, 136, 0.08)' },
                         ticks: {
                             color: '#64748b',
                             font: { family: 'Inter', size: 10 },
                             callback: function(val) {
-                                return '+' + val + ' EXP';
+                                if (val >= 1000000) return (val / 1000000) + ' Jt';
+                                if (val >= 1000) return (val / 1000) + ' Rb';
+                                return val;
                             }
                         }
                     }
@@ -901,56 +752,62 @@
         });
     }
 
-    expForm.addEventListener('submit', (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const kegiatan = kegiatanInput.value.trim();
-        const expGained = parseInt(expInput.value) || 0;
+        const rawAmount = parseInt(amountInput.value.replace(/\D/g, "")) || 0;
+        if (rawAmount <= 0) return alert('Masukkan jumlah nominal yang valid.');
 
-        if (!kegiatan || expGained <= 0) return alert('Isi kegiatan dan nominal EXP yang valid.');
-
+        overlayText.innerText = 'Mengunci & Mengirim ke Database...';
         fullScreenOverlay.style.display = 'flex';
+        submitBtn.disabled = true;
 
-        const payload = {
-            action: 'add_exp',
-            sheet: 'LEVEL_DIRI',
-            kegiatan: kegiatan,
-            exp: expGained
+        const newTransaction = {
+            description: descriptionInput.value,
+            amount: rawAmount,
+            type: typeExpense.checked ? 'expense' : 'income'
         };
 
         fetch(SCRIPT_URL, {
             method: 'POST',
-            body: JSON.stringify(payload)
+            body: JSON.stringify(newTransaction)
         })
         .then(() => {
-            kegiatanInput.value = '';
-            expInput.value = '';
+            descriptionInput.value = '';
+            amountInput.value = '';
+            debtSelect.value = '';
             init();
         })
-        .catch(err => {
-            console.error(err);
-            alert('Gagal menyimpan EXP. Periksa koneksi internet Anda.');
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal mengirim data. Periksa jaringan internet Anda.');
             fullScreenOverlay.style.display = 'none';
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
         });
     });
 
     function init() {
+        const cacheBusterUrl = SCRIPT_URL + '?_ts=' + new Date().getTime();
+        
+        overlayText.innerText = 'Menyinkronkan Dengan Database...';
         fullScreenOverlay.style.display = 'flex';
-        const cacheBusterUrl = SCRIPT_URL + '?action=get_level&_ts=' + new Date().getTime();
 
         fetch(cacheBusterUrl)
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => {
-            activityLogs = Array.isArray(data) ? data : [];
-            renderStatus();
-            renderDailyExpChart();
-            renderHistory();
+            transactions = (data && data.length > 0) ? data : [];
+            renderTransactions();
+            updateBudget();
+            renderDailyExpenseChart();
             fullScreenOverlay.style.display = 'none';
         })
-        .catch(err => {
-            console.error(err);
-            renderStatus();
-            renderDailyExpChart();
-            renderHistory();
+        .catch(error => {
+            console.error('Gagal mengambil data:', error);
+            alert('Mode Offline. Gagal tersambung ke server.');
+            renderTransactions();
+            updateBudget();
+            renderDailyExpenseChart();
             fullScreenOverlay.style.display = 'none';
         });
     }

@@ -6,7 +6,7 @@
     <title>Level Diri - Gamifikasi Karakter</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
     <!-- Library Chart.js untuk Grafik Statik EXP -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -192,6 +192,107 @@
             height: 100%;
             width: 0%;
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- STYLES BOMB COUNTDOWN 2030 --- */
+        .bomb-timer-card {
+            background: #090a0f;
+            border-radius: 20px;
+            padding: 16px 14px;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bomb-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 8px;
+        }
+
+        .bomb-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #f87171;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bomb-status {
+            font-size: 9px;
+            font-weight: 700;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ff4d4d;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            animation: pulse-red 1.2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.96); }
+        }
+
+        .bomb-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000000;
+            padding: 12px 8px;
+            border-radius: 14px;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.15);
+        }
+
+        .time-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .time-block .digit {
+            font-family: 'Share Tech Mono', 'Russo One', monospace;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff2a2a;
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.9), 0 0 20px rgba(255, 0, 0, 0.5);
+            line-height: 1;
+        }
+
+        .time-block.highlight .digit {
+            color: #ffbe0b;
+            text-shadow: 0 0 10px rgba(255, 190, 11, 0.9);
+        }
+
+        .time-block .label {
+            font-size: 8px;
+            font-weight: 700;
+            color: #64748b;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .colon {
+            font-family: 'Russo One', monospace;
+            font-size: 16px;
+            color: #ff2a2a;
+            margin-top: -12px;
+            text-shadow: 0 0 8px rgba(255, 42, 42, 0.8);
+            animation: blink-colon 1s infinite;
+        }
+
+        @keyframes blink-colon {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
         }
 
         /* --- CARD FORM INPUT --- */
@@ -448,6 +549,40 @@
         </div>
     </div>
 
+    <!-- WIDGET HITUNGAN MUNDUR BOM 2030 -->
+    <div class="bomb-timer-card">
+        <div class="bomb-header">
+            <span class="bomb-title">💣 TARGET UTAMA 2030</span>
+            <span class="bomb-status">COUNTDOWN</span>
+        </div>
+        <div class="bomb-display">
+            <div class="time-block">
+                <span id="bombDays" class="digit">0000</span>
+                <span class="label">HARI</span>
+            </div>
+            <span class="colon">:</span>
+            <div class="time-block">
+                <span id="bombHours" class="digit">00</span>
+                <span class="label">JAM</span>
+            </div>
+            <span class="colon">:</span>
+            <div class="time-block">
+                <span id="bombMinutes" class="digit">00</span>
+                <span class="label">MENIT</span>
+            </div>
+            <span class="colon">:</span>
+            <div class="time-block">
+                <span id="bombSeconds" class="digit">00</span>
+                <span class="label">DETIK</span>
+            </div>
+            <span class="colon">:</span>
+            <div class="time-block highlight">
+                <span id="bombMs" class="digit">000</span>
+                <span class="label">MS</span>
+            </div>
+        </div>
+    </div>
+
     <!-- FORM INPUT KEGIATAN -->
     <div class="card">
         <form id="expForm">
@@ -511,6 +646,39 @@
     const expInput = document.getElementById('expInput');
     const fullScreenOverlay = document.getElementById('fullScreenOverlay');
 
+    /* --- LOGIKA HITUNGAN MUNDUR BOM 2030 --- */
+    const targetDate2030 = new Date('2030-01-01T00:00:00').getTime();
+
+    function updateBombCountdown() {
+        const now = new Date().getTime();
+        const diff = targetDate2030 - now;
+
+        if (diff <= 0) {
+            document.getElementById('bombDays').innerText = "0000";
+            document.getElementById('bombHours').innerText = "00";
+            document.getElementById('bombMinutes').innerText = "00";
+            document.getElementById('bombSeconds').innerText = "00";
+            document.getElementById('bombMs').innerText = "000";
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        const ms = Math.floor((diff % 1000));
+
+        document.getElementById('bombDays').innerText = String(days).padStart(4, '0');
+        document.getElementById('bombHours').innerText = String(hours).padStart(2, '0');
+        document.getElementById('bombMinutes').innerText = String(minutes).padStart(2, '0');
+        document.getElementById('bombSeconds').innerText = String(seconds).padStart(2, '0');
+        document.getElementById('bombMs').innerText = String(ms).padStart(3, '0');
+
+        requestAnimationFrame(updateBombCountdown);
+    }
+    // Jalankan countdown bom
+    requestAnimationFrame(updateBombCountdown);
+
     function setExp(val) {
         expInput.value = val;
     }
@@ -547,7 +715,6 @@
     function getRankConfigForLevel(lvl) {
         if (SPECIFIC_RANKS[lvl]) return SPECIFIC_RANKS[lvl];
 
-        // RANGKAIAN NAMA TIER BERDASARKAN SKALA TINGKATAN
         let titlePrefix = "PEMUDA BERBAKTI";
         if (lvl >= 90) titlePrefix = "MAHA BINTANG";
         else if (lvl >= 70) titlePrefix = "PEMIMPIN SEJATI";
@@ -557,7 +724,6 @@
         else if (lvl >= 15) titlePrefix = "PEJUANG HEBAT";
         else if (lvl >= 10) titlePrefix = "DISIPLIN TINGGI";
 
-        // FORMULA WARNA VISUAL DINAMIS (DENGAN SPETRUM PELANGI RPG)
         const hue = (lvl * 137.5) % 360; 
         return {
             title: `${titlePrefix} TIER ${lvl} ⚡`,
@@ -606,7 +772,6 @@
         levelProgressText.innerText = `${stats.currentExpInLevel} / ${stats.expNeededForNext} EXP`;
         progressBarFill.style.width = `${stats.progressPct}%`;
 
-        // Terapkan warna unik dinamis sesuai level pada kartu & frame
         rankAvatarFrame.style.borderColor = cfg.border;
         rankAvatarFrame.style.boxShadow = `0 6px 18px ${cfg.glow}`;
         
